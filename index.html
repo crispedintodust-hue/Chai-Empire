@@ -1,0 +1,868 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0D6A60">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Chai Empire</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: a one-screen phone app. HUD on top, one scrolling tab panel, floating tab bar below.
+   The bold move is the striped awning over the stall; everything else stays quiet. */
+:root{
+  --bg:#E8F1EE; --surface:#F6FBF9; --raised:#FFFFFF; --ink:#27180F; --ink-2:#64534A; --line:#CBDDD7;
+  --brand:#0D6A60; --on-brand:#FFFFFF; --gold:#F2A900; --chai:#A8622B; --chai-deep:#6A3A17;
+  --awn-a:#0D6A60; --awn-b:#F2B63C; --halo:#FFE2A3; --steam:rgba(39,24,15,.35);
+  --glass:rgba(255,255,255,.55); --glass-line:#7C8F89; --float:#6A3A17; --danger:#B3261E; --shadow:rgba(20,40,35,.12);
+  --font-display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Hind',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1614; --surface:#12211E; --raised:#182B27; --ink:#F3E8D8; --ink-2:#A7B9B2; --line:#26403A;
+    --brand:#38BDAA; --on-brand:#04201C; --gold:#FFC53D; --chai:#D9944F; --chai-deep:#8E4F1E;
+    --awn-a:#1B8F82; --awn-b:#E9A92E; --halo:#4A3A12; --steam:rgba(243,232,216,.4);
+    --glass:rgba(255,255,255,.10); --glass-line:#5E7A72; --float:#FFD08A; --danger:#FF8A80; --shadow:rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1614; --surface:#12211E; --raised:#182B27; --ink:#F3E8D8; --ink-2:#A7B9B2; --line:#26403A;
+  --brand:#38BDAA; --on-brand:#04201C; --gold:#FFC53D; --chai:#D9944F; --chai-deep:#8E4F1E;
+  --awn-a:#1B8F82; --awn-b:#E9A92E; --halo:#4A3A12; --steam:rgba(243,232,216,.4);
+  --glass:rgba(255,255,255,.10); --glass-line:#5E7A72; --float:#FFD08A; --danger:#FF8A80; --shadow:rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{box-sizing:border-box;height:100%}
+body{
+  height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:var(--font-body);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+h1,h2,h3,p{margin:0}
+button{font-family:inherit}
+#app{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;min-height:0}
+
+/* HUD */
+.hud{display:grid;gap:2px;padding:10px 0}
+.hud-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.hud-top>div{min-width:0}
+.eyebrow{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stage{font:800 24px/1.05 var(--font-display);text-wrap:balance}
+.rate{flex:none;font:700 14px var(--font-display);background:var(--raised);border:1px solid var(--line);padding:4px 11px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cash{display:flex;align-items:baseline;gap:6px;font:800 clamp(40px,12vw,56px)/1 var(--font-display);font-variant-numeric:tabular-nums;min-width:0}
+.cash .rs{color:var(--chai)}
+.cash #cash{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stagebar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px}
+.stagebar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--brand),var(--gold));transition:width .3s}
+.stage-note{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+#app.is-rush .cash .rs{color:var(--gold)}
+#app.is-rush .rate{border-color:var(--gold)}
+
+/* Panels */
+main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 12px;overscroll-behavior:contain}
+.panel{display:grid;gap:12px;align-content:start}
+
+/* Stall */
+.stall{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.rail{height:7px;background:var(--chai-deep)}
+.awning{display:flex}
+.awning i{flex:1;height:30px;background:var(--awn-a);border-radius:0 0 50% 50%/0 0 100% 100%}
+.awning i:nth-child(even){background:var(--awn-b)}
+.counter{position:relative;display:grid;place-items:center;padding:14px 12px 6px;overflow:hidden}
+.tap{
+  position:relative;width:min(100%,300px);aspect-ratio:1;max-width:100%;padding:0;border:0;border-radius:50%;color:inherit;cursor:pointer;
+  background:radial-gradient(closest-side,var(--halo),transparent 78%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+.tap:focus-visible{outline:3px solid var(--brand);outline-offset:4px}
+.tap svg{width:100%;height:100%;display:block;pointer-events:none;transition:transform .08s}
+.tap:active svg{transform:scale(.985)}
+.liquid{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(var(--lvl,.08));transition:transform .18s ease-out}
+.kettle{transform:rotate(-8deg);transform-origin:0 0;transition:transform .12s ease-out}
+.pour .kettle{transform:rotate(-28deg)}
+.stream{fill:none;stroke:#C07A3A;stroke-width:4;stroke-linecap:round;stroke-dasharray:6 5;opacity:0;transition:opacity .08s}
+.pour .stream{opacity:1;animation:flow .25s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-11}}
+.steam{fill:none;stroke:var(--steam);stroke-width:3;stroke-linecap:round;opacity:0;animation:steam 2.6s ease-in-out infinite}
+.steam.s2{animation-delay:.8s}.steam.s3{animation-delay:1.6s}
+.is-rush .steam{animation-duration:1.4s}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-10px)}}
+.glass-fill{fill:var(--glass)}
+.glass-line{fill:none;stroke:var(--glass-line);stroke-width:2.5;stroke-linejoin:round}
+.saucer{fill:var(--awn-b)}
+.shadow-ellipse{fill:var(--chai-deep);opacity:.2}
+.served .glassgrp{animation:hop .5s ease-out}
+@keyframes hop{30%{transform:translateY(-8px)}100%{transform:none}}
+.coach{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:2;background:var(--ink);color:var(--bg);padding:7px 13px;border-radius:999px;font:700 13px var(--font-display);white-space:nowrap;pointer-events:none;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,4px)}}
+.floater{position:absolute;z-index:3;pointer-events:none;white-space:nowrap;font:800 20px var(--font-display);color:var(--float);animation:rise .9s ease-out forwards}
+.floater.big{font-size:24px;color:var(--brand)}
+@keyframes rise{from{opacity:1;transform:translate(-50%,-50%) scale(.9)}to{opacity:0;transform:translate(-50%,-200%) scale(1.15)}}
+.tapinfo{display:flex;justify-content:space-between;gap:12px;padding:0 16px 12px;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+.rush{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:12px 14px 14px;border-radius:16px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font-size:15px;text-align:left;cursor:pointer;touch-action:manipulation}
+.rush:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.rush>span:first-child{min-width:0}
+.rush .bar{position:absolute;left:0;bottom:0;height:4px;width:var(--p,100%);background:var(--gold);transition:width .2s linear}
+.rush[data-state="ready"]{border-color:var(--gold)}
+.rush[data-state="active"]{border-color:var(--gold);box-shadow:0 0 0 3px var(--halo)}
+.rush[data-state="cool"]{cursor:default}
+.rush[data-state="cool"] .bar{background:var(--ink-2);opacity:.5}
+.row-title{display:block;font:700 16px/1.15 var(--font-display)}
+.row-sub{display:block;font-size:13px;color:var(--ink-2)}
+.chip{flex:none;font:700 14px var(--font-display);padding:5px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.rush[data-state="ready"] .chip{background:var(--gold);border-color:var(--gold);color:#2A1C00}
+
+.daily{display:grid;gap:10px;padding:12px 14px;border-radius:16px;background:var(--raised);border:1px solid var(--line)}
+.daily-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.daily-head>div{min-width:0}
+.streak{display:flex;gap:6px}
+.streak i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.streak i.on{background:var(--gold)}
+
+/* Buttons */
+.btn{font:700 15px var(--font-display);min-height:44px;padding:8px 16px;border:1px solid var(--brand);border-radius:12px;background:var(--brand);color:var(--on-brand);cursor:pointer;touch-action:manipulation}
+.btn:disabled{background:transparent;border-color:var(--line);color:var(--ink-2);cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn:focus-visible,.tab:focus-visible,.seg button:focus-visible,.switch:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.seg{display:inline-flex;gap:2px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.seg button{min-height:36px;padding:6px 12px;border:0;border-radius:9px;background:transparent;color:var(--ink-2);font:700 13px var(--font-display);cursor:pointer;touch-action:manipulation}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+
+/* Lists */
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.sec-head h2{font:800 18px var(--font-display)}
+.sec-head small{font-size:12px;color:var(--ink-2)}
+.list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;background:var(--raised);border:1px solid var(--line);border-radius:16px}
+.row>div{min-width:0}
+.row.plain{grid-template-columns:auto 1fr}
+.row.teaser{opacity:.65}
+.badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font:800 18px var(--font-display);font-variant-numeric:tabular-nums}
+.badge.small{font-size:15px}
+.row.done .badge{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.badge svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.row .meta{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.buy{min-width:88px;display:grid;justify-items:center;gap:1px;line-height:1.15;padding:6px 10px;font-variant-numeric:tabular-nums}
+.buy small{font:600 11px var(--font-body)}
+.empty{padding:14px;border:1px dashed var(--line);border-radius:16px;color:var(--ink-2);font-size:14px}
+
+/* Cards (franchise, awards, settings) */
+.card{display:grid;gap:10px;padding:14px;background:var(--raised);border:1px solid var(--line);border-radius:22px}
+.card h2{font:800 19px var(--font-display)}
+.card h3{font:700 16px var(--font-display)}
+.note{font-size:14px;color:var(--ink-2);max-width:60ch}
+.big-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.big-line b{font:800 40px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.big-line span{color:var(--ink-2);font-size:14px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:0;font-size:14px}
+.kv dt{color:var(--ink-2)}
+.kv dd{margin:0;font:700 15px var(--font-display);text-align:right;font-variant-numeric:tabular-nums}
+.field{display:grid;gap:6px}
+.field label{font:700 12px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+input[type="text"]{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
+input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.switch{position:relative;flex:none;width:50px;height:30px;padding:0;border:1px solid var(--line);border-radius:99px;background:var(--surface);cursor:pointer}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--ink-2);transition:transform .15s,background .15s}
+.switch[aria-checked="true"]{background:var(--brand);border-color:var(--brand)}
+.switch[aria-checked="true"]::after{transform:translateX(20px);background:var(--on-brand)}
+
+.guide{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14px;color:var(--ink-2)}
+.guide li::marker{color:var(--chai);font-weight:700}
+
+/* Tab bar */
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:6px 0 8px;padding:6px;background:var(--raised);border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 20px var(--shadow)}
+.tab{position:relative;display:grid;justify-items:center;gap:2px;min-height:50px;padding:7px 4px;border:0;border-radius:16px;background:transparent;color:var(--ink-2);font:700 11px var(--font-display);letter-spacing:.02em;cursor:pointer;touch-action:manipulation}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-selected="true"]{background:var(--brand);color:var(--on-brand)}
+.tab .dot{position:absolute;top:6px;left:calc(50% + 6px);width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--raised);display:none}
+.tab.has .dot{display:block}
+
+/* Toasts and sheet */
+.toasts{position:fixed;left:0;right:0;top:0;z-index:30;display:grid;gap:6px;justify-items:center;pointer-events:none;padding:calc(env(safe-area-inset-top,0px) + 8px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.toast{max-width:100%;padding:9px 14px;border-radius:14px;background:var(--ink);color:var(--bg);font:700 14px var(--font-display);box-shadow:0 8px 24px var(--shadow);animation:toast 3s ease forwards}
+@keyframes toast{0%{opacity:0;transform:translateY(-8px)}8%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
+.overlay{position:fixed;inset:0;z-index:40;display:grid;align-items:end;justify-items:center;background:rgba(8,18,16,.55);padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet{width:min(100%,460px);display:grid;gap:12px;padding:18px;background:var(--raised);border:1px solid var(--line);border-radius:22px;animation:sheet .25s ease-out}
+.sheet h2{font:800 22px var(--font-display)}
+@keyframes sheet{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+</style>
+
+<div id="app">
+  <header class="hud">
+    <div class="hud-top">
+      <div>
+        <span class="eyebrow" id="stall-name">Meri Chai Tapri</span>
+        <h1 class="stage" id="stage">Thela</h1>
+      </div>
+      <div class="rate" title="Income per second"><span id="cps">₹0</span>/sec</div>
+    </div>
+    <div class="cash"><span class="rs">₹</span><span id="cash">0</span></div>
+    <div class="stagebar"><i id="stage-fill"></i></div>
+    <div class="stage-note" id="stage-note"></div>
+  </header>
+
+  <main id="main">
+    <!-- STALL -->
+    <section id="tab-stall" class="panel" role="tabpanel" aria-labelledby="tabbtn-stall">
+      <div class="stall">
+        <div class="rail"></div>
+        <div class="awning" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="counter" id="counter">
+          <div class="coach" id="coach">Tap the kettle to pour your first chai</div>
+          <button class="tap" id="tap" type="button" aria-label="Pour chai. Tap to earn rupees.">
+            <svg viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+              <defs>
+                <clipPath id="glassclip"><path d="M80 160 L144 160 L136 225 Q135.5 229 131 229 L93 229 Q88.5 229 88 225 Z"/></clipPath>
+                <linearGradient id="tea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DDA262"/><stop offset="1" stop-color="#7A3F17"/></linearGradient>
+                <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#AEBBBB"/><stop offset=".5" stop-color="#EEF3F2"/><stop offset="1" stop-color="#879494"/></linearGradient>
+              </defs>
+              <ellipse class="shadow-ellipse" cx="120" cy="234" rx="82" ry="6"/>
+              <g class="glassgrp">
+                <ellipse class="saucer" cx="112" cy="230" rx="44" ry="6.5"/>
+                <path class="glass-fill" d="M80 160 L144 160 L136 225 Q135.5 229 131 229 L93 229 Q88.5 229 88 225 Z"/>
+                <g clip-path="url(#glassclip)"><rect class="liquid" x="76" y="160" width="72" height="70" fill="url(#tea)"/></g>
+                <path class="glass-line" d="M80 160 L144 160 L136 225 Q135.5 229 131 229 L93 229 Q88.5 229 88 225 Z"/>
+                <path d="M88 168 L92 214" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round" fill="none"/>
+              </g>
+              <path class="stream" d="M111.7 121 L111.7 196"/>
+              <g transform="translate(172 97)">
+                <g class="kettle">
+                  <path d="M-37 22 Q-58 20 -64 -8 L-55 -10 Q-52 6 -35 8 Z" fill="url(#steel)" stroke="#6F7D7D" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M34 -20 Q68 -26 64 6 Q62 26 38 26" fill="none" stroke="#A8622B" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M-34 -8 Q-34 -32 0 -32 Q34 -32 34 -8 L40 30 Q41 40 30 40 L-30 40 Q-41 40 -40 30 Z" fill="url(#steel)" stroke="#6F7D7D" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M-38 18 L38 18" stroke="#6F7D7D" stroke-width="2" opacity=".5"/>
+                  <path d="M-17 -32 Q0 -44 17 -32 Z" fill="url(#steel)" stroke="#6F7D7D" stroke-width="2" stroke-linejoin="round"/>
+                  <circle cx="0" cy="-46" r="4.5" fill="#6A3A17"/>
+                  <path d="M-22 -18 Q-26 6 -24 28" stroke="#fff" stroke-opacity=".7" stroke-width="4" fill="none" stroke-linecap="round"/>
+                </g>
+              </g>
+              <path class="steam s1" d="M160 38 C154 28 166 22 160 10"/>
+              <path class="steam s2" d="M172 36 C166 26 178 20 172 8"/>
+              <path class="steam s3" d="M184 40 C178 30 190 24 184 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="tapinfo"><span id="tap-val">₹1 per tap</span><span id="cup-count">Glass 0 of 10</span></div>
+      </div>
+
+      <button class="rush" id="rush" type="button" data-state="ready" aria-disabled="false">
+        <span><span class="row-title">Rush Hour</span><span class="row-sub" id="rush-sub">Doubles all earnings for 20 seconds</span></span>
+        <span class="chip" id="rush-chip">Start</span>
+        <span class="bar"></span>
+      </button>
+
+      <div class="daily">
+        <div class="daily-head">
+          <div><span class="row-title">Daily bonus</span><span class="row-sub" id="daily-sub">Come back every day to grow the streak</span></div>
+          <button class="btn" id="daily-btn" type="button">Claim</button>
+        </div>
+        <div class="streak" id="streak" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </section>
+
+    <!-- KITCHEN -->
+    <section id="tab-shop" class="panel" role="tabpanel" aria-labelledby="tabbtn-shop" hidden>
+      <div class="sec-head"><h2>Recipes</h2><small id="up-count"></small></div>
+      <ul id="up-list" class="list"></ul>
+      <div class="sec-head">
+        <h2>Staff and stalls</h2>
+        <div class="seg" role="group" aria-label="Buy amount">
+          <button type="button" data-q="1" aria-pressed="true">×1</button>
+          <button type="button" data-q="10" aria-pressed="false">×10</button>
+          <button type="button" data-q="max" aria-pressed="false">Max</button>
+        </div>
+      </div>
+      <ul id="bld-list" class="list"></ul>
+    </section>
+
+    <!-- FRANCHISE -->
+    <section id="tab-franchise" class="panel" role="tabpanel" aria-labelledby="tabbtn-franchise" hidden>
+      <div class="card">
+        <h2>Open a franchise</h2>
+        <p class="note">Hand the stall to a cousin and keep the recipe. You start small again, but every Franchise Point adds 5% to all earnings for good.</p>
+        <div class="big-line"><b id="f-gain">0</b><span>Franchise Points ready</span></div>
+        <div class="stagebar"><i id="f-fill"></i></div>
+        <div class="stage-note" id="f-note"></div>
+        <button class="btn" id="f-btn" type="button" disabled>Open franchise</button>
+      </div>
+      <div class="card">
+        <dl class="kv">
+          <dt>Franchise Points held</dt><dd id="f-fp">0</dd>
+          <dt>Bonus to all earnings</dt><dd id="f-bonus">+0%</dd>
+          <dt>Franchises opened</dt><dd id="f-count">0</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h3>What resets</h3>
+        <p class="note">Cash, staff, stalls and recipes go back to the start. Awards, Franchise Points, your daily streak and your stall name stay.</p>
+      </div>
+    </section>
+
+    <!-- AWARDS -->
+    <section id="tab-awards" class="panel" role="tabpanel" aria-labelledby="tabbtn-awards" hidden>
+      <div class="sec-head"><h2>Awards</h2><small id="aw-count"></small></div>
+      <ul id="aw-list" class="list"></ul>
+      <div class="card">
+        <h2>How to play</h2>
+        <ol class="guide">
+          <li>Tap the kettle to earn rupees. Every tenth glass pays five times.</li>
+          <li>Hire staff in the Kitchen tab. They keep earning while you are away, at half speed.</li>
+          <li>Learn recipes to boost your taps and your income.</li>
+          <li>Start Rush Hour for double earnings and claim the daily bonus each day.</li>
+          <li>Once a run reaches ₹50 Lakh, open a franchise for a permanent bonus.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>Settings</h2>
+        <div class="field">
+          <label for="name-input">Stall name</label>
+          <input type="text" id="name-input" maxlength="24" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="setting"><span class="row-title">Sound</span><button class="switch" id="snd" type="button" role="switch" aria-checked="true" aria-label="Sound"></button></div>
+        <dl class="kv" id="stats"></dl>
+        <button class="btn danger" id="reset" type="button">Erase save and start over</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tabbtn-stall" data-tab="stall" aria-selected="true" aria-controls="tab-stall">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 12v8h14v-8"/></svg><span>Stall</span><i class="dot"></i>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-shop" data-tab="shop" aria-selected="false" aria-controls="tab-shop" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 11h20"/><path d="M8 7c0-1.5 1-1.5 1-3M12 7c0-1.5 1-1.5 1-3M16 7c0-1.5 1-1.5 1-3"/></svg><span>Kitchen</span><i class="dot"></i>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-franchise" data-tab="franchise" aria-selected="false" aria-controls="tab-franchise" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6"/><path d="M3 20h18"/></svg><span>Franchise</span><i class="dot"></i>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-awards" data-tab="awards" aria-selected="false" aria-controls="tab-awards" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a3 3 0 0 0 4 3M16 6h4v2a3 3 0 0 1-4 3"/><path d="M12 13v4M8 20h8M10 17h4"/></svg><span>Awards</span><i class="dot"></i>
+    </button>
+  </nav>
+</div>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<div class="overlay" id="away" role="dialog" aria-modal="true" aria-labelledby="away-title" hidden>
+  <div class="sheet">
+    <h2 id="away-title">Welcome back</h2>
+    <p class="note">You were away for <b id="away-time"></b>. Your crew kept the kettles on and earned <b id="away-gain"></b> at half speed.</p>
+    <button class="btn" id="away-ok" type="button">Back to the stall</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// <logic>
+const SUFFIX=[[1e17,' Shankh'],[1e15,' Padma'],[1e13,' Neel'],[1e11,' Kharab'],[1e9,' Arab'],[1e7,' Cr'],[1e5,' L'],[1e3,'K']];
+function trim(v,d){return String(+v.toFixed(d));}
+function fmt(n){
+  if(!(n>0)) return '0';
+  if(n<1000) return (n<10&&n!==Math.floor(n))?trim(n,1):String(Math.floor(n));
+  if(n>=1e20) return n.toExponential(2).replace('e+','e');
+  for(let i=0;i<SUFFIX.length;i++){
+    if(n>=SUFFIX[i][0]){const x=n/SUFFIX[i][0];return trim(x,x>=100?0:x>=10?1:2)+SUFFIX[i][1];}
+  }
+  return String(Math.floor(n));
+}
+function fmtDur(sec){
+  sec=Math.max(0,Math.floor(sec));
+  const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
+  if(h) return h+'h '+m+'m';
+  if(m) return m+'m '+(s<10?'0':'')+s+'s';
+  return s+'s';
+}
+function bulkCost(base,owned,n){const r=1.15;return base*Math.pow(r,owned)*(Math.pow(r,n)-1)/(r-1);}
+function maxBuy(base,owned,cash){
+  const r=1.15,unit=base*Math.pow(r,owned);
+  let n=Math.floor(Math.log(cash*(r-1)/unit+1)/Math.log(r));
+  if(!(n>0)) return 0;
+  while(n>0&&Math.ceil(bulkCost(base,owned,n))>cash) n--;
+  while(n<10000&&Math.ceil(bulkCost(base,owned,n+1))<=cash) n++;
+  return n;
+}
+function franchiseGain(run){return Math.floor(Math.sqrt(Math.max(0,run)/5e6));}
+function dayKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function dailyReward(cpsNow,nextStreak){return Math.max(100,cpsNow*300)*(1+0.2*(Math.min(nextStreak,7)-1));}
+
+const BUILDINGS=[
+  {name:'Chhotu',desc:'Wipes glasses and runs orders next door.',base:15,cps:0.5},
+  {name:'Second Kettle',desc:'Two boil at once, so nobody waits.',base:120,cps:4},
+  {name:'Biscuit Rack',desc:'Rusk and biscuits beside every glass.',base:1300,cps:30},
+  {name:'Kulhad Kiln',desc:'Clay cups baked fresh each morning.',base:15000,cps:190},
+  {name:'Corner Stall',desc:'A second tapri across the chauraha.',base:180000,cps:1200},
+  {name:'Assam Tea Estate',desc:'Your own leaves, picked at sunrise.',base:2500000,cps:8500},
+  {name:'Chai Café',desc:'Seats, ceiling fans and a menu board.',base:40000000,cps:60000},
+  {name:'Export House',desc:'Boxes of your blend shipped abroad.',base:7e8,cps:450000},
+  {name:'Vending Network',desc:'A chai machine at every station and office.',base:1.3e10,cps:3.5e6},
+  {name:'Empire Tower',desc:'A glass tower shaped like a kulhad.',base:2.5e11,cps:2.8e7}
+];
+const UPGRADES=[
+  {id:'elaichi',name:'Elaichi Crush',desc:'Cardamom in every glass. Taps earn double.',badge:'×2',cost:100,tap:2},
+  {id:'adrak',name:'Fresh Adrak',desc:'A ginger kick. Taps earn double.',badge:'×2',cost:1000,tap:2},
+  {id:'copper',name:'Copper Kettles',desc:'Heats faster. All income +25%.',badge:'+25%',cost:8000,all:1.25},
+  {id:'sign',name:'Painted Signboard',desc:'Passers-by notice you. All income +25%.',badge:'+25%',cost:60000,all:1.25},
+  {id:'kesar',name:'Kesar Strands',desc:'A few strands of saffron. Taps earn triple.',badge:'×3',cost:120000,tap:3},
+  {id:'wrists',name:'Strong Wrists',desc:'Each tap also adds 2% of your income per second.',badge:'2%',cost:600000,pct:0.02},
+  {id:'kulhad',name:'Kulhad Cups',desc:'Clay cups taste better. All income +50%.',badge:'+50%',cost:5e6,all:1.5},
+  {id:'neon',name:'Neon Signboard',desc:'Open till midnight. All income +50%.',badge:'+50%',cost:9e7,all:1.5},
+  {id:'loyalty',name:'Loyalty Cards',desc:'Every tenth glass is free and everyone returns. All income doubles.',badge:'×2',cost:2e9,all:2}
+];
+const STAGES=[
+  {at:0,name:'Thela'},{at:1e4,name:'Nukkad Tapri'},{at:3e5,name:'Chauraha Stall'},
+  {at:8e6,name:'Chai Café'},{at:3e8,name:'City Chain'},{at:2e10,name:'Chai Empire'}
+];
+const AWARDS=[
+  {id:'pehli',name:'Pehli Chai',desc:'Pour your first glass.',test:s=>s.taps>=1},
+  {id:'cups100',name:'Hundred Cups',desc:'Tap 100 times.',test:s=>s.taps>=100},
+  {id:'cups1000',name:'Thousand Cups',desc:'Tap 1,000 times.',test:s=>s.taps>=1000},
+  {id:'cups5000',name:'Wrist of Steel',desc:'Tap 5,000 times.',test:s=>s.taps>=5000},
+  {id:'chhotu',name:'Chhotu Joins',desc:'Hire your first Chhotu.',test:s=>s.owned[0]>=1},
+  {id:'crew25',name:'Busy Tapri',desc:'Own 25 staff and stalls.',test:s=>totalOwned(s)>=25},
+  {id:'crew100',name:'Chai Chain',desc:'Own 100 staff and stalls.',test:s=>totalOwned(s)>=100},
+  {id:'k1',name:'First Thousand',desc:'Earn ₹1,000 in total.',test:s=>s.allEarned>=1e3},
+  {id:'lakh',name:'Pehla Lakh',desc:'Earn ₹1 Lakh in total.',test:s=>s.allEarned>=1e5},
+  {id:'crore',name:'Crorepati',desc:'Earn ₹1 Crore in total.',test:s=>s.allEarned>=1e7},
+  {id:'arab',name:'Arabpati',desc:'Earn ₹1 Arab in total.',test:s=>s.allEarned>=1e9},
+  {id:'rush',name:'Rush Hour',desc:'Start a Rush Hour.',test:s=>s.rushUsed>=1},
+  {id:'daily3',name:'Regular Customer',desc:'Claim the daily bonus 3 days in a row.',test:s=>s.maxStreak>=3},
+  {id:'franchise',name:'First Franchise',desc:'Open your first franchise.',test:s=>s.franchises>=1}
+];
+const DEFAULT_NAME='Meri Chai Tapri';
+
+function fresh(){
+  return {v:1,name:DEFAULT_NAME,cash:0,runEarned:0,allEarned:0,taps:0,cup:0,
+    owned:BUILDINGS.map(()=>0),up:{},fp:0,franchises:0,aw:{},rushUsed:0,rushUntil:0,rushReady:0,
+    daily:'',streak:0,maxStreak:0,sound:true,last:Date.now()};
+}
+function sanitize(o){
+  const f=fresh();
+  if(!o||typeof o!=='object') return f;
+  ['cash','runEarned','allEarned','taps','cup','fp','franchises','rushUsed','rushUntil','rushReady','streak','maxStreak','last'].forEach(function(k){
+    if(typeof o[k]==='number'&&isFinite(o[k])&&o[k]>=0) f[k]=o[k];
+  });
+  f.cup=Math.min(9,Math.floor(f.cup));
+  if(typeof o.name==='string'&&o.name.trim()) f.name=o.name.trim().slice(0,24);
+  if(Array.isArray(o.owned)) BUILDINGS.forEach(function(_,i){
+    const n=o.owned[i]; if(typeof n==='number'&&isFinite(n)&&n>=0) f.owned[i]=Math.floor(n);
+  });
+  if(o.up&&typeof o.up==='object') UPGRADES.forEach(function(u){if(o.up[u.id]===true) f.up[u.id]=true;});
+  if(o.aw&&typeof o.aw==='object') AWARDS.forEach(function(a){if(o.aw[a.id]) f.aw[a.id]=Number(o.aw[a.id])||1;});
+  if(typeof o.daily==='string') f.daily=o.daily.slice(0,10);
+  if(typeof o.sound==='boolean') f.sound=o.sound;
+  return f;
+}
+
+function totalOwned(s){return s.owned.reduce(function(a,b){return a+b;},0);}
+function maxOwnedIdx(s){let m=-1;s.owned.forEach(function(n,i){if(n>0) m=i;});return m;}
+function awMult(s){return 1+0.02*Object.keys(s.aw).length;}
+function fpMult(s){return 1+0.05*s.fp;}
+function upAll(s){let m=1;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.all) m*=u.all;});return m;}
+function upTap(s){let m=1;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.tap) m*=u.tap;});return m;}
+function upPct(s){let p=0;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.pct) p+=u.pct;});return p;}
+function rushOn(s,now){return now<s.rushUntil;}
+function baseCps(s){let t=0;BUILDINGS.forEach(function(b,i){t+=s.owned[i]*b.cps;});return t;}
+function cps(s,now,withRush){
+  return baseCps(s)*fpMult(s)*awMult(s)*upAll(s)*((withRush&&rushOn(s,now))?2:1);
+}
+function tapValue(s,now){
+  return upTap(s)*fpMult(s)*awMult(s)*(rushOn(s,now)?2:1)+upPct(s)*cps(s,now,true);
+}
+function stageIndex(s){let k=0;STAGES.forEach(function(st,i){if(s.runEarned>=st.at) k=i;});return k;}
+// </logic>
+
+/* ---------- UI ---------- */
+const $=function(s){return document.querySelector(s);};
+function el(tag,cls,text){const e=document.createElement(tag);if(cls) e.className=cls;if(text!=null) e.textContent=text;return e;}
+function setText(n,t){if(n._t!==t){n._t=t;n.textContent=t;}}
+const KEY='chai-empire-v1';
+const E={
+  main:$('#main'),app:$('#app'),cash:$('#cash'),cps:$('#cps'),stage:$('#stage'),stageFill:$('#stage-fill'),stageNote:$('#stage-note'),
+  name:$('#stall-name'),tap:$('#tap'),tapVal:$('#tap-val'),cupCount:$('#cup-count'),counter:$('#counter'),coach:$('#coach'),
+  rush:$('#rush'),rushSub:$('#rush-sub'),rushChip:$('#rush-chip'),dailyBtn:$('#daily-btn'),dailySub:$('#daily-sub'),streak:$('#streak'),
+  toasts:$('#toasts'),away:$('#away'),nameInput:$('#name-input'),snd:$('#snd'),reset:$('#reset'),fbtn:$('#f-btn')
+};
+let S=null,mode=1,activeTab='stall',lastStage=-1,tickN=0,resetT=0,franT=0,pourT=0,levelT=0,ac=null;
+let shopRows=[],upRows=[];
+
+/* sound */
+function blip(freq,dur,type,vol){
+  if(!S||!S.sound) return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended') ac.resume();
+    const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(vol||0.05,t);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+dur);
+  }catch(e){}
+}
+function sTap(served){blip(served?880:420+Math.random()*80,served?0.18:0.07,'triangle',0.05);}
+function sBuy(){blip(520,0.08,'sine',0.05);setTimeout(function(){blip(780,0.12,'sine',0.05);},70);}
+function sAward(){[523,659,784].forEach(function(f,i){setTimeout(function(){blip(f,0.16,'triangle',0.05);},i*90);});}
+
+/* save */
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function loadSave(){try{const raw=localStorage.getItem(KEY);if(raw) return sanitize(JSON.parse(raw));}catch(e){}return null;}
+
+/* toasts and floaters */
+function toast(msg){
+  const t=el('div','toast',msg);E.toasts.append(t);
+  setTimeout(function(){t.remove();},3100);
+  while(E.toasts.children.length>3) E.toasts.firstChild.remove();
+}
+function floater(x,y,text,big){
+  const r=E.counter.getBoundingClientRect();
+  const f=el('span','floater'+(big?' big':''),text);
+  const px=x==null?r.width/2:x-r.left,py=y==null?r.height*0.45:y-r.top;
+  f.style.left=Math.max(40,Math.min(r.width-40,px+(Math.random()*30-15)))+'px';
+  f.style.top=py+'px';
+  f.addEventListener('animationend',function(){f.remove();});
+  E.counter.append(f);
+  const all=E.counter.querySelectorAll('.floater');
+  if(all.length>14) all[0].remove();
+}
+
+/* actions */
+function earn(x){if(!(x>0)) return;S.cash+=x;S.runEarned+=x;S.allEarned+=x;}
+function setLevel(f){E.tap.style.setProperty('--lvl',Math.max(0.08,Math.min(1,f)).toFixed(2));}
+function pour(){
+  E.tap.classList.add('pour');clearTimeout(pourT);
+  pourT=setTimeout(function(){E.tap.classList.remove('pour');},180);
+}
+function doTap(x,y){
+  const now=Date.now();
+  let v=tapValue(S,now),served=false;
+  S.cup++;
+  if(S.cup>=10){S.cup=0;served=true;v*=5;}
+  S.taps++;earn(v);
+  E.coach.hidden=true;
+  pour();setLevel(served?1:S.cup/10);
+  if(served){
+    E.tap.classList.add('served');
+    setTimeout(function(){E.tap.classList.remove('served');},500);
+    clearTimeout(levelT);levelT=setTimeout(function(){setLevel(S.cup/10);},320);
+  }
+  floater(x,y,(served?'Glass served! ':'')+'+₹'+fmt(v),served);
+  sTap(served);
+}
+function qtyFor(i){
+  const b=BUILDINGS[i];
+  if(mode==='max') return maxBuy(b.base,S.owned[i],S.cash)||1;
+  return mode;
+}
+function buyBuilding(i){
+  const b=BUILDINGS[i],n=qtyFor(i),cost=Math.ceil(bulkCost(b.base,S.owned[i],n));
+  if(S.cash<cost) return;
+  S.cash-=cost;S.owned[i]+=n;sBuy();updateShop();
+}
+function buyUpgrade(id){
+  const u=UPGRADES.find(function(x){return x.id===id;});
+  if(!u||S.up[id]||S.cash<u.cost) return;
+  S.cash-=u.cost;S.up[id]=true;sBuy();toast('Learned: '+u.name);buildUpgrades();updateShop();
+}
+function startRush(){
+  const now=Date.now();
+  if(now<S.rushReady) return;
+  S.rushUntil=now+20000;S.rushReady=now+110000;S.rushUsed++;
+  blip(660,0.15,'square',0.04);toast('Rush Hour! Earnings double for 20 seconds');
+}
+function claimDaily(){
+  const now=new Date(),today=dayKey(now);
+  if(S.daily===today) return;
+  const y=new Date(now);y.setDate(y.getDate()-1);
+  S.streak=(S.daily===dayKey(y))?S.streak+1:1;
+  S.maxStreak=Math.max(S.maxStreak,S.streak);
+  const reward=Math.floor(dailyReward(cps(S,Date.now(),false),S.streak));
+  S.daily=today;earn(reward);sAward();
+  toast('Daily bonus: +₹'+fmt(reward));
+}
+function openFranchise(){
+  const gain=franchiseGain(S.runEarned);
+  if(gain<1) return;
+  const keep={name:S.name,fp:S.fp+gain,franchises:S.franchises+1,allEarned:S.allEarned,taps:S.taps,aw:S.aw,
+    rushUsed:S.rushUsed,daily:S.daily,streak:S.streak,maxStreak:S.maxStreak,sound:S.sound};
+  S=Object.assign(fresh(),keep);
+  rebuildAll();save();sAward();
+  toast('Franchise opened: +'+gain+' Franchise Points');
+}
+function checkAwards(){
+  AWARDS.forEach(function(a){
+    if(!S.aw[a.id]&&a.test(S)){
+      S.aw[a.id]=Date.now();toast('Award: '+a.name+' (+2% income)');sAward();
+      if(activeTab==='awards') renderAwards();
+    }
+  });
+}
+
+/* away earnings */
+function handleAway(dt){
+  const c=cps(S,0,false);
+  if(c<=0) return;
+  const gain=c*Math.min(dt,8*3600)*0.5;
+  earn(gain);
+  if(dt>=60){
+    setText($('#away-time'),fmtDur(dt));setText($('#away-gain'),'₹'+fmt(Math.floor(gain)));
+    E.away.hidden=false;$('#away-ok').focus();
+  }
+}
+
+/* building the lists */
+function buildShop(){
+  const list=$('#bld-list');list.textContent='';shopRows=[];
+  BUILDINGS.forEach(function(b,i){
+    const li=el('li','row'),badge=el('div','badge'),mid=el('div'),name=el('span','row-title'),desc=el('span','row-sub'),meta=el('span','meta');
+    mid.append(name,desc,meta);
+    const btn=el('button','btn buy'),price=el('span'),sub=el('small');
+    btn.type='button';btn.append(price,sub);
+    btn.addEventListener('click',function(){buyBuilding(i);});
+    li.append(badge,mid,btn);list.append(li);
+    shopRows.push({li:li,badge:badge,name:name,desc:desc,meta:meta,btn:btn,price:price,sub:sub});
+  });
+}
+function buildUpgrades(){
+  const list=$('#up-list');list.textContent='';upRows=[];
+  const avail=UPGRADES.filter(function(u){return !S.up[u.id];});
+  avail.slice(0,3).forEach(function(u){
+    const li=el('li','row'),badge=el('div','badge small',u.badge),mid=el('div');
+    mid.append(el('span','row-title',u.name),el('span','row-sub',u.desc));
+    const btn=el('button','btn buy'),price=el('span',null,'₹'+fmt(u.cost)),sub=el('small',null,'Learn');
+    btn.type='button';btn.append(price,sub);
+    btn.addEventListener('click',function(){buyUpgrade(u.id);});
+    li.append(badge,mid,btn);list.append(li);upRows.push({u:u,btn:btn});
+  });
+  if(!avail.length) list.append(el('li','empty','Every recipe is learned. Open a franchise to start over with a bonus.'));
+  setText($('#up-count'),(UPGRADES.length-avail.length)+' of '+UPGRADES.length+' learned');
+}
+function renderAwards(){
+  const list=$('#aw-list');list.textContent='';let n=0;
+  AWARDS.forEach(function(a){
+    const done=!!S.aw[a.id];if(done) n++;
+    const li=el('li','row plain'+(done?' done':'')),badge=el('div','badge small'),mid=el('div');
+    if(done) badge.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    else badge.textContent='+2%';
+    mid.append(el('span','row-title',a.name+(done?' (unlocked)':'')),el('span','row-sub',a.desc));
+    li.append(badge,mid);list.append(li);
+  });
+  setText($('#aw-count'),n+' of '+AWARDS.length+' · +'+(n*2)+'% income');
+  const st=$('#stats');st.textContent='';
+  [['Total taps',S.taps.toLocaleString('en-IN')],['Earned all time','₹'+fmt(S.allEarned)],['Franchises opened',String(S.franchises)]].forEach(function(p){
+    st.append(el('dt',null,p[0]),el('dd',null,p[1]));
+  });
+}
+
+/* per-tick updates */
+function updateHud(now){
+  setText(E.cash,fmt(Math.floor(S.cash)));
+  setText(E.cps,'₹'+fmt(cps(S,now,true)));
+  setText(E.name,S.name);
+  setText(E.tapVal,'₹'+fmt(tapValue(S,now))+' per tap');
+  setText(E.cupCount,'Glass '+S.cup+' of 10');
+  const k=stageIndex(S);
+  if(k!==lastStage){
+    if(lastStage>=0&&k>lastStage){toast('New stage: '+STAGES[k].name);sAward();}
+    lastStage=k;setText(E.stage,STAGES[k].name);
+  }
+  const cur=STAGES[k],nxt=STAGES[k+1];
+  if(nxt){
+    const p=(S.runEarned-cur.at)/(nxt.at-cur.at);
+    E.stageFill.style.width=Math.max(0,Math.min(100,p*100)).toFixed(1)+'%';
+    setText(E.stageNote,'₹'+fmt(Math.ceil(nxt.at-S.runEarned))+' more to reach '+nxt.name);
+  }else{
+    E.stageFill.style.width='100%';
+    setText(E.stageNote,'Top of the chain. Open franchises to grow further.');
+  }
+}
+function updateRush(now){
+  let state='ready',chip='Start',sub='Doubles all earnings for 20 seconds',p=100;
+  if(now<S.rushUntil){
+    const left=(S.rushUntil-now)/1000;state='active';chip=Math.ceil(left)+'s';sub='Earnings are doubled right now';p=left/20*100;
+  }else if(now<S.rushReady){
+    const left=(S.rushReady-now)/1000;state='cool';chip=fmtDur(left);sub='The kettle needs a rest';p=(1-left/90)*100;
+  }
+  E.rush.dataset.state=state;
+  E.rush.setAttribute('aria-disabled',String(state!=='ready'));
+  setText(E.rushChip,chip);setText(E.rushSub,sub);
+  E.rush.style.setProperty('--p',Math.max(0,Math.min(100,p)).toFixed(1)+'%');
+  E.app.classList.toggle('is-rush',state==='active');
+}
+function updateDaily(now){
+  const d=new Date(now),today=dayKey(d),y=new Date(d);y.setDate(y.getDate()-1);
+  const claimed=S.daily===today,live=claimed||S.daily===dayKey(y);
+  const streak=live?S.streak:0,dots=E.streak.children;
+  for(let i=0;i<7;i++) dots[i].classList.toggle('on',i<Math.min(streak,7));
+  if(claimed){
+    const mid=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);
+    setText(E.dailySub,'Day '+S.streak+' streak. Next bonus in '+fmtDur((mid-d)/1000));
+    E.dailyBtn.disabled=true;setText(E.dailyBtn,'Claimed');
+  }else{
+    const next=live?S.streak+1:1,reward=dailyReward(cps(S,now,false),next);
+    setText(E.dailySub,(live?'Day '+next+' of your streak. ':'Start a streak. ')+'The bonus grows each day up to day 7.');
+    E.dailyBtn.disabled=false;setText(E.dailyBtn,'Claim ₹'+fmt(Math.floor(reward)));
+  }
+}
+function updateShop(){
+  const g=fpMult(S)*awMult(S)*upAll(S),mi=maxOwnedIdx(S);
+  BUILDINGS.forEach(function(b,i){
+    const r=shopRows[i];
+    if(i>mi+2){r.li.hidden=true;return;}
+    r.li.hidden=false;
+    const teaser=(i===mi+2),n=qtyFor(i),cost=Math.ceil(bulkCost(b.base,S.owned[i],n));
+    r.li.classList.toggle('teaser',teaser);
+    setText(r.badge,teaser?'?':String(S.owned[i]));
+    setText(r.name,teaser?'Locked':b.name);
+    setText(r.desc,teaser?'Keep earning to find out.':b.desc);
+    setText(r.meta,teaser?'':'₹'+fmt(b.cps*g)+'/sec each'+(S.owned[i]?' · ₹'+fmt(S.owned[i]*b.cps*g)+'/sec total':''));
+    r.meta.hidden=teaser;
+    setText(r.price,'₹'+fmt(cost));
+    setText(r.sub,'Buy ×'+n);
+    r.btn.disabled=teaser||S.cash<cost;
+  });
+  upRows.forEach(function(r){r.btn.disabled=S.cash<r.u.cost;});
+}
+function updateFranchise(){
+  const gain=franchiseGain(S.runEarned),next=5e6*Math.pow(gain+1,2),prev=5e6*Math.pow(gain,2);
+  setText($('#f-gain'),String(gain));
+  setText($('#f-fp'),String(S.fp));
+  setText($('#f-bonus'),'+'+(S.fp*5)+'%');
+  setText($('#f-count'),String(S.franchises));
+  $('#f-fill').style.width=Math.max(0,Math.min(100,(S.runEarned-prev)/(next-prev)*100)).toFixed(1)+'%';
+  setText($('#f-note'),gain<1?'₹'+fmt(Math.floor(S.runEarned))+' of ₹'+fmt(5e6)+' earned this run':'₹'+fmt(Math.ceil(next-S.runEarned))+' more for the next point');
+  E.fbtn.disabled=gain<1;
+  if(!franT) setText(E.fbtn,gain<1?'Not ready yet':'Open franchise for +'+gain+' points');
+}
+function updateDots(){
+  const mi=maxOwnedIdx(S);let can=false;
+  for(let i=0;i<=Math.min(mi+1,BUILDINGS.length-1);i++){
+    if(S.cash>=Math.ceil(bulkCost(BUILDINGS[i].base,S.owned[i],1))){can=true;break;}
+  }
+  if(!can) can=UPGRADES.filter(function(u){return !S.up[u.id];}).slice(0,3).some(function(u){return S.cash>=u.cost;});
+  $('#tabbtn-shop').classList.toggle('has',can&&activeTab!=='shop');
+  $('#tabbtn-franchise').classList.toggle('has',franchiseGain(S.runEarned)>=1&&activeTab!=='franchise');
+}
+function render(now){
+  updateHud(now);updateRush(now);updateDaily(now);
+  if(activeTab==='shop') updateShop();
+  if(activeTab==='franchise') updateFranchise();
+  if(tickN%5===0) updateDots();
+}
+function tick(){
+  const now=Date.now();
+  let dt=(now-S.last)/1000;
+  S.last=now;if(!(dt>0)) dt=0;
+  if(dt>10){handleAway(dt);dt=0;}
+  if(dt>0){const c=cps(S,now,true);if(c>0) earn(c*dt);}
+  checkAwards();
+  tickN++;
+  render(now);
+  if(tickN%50===0) save();
+}
+
+/* tabs and rebuild */
+function showTab(name){
+  activeTab=name;
+  ['stall','shop','franchise','awards'].forEach(function(t){
+    $('#tab-'+t).hidden=(t!==name);
+    const b=$('#tabbtn-'+t);b.setAttribute('aria-selected',String(t===name));b.tabIndex=(t===name)?0:-1;
+  });
+  E.main.scrollTop=0;
+  if(name==='awards') renderAwards();
+  render(Date.now());updateDots();
+}
+function rebuildAll(){
+  buildUpgrades();renderAwards();
+  E.nameInput.value=S.name;
+  E.snd.setAttribute('aria-checked',String(S.sound));
+  E.coach.hidden=(S.taps>0||S.allEarned>0);
+  setLevel(S.cup/10);
+  lastStage=-1;
+  render(Date.now());updateDots();
+}
+
+/* wiring */
+E.tap.addEventListener('pointerdown',function(e){
+  if(e.button>0) return;
+  e.preventDefault();doTap(e.clientX,e.clientY);
+});
+E.tap.addEventListener('click',function(e){if(e.detail===0) doTap(null,null);});
+E.rush.addEventListener('click',function(){if(Date.now()>=S.rushReady) startRush();});
+E.dailyBtn.addEventListener('click',claimDaily);
+document.querySelectorAll('.tab').forEach(function(b){
+  b.addEventListener('click',function(){showTab(b.dataset.tab);});
+  b.addEventListener('keydown',function(e){
+    const order=['stall','shop','franchise','awards'],i=order.indexOf(b.dataset.tab);
+    let j=-1;
+    if(e.key==='ArrowRight') j=(i+1)%order.length;
+    if(e.key==='ArrowLeft') j=(i+order.length-1)%order.length;
+    if(j>=0){e.preventDefault();showTab(order[j]);$('#tabbtn-'+order[j]).focus();}
+  });
+});
+document.querySelectorAll('.seg button').forEach(function(b){
+  b.addEventListener('click',function(){
+    mode=b.dataset.q==='max'?'max':Number(b.dataset.q);
+    document.querySelectorAll('.seg button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});
+    updateShop();
+  });
+});
+E.fbtn.addEventListener('click',function(){
+  if(franchiseGain(S.runEarned)<1) return;
+  if(!franT){
+    franT=setTimeout(function(){franT=0;updateFranchise();},4000);
+    setText(E.fbtn,'Tap again to confirm');return;
+  }
+  clearTimeout(franT);franT=0;openFranchise();
+});
+E.reset.addEventListener('click',function(){
+  if(!resetT){
+    resetT=setTimeout(function(){resetT=0;setText(E.reset,'Erase save and start over');},4000);
+    setText(E.reset,'Tap again to erase everything');return;
+  }
+  clearTimeout(resetT);resetT=0;setText(E.reset,'Erase save and start over');
+  try{localStorage.removeItem(KEY);}catch(e){}
+  S=fresh();rebuildAll();showTab('stall');toast('Save erased');
+});
+E.snd.addEventListener('click',function(){
+  S.sound=!S.sound;E.snd.setAttribute('aria-checked',String(S.sound));
+  if(S.sound) blip(660,0.1,'sine',0.05);
+});
+E.nameInput.addEventListener('input',function(){
+  S.name=E.nameInput.value.trim().slice(0,24)||DEFAULT_NAME;
+});
+$('#away-ok').addEventListener('click',function(){E.away.hidden=true;});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!E.away.hidden) E.away.hidden=true;});
+document.addEventListener('visibilitychange',function(){if(document.hidden&&S) save();});
+window.addEventListener('pagehide',function(){if(S) save();});
+
+/* boot */
+function init(data){
+  S=(data&&data.v===1)?sanitize(data):(loadSave()||fresh());
+  buildShop();rebuildAll();showTab('stall');
+  setInterval(tick,100);
+}
+try{
+  if(window.claude&&window.claude.hot&&window.claude.hot.snapshot){
+    window.claude.hot.snapshot(function(){return S;});
+  }
+}catch(e){}
+if(window.claude&&window.claude.hot&&window.claude.hot.ready) window.claude.hot.ready(init);
+else init((window.claude&&window.claude.hot&&window.claude.hot.data)||{});
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline support unavailable:', err));
+  });
+}
+</script>
+</body></html>
