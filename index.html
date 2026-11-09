@@ -59,6 +59,8 @@ button{font-family:inherit}
 .stage-note{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 #app.is-rush .cash .rs{color:var(--gold)}
 #app.is-rush .rate{border-color:var(--gold)}
+#app.is-happy .cash .rs{color:var(--gold)}
+#app.is-happy .rate{border-color:var(--gold)}
 
 /* Panels */
 main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 12px;overscroll-behavior:contain}
@@ -114,6 +116,13 @@ main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 12px;ov
 .row-sub{display:block;font-size:13px;color:var(--ink-2)}
 .chip{flex:none;font:700 14px var(--font-display);padding:5px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-variant-numeric:tabular-nums}
 .rush[data-state="ready"] .chip{background:var(--gold);border-color:var(--gold);color:#2A1C00}
+
+.hh{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px 14px;border-radius:16px;border:1px solid var(--line);background:var(--raised)}
+.hh>div{min-width:0}
+.hh .bar{position:absolute;left:0;bottom:0;height:4px;width:var(--p,0%);background:var(--ink-2);opacity:.5;transition:width .2s linear}
+.hh[data-state="on"]{border-color:var(--gold);box-shadow:0 0 0 3px var(--halo)}
+.hh[data-state="on"] .bar{background:var(--gold);opacity:1}
+.hh[data-state="on"] .chip{background:var(--gold);border-color:var(--gold);color:#2A1C00}
 
 .daily{display:grid;gap:10px;padding:12px 14px;border-radius:16px;background:var(--raised);border:1px solid var(--line)}
 .daily-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
@@ -171,11 +180,36 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 .switch[aria-checked="true"]{background:var(--brand);border-color:var(--brand)}
 .switch[aria-checked="true"]::after{transform:translateX(20px);background:var(--on-brand)}
 
+/* Live cards: customers and online orders */
+.live{position:relative;overflow:hidden;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;min-height:76px;padding:10px 12px 14px;background:var(--raised);border:1px solid var(--line);border-radius:16px}
+.live .bar{position:absolute;left:0;bottom:0;height:4px;width:var(--p,0%);background:var(--brand);transition:width .2s linear}
+.live[data-state="idle"]{background:var(--surface)}
+.live[data-state="idle"] .badge{opacity:.55}
+.live[data-state="active"]{border-color:var(--brand)}
+.live[data-rich="1"][data-state="active"]{border-color:var(--gold);box-shadow:0 0 0 3px var(--halo)}
+.live[data-rich="1"] .badge{background:var(--gold);border-color:var(--gold);color:#2A1C00}
+.live[data-rich="1"] .bar{background:var(--gold)}
+.live .buy{min-width:96px}
+.badge.ic svg{width:24px;height:24px;stroke-width:1.8}
+.prog{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 4px}
+.prog i{display:block;height:100%;width:0;border-radius:inherit;background:var(--brand);transition:width .25s}
+.row.me{border-color:var(--brand);background:var(--surface)}
+.row.top .badge{background:var(--gold);border-color:var(--gold);color:#2A1C00}
+.status{font-size:13px;color:var(--ink-2)}
+.hud-right{display:flex;align-items:center;gap:8px;flex:none}
+.iconbtn{width:40px;height:40px;padding:0;border-radius:50%;border:1px solid var(--line);background:var(--raised);color:var(--ink);display:grid;place-items:center;cursor:pointer;touch-action:manipulation}
+.iconbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.logs{display:grid;gap:14px}
+.logv{display:grid;gap:6px}
+.logv h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.logv h3 small{font:600 12px var(--font-body);color:var(--ink-2)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
 .guide{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14px;color:var(--ink-2)}
 .guide li::marker{color:var(--chai);font-weight:700}
 
 /* Tab bar */
-.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:6px 0 8px;padding:6px;background:var(--raised);border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 20px var(--shadow)}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin:6px 0 8px;padding:5px;background:var(--raised);border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 20px var(--shadow)}
 .tab{position:relative;display:grid;justify-items:center;gap:2px;min-height:50px;padding:7px 4px;border:0;border-radius:16px;background:transparent;color:var(--ink-2);font:700 11px var(--font-display);letter-spacing:.02em;cursor:pointer;touch-action:manipulation}
 .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tab[aria-selected="true"]{background:var(--brand);color:var(--on-brand)}
@@ -187,7 +221,8 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 .toast{max-width:100%;padding:9px 14px;border-radius:14px;background:var(--ink);color:var(--bg);font:700 14px var(--font-display);box-shadow:0 8px 24px var(--shadow);animation:toast 3s ease forwards}
 @keyframes toast{0%{opacity:0;transform:translateY(-8px)}8%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
 .overlay{position:fixed;inset:0;z-index:40;display:grid;align-items:end;justify-items:center;background:rgba(8,18,16,.55);padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.sheet{width:min(100%,460px);display:grid;gap:12px;padding:18px;background:var(--raised);border:1px solid var(--line);border-radius:22px;animation:sheet .25s ease-out}
+.sheet{width:min(100%,460px);max-height:calc(100dvh - 32px);overflow-y:auto;display:grid;gap:12px;padding:18px;background:var(--raised);border:1px solid var(--line);border-radius:22px;animation:sheet .25s ease-out}
+.sheet>.btn:last-child{position:sticky;bottom:0}
 .sheet h2{font:800 22px var(--font-display)}
 @keyframes sheet{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
@@ -203,7 +238,10 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         <span class="eyebrow" id="stall-name">Meri Chai Tapri</span>
         <h1 class="stage" id="stage">Thela</h1>
       </div>
-      <div class="rate" title="Income per second"><span id="cps">₹0</span>/sec</div>
+      <div class="hud-right">
+        <button class="iconbtn" id="log-btn" type="button" aria-label="Update log"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"/><path d="M9 8h3M9 11.5h6M9 15h6"/></svg></button>
+        <div class="rate" title="Income per second"><span id="cps">₹0</span>/sec</div>
+      </div>
     </div>
     <div class="cash"><span class="rs">₹</span><span id="cash">0</span></div>
     <div class="stagebar"><i id="stage-fill"></i></div>
@@ -254,6 +292,26 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         <div class="tapinfo"><span id="tap-val">₹1 per tap</span><span id="cup-count">Glass 0 of 10</span></div>
       </div>
 
+      <div class="live" id="cust" data-state="idle" data-rich="">
+        <div class="badge" id="cust-badge"></div>
+        <div><span class="row-title" id="cust-name">Waiting for the next customer</span><span class="row-sub" id="cust-sub">Customers walk up now and then. Serve them for a bonus.</span></div>
+        <button class="btn buy" id="cust-btn" type="button" disabled>Serve</button>
+        <span class="bar"></span>
+      </div>
+
+      <div class="live" id="ord" data-state="idle">
+        <div class="badge" id="ord-badge"></div>
+        <div><span class="row-title" id="ord-name">Online orders</span><span class="row-sub" id="ord-sub">Online orders open after you earn ₹500.</span></div>
+        <span class="chip" id="ord-chip">--</span>
+        <span class="bar"></span>
+      </div>
+
+      <div class="hh" id="hh" data-state="off">
+        <div><span class="row-title">Chai Happy Hour</span><span class="row-sub" id="hh-sub">Earnings double during the first 10 minutes of every hour.</span></div>
+        <span class="chip" id="hh-chip">--</span>
+        <span class="bar"></span>
+      </div>
+
       <button class="rush" id="rush" type="button" data-state="ready" aria-disabled="false">
         <span><span class="row-title">Rush Hour</span><span class="row-sub" id="rush-sub">Doubles all earnings for 20 seconds</span></span>
         <span class="chip" id="rush-chip">Start</span>
@@ -273,6 +331,8 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
     <section id="tab-shop" class="panel" role="tabpanel" aria-labelledby="tabbtn-shop" hidden>
       <div class="sec-head"><h2>Recipes</h2><small id="up-count"></small></div>
       <ul id="up-list" class="list"></ul>
+      <div class="sec-head"><h2>Snack menu</h2><small id="menu-count"></small></div>
+      <ul id="menu-list" class="list"></ul>
       <div class="sec-head">
         <h2>Staff and stalls</h2>
         <div class="seg" role="group" aria-label="Buy amount">
@@ -284,8 +344,44 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
       <ul id="bld-list" class="list"></ul>
     </section>
 
-    <!-- FRANCHISE -->
-    <section id="tab-franchise" class="panel" role="tabpanel" aria-labelledby="tabbtn-franchise" hidden>
+    <!-- QUESTS -->
+    <section id="tab-quests" class="panel" role="tabpanel" aria-labelledby="tabbtn-quests" hidden>
+      <div class="sec-head"><h2>Daily quests</h2><small id="q-daily-meta"></small></div>
+      <ul id="q-daily" class="list"></ul>
+      <div class="sec-head"><h2>Weekly quests</h2><small id="q-weekly-meta"></small></div>
+      <ul id="q-weekly" class="list"></ul>
+      <p class="note">Claim rewards before the timer runs out. Weekly quests reset on Monday.</p>
+    </section>
+
+    <!-- RANKS -->
+    <section id="tab-ranks" class="panel" role="tabpanel" aria-labelledby="tabbtn-ranks" hidden>
+      <div class="sec-head"><h2>Leaderboard</h2><small>Lifetime earnings · top 50</small></div>
+      <div class="card" id="lb-off" hidden>
+        <h3>The leaderboard is not switched on yet</h3>
+        <p class="note">It will appear here once the game owner connects it. Your progress is safe.</p>
+      </div>
+      <div class="card" id="lb-join" hidden>
+        <h3>Join the leaderboard</h3>
+        <p class="note">Enter your name or your chai place name. Everyone who plays can see it, along with your lifetime earnings.</p>
+        <div class="field">
+          <label for="lb-name">Name or chai place</label>
+          <input type="text" id="lb-name" maxlength="24" autocomplete="off" spellcheck="false">
+        </div>
+        <button class="btn" id="lb-join-btn" type="button">Join</button>
+        <p class="note" id="lb-join-msg"></p>
+      </div>
+      <div id="lb-live" class="panel" hidden>
+        <ol id="lb-list" class="list"></ol>
+        <p class="status" id="lb-status"></p>
+        <div class="actions">
+          <button class="btn ghost" id="lb-refresh" type="button">Refresh</button>
+          <button class="btn danger" id="lb-leave" type="button">Leave leaderboard</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMPIRE -->
+    <section id="tab-empire" class="panel" role="tabpanel" aria-labelledby="tabbtn-empire" hidden>
       <div class="card">
         <h2>Open a franchise</h2>
         <p class="note">Hand the stall to a cousin and keep the recipe. You start small again, but every Franchise Point adds 5% to all earnings for good.</p>
@@ -303,21 +399,23 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
       </div>
       <div class="card">
         <h3>What resets</h3>
-        <p class="note">Cash, staff, stalls and recipes go back to the start. Awards, Franchise Points, your daily streak and your stall name stay.</p>
+        <p class="note">Cash, staff, stalls, recipes and your snack menu go back to the start. Awards, Franchise Points, quests, your daily streak and your stall name stay.</p>
       </div>
-    </section>
-
-    <!-- AWARDS -->
-    <section id="tab-awards" class="panel" role="tabpanel" aria-labelledby="tabbtn-awards" hidden>
       <div class="sec-head"><h2>Awards</h2><small id="aw-count"></small></div>
       <ul id="aw-list" class="list"></ul>
+      <div class="card">
+        <h2>Update log</h2>
+        <div id="log-list" class="logs"></div>
+      </div>
       <div class="card">
         <h2>How to play</h2>
         <ol class="guide">
           <li>Tap the kettle to earn rupees. Every tenth glass pays five times.</li>
           <li>Hire staff in the Kitchen tab. They keep earning while you are away, at half speed.</li>
           <li>Learn recipes to boost your taps and your income.</li>
-          <li>Start Rush Hour for double earnings and claim the daily bonus each day.</li>
+          <li>Serve customers and deliver online orders on the Stall tab. Snacks on your menu make customers pay triple.</li>
+          <li>Finish daily and weekly quests in the Quests tab, then claim the cash.</li>
+          <li>Every hour, the first 10 minutes are Chai Happy Hour with double earnings. Start Rush Hour any time for another double, and claim the daily bonus each day.</li>
           <li>Once a run reaches ₹50 Lakh, open a franchise for a permanent bonus.</li>
         </ol>
       </div>
@@ -329,6 +427,8 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         </div>
         <div class="setting"><span class="row-title">Sound</span><button class="switch" id="snd" type="button" role="switch" aria-checked="true" aria-label="Sound"></button></div>
         <dl class="kv" id="stats"></dl>
+        <button class="btn ghost" id="refresh" type="button">Get the latest version</button>
+        <p class="note" id="ver"></p>
         <button class="btn danger" id="reset" type="button">Erase save and start over</button>
       </div>
     </section>
@@ -341,11 +441,14 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
     <button class="tab" role="tab" id="tabbtn-shop" data-tab="shop" aria-selected="false" aria-controls="tab-shop" tabindex="-1">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 11h20"/><path d="M8 7c0-1.5 1-1.5 1-3M12 7c0-1.5 1-1.5 1-3M16 7c0-1.5 1-1.5 1-3"/></svg><span>Kitchen</span><i class="dot"></i>
     </button>
-    <button class="tab" role="tab" id="tabbtn-franchise" data-tab="franchise" aria-selected="false" aria-controls="tab-franchise" tabindex="-1">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6"/><path d="M3 20h18"/></svg><span>Franchise</span><i class="dot"></i>
+    <button class="tab" role="tab" id="tabbtn-quests" data-tab="quests" aria-selected="false" aria-controls="tab-quests" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.3 1.3L7 5M3.5 12l1.3 1.3L7 11M3.5 18l1.3 1.3L7 17"/></svg><span>Quests</span><i class="dot"></i>
     </button>
-    <button class="tab" role="tab" id="tabbtn-awards" data-tab="awards" aria-selected="false" aria-controls="tab-awards" tabindex="-1">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a3 3 0 0 0 4 3M16 6h4v2a3 3 0 0 1-4 3"/><path d="M12 13v4M8 20h8M10 17h4"/></svg><span>Awards</span><i class="dot"></i>
+    <button class="tab" role="tab" id="tabbtn-ranks" data-tab="ranks" aria-selected="false" aria-controls="tab-ranks" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a3 3 0 0 0 4 3M16 6h4v2a3 3 0 0 1-4 3"/><path d="M12 13v4M8 20h8M10 17h4"/></svg><span>Ranks</span><i class="dot"></i>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-empire" data-tab="empire" aria-selected="false" aria-controls="tab-empire" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6"/><path d="M3 20h18"/></svg><span>Empire</span><i class="dot"></i>
     </button>
   </nav>
 </div>
@@ -360,8 +463,29 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
   </div>
 </div>
 
+<div class="overlay" id="news" role="dialog" aria-modal="true" aria-labelledby="news-title" hidden>
+  <div class="sheet">
+    <h2 id="news-title">What's new</h2>
+    <ul id="news-list" class="guide"></ul>
+    <button class="btn" id="news-ok" type="button">Got it</button>
+  </div>
+</div>
+
+<div class="overlay" id="logpop" role="dialog" aria-modal="true" aria-labelledby="logpop-title" hidden>
+  <div class="sheet">
+    <h2 id="logpop-title">Update log</h2>
+    <div id="log-pop" class="logs"></div>
+    <button class="btn" id="logpop-ok" type="button">Close</button>
+  </div>
+</div>
+
 <script>
 'use strict';
+
+const VERSION='1.2';
+// To switch the leaderboard on, paste your Firebase Realtime Database URL between the quotes.
+const LB_URL_SETTING='https://chai-empire-55501-default-rtdb.asia-southeast1.firebasedatabase.app';
+const LB_URL=String(window.CHAI_LB_URL||LB_URL_SETTING).trim().replace(/\/+$/,'');
 
 // <logic>
 const SUFFIX=[[1e17,' Shankh'],[1e15,' Padma'],[1e13,' Neel'],[1e11,' Kharab'],[1e9,' Arab'],[1e7,' Cr'],[1e5,' L'],[1e3,'K']];
@@ -382,6 +506,11 @@ function fmtDur(sec){
   if(m) return m+'m '+(s<10?'0':'')+s+'s';
   return s+'s';
 }
+function fmtLong(sec){
+  sec=Math.max(0,Math.floor(sec));
+  if(sec>=86400) return Math.floor(sec/86400)+'d '+Math.floor(sec%86400/3600)+'h';
+  return fmtDur(sec);
+}
 function bulkCost(base,owned,n){const r=1.15;return base*Math.pow(r,owned)*(Math.pow(r,n)-1)/(r-1);}
 function maxBuy(base,owned,cash){
   const r=1.15,unit=base*Math.pow(r,owned);
@@ -393,6 +522,9 @@ function maxBuy(base,owned,cash){
 }
 function franchiseGain(run){return Math.floor(Math.sqrt(Math.max(0,run)/5e6));}
 function dayKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function weekKey(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return dayKey(x);}
+function secsToMidnight(d){return (new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)-d)/1000;}
+function secsToMonday(d){return (new Date(d.getFullYear(),d.getMonth(),d.getDate()+(7-((d.getDay()+6)%7)))-d)/1000;}
 function dailyReward(cpsNow,nextStreak){return Math.max(100,cpsNow*300)*(1+0.2*(Math.min(nextStreak,7)-1));}
 
 const BUILDINGS=[
@@ -418,6 +550,14 @@ const UPGRADES=[
   {id:'neon',name:'Neon Signboard',desc:'Open till midnight. All income +50%.',badge:'+50%',cost:9e7,all:1.5},
   {id:'loyalty',name:'Loyalty Cards',desc:'Every tenth glass is free and everyone returns. All income doubles.',badge:'×2',cost:2e9,all:2}
 ];
+const SNACK_PAY=3;
+const MENU=[
+  {id:'bun',name:'Bun Maska',cost:2500,desc:'Soft bun with butter, made for dipping.'},
+  {id:'samosa',name:'Samosa',cost:45000,desc:'Hot, crisp and gone by evening.'},
+  {id:'pakoda',name:'Pakoda',cost:1.2e6,desc:'Fried fresh whenever it rains.'},
+  {id:'maggi',name:'Masala Maggi',cost:4e7,desc:'The midnight favourite.'},
+  {id:'lassi',name:'Kulhad Lassi',cost:3e9,desc:'Thick, cold and served in clay.'}
+];
 const STAGES=[
   {at:0,name:'Thela'},{at:1e4,name:'Nukkad Tapri'},{at:3e5,name:'Chauraha Stall'},
   {at:8e6,name:'Chai Café'},{at:3e8,name:'City Chain'},{at:2e10,name:'Chai Empire'}
@@ -436,19 +576,79 @@ const AWARDS=[
   {id:'arab',name:'Arabpati',desc:'Earn ₹1 Arab in total.',test:s=>s.allEarned>=1e9},
   {id:'rush',name:'Rush Hour',desc:'Start a Rush Hour.',test:s=>s.rushUsed>=1},
   {id:'daily3',name:'Regular Customer',desc:'Claim the daily bonus 3 days in a row.',test:s=>s.maxStreak>=3},
-  {id:'franchise',name:'First Franchise',desc:'Open your first franchise.',test:s=>s.franchises>=1}
+  {id:'franchise',name:'First Franchise',desc:'Open your first franchise.',test:s=>s.franchises>=1},
+  {id:'quest1',name:'Quest Starter',desc:'Claim your first quest reward.',test:s=>s.qDone>=1},
+  {id:'quest25',name:'Quest Master',desc:'Claim 25 quest rewards.',test:s=>s.qDone>=25},
+  {id:'serve50',name:'Crowd Pleaser',desc:'Serve 50 customers.',test:s=>s.served>=50},
+  {id:'order10',name:'Fast Delivery',desc:'Deliver 10 online orders.',test:s=>s.delivered>=10},
+  {id:'menu5',name:'Full Menu',desc:'Put every snack on your menu.',test:s=>menuCount(s)>=MENU.length},
+  {id:'folks10',name:'Know the Neighbourhood',desc:'Meet 10 types of customers.',test:s=>Object.keys(s.seen).length>=10},
+  {id:'folks20',name:'Everyone Drinks Chai',desc:'Meet all 20 types of customers.',test:s=>Object.keys(s.seen).length>=CUSTOMERS.length}
+];
+// x is how much a customer pays compared with a Regular (x=1). Poor customers pay less, rich ones pay a lot more.
+const CUSTOMERS=[
+  {id:'kid',name:'Street Kid',ic:'smile',x:0.4,w:8,pat:20,from:0,line:'Counts out coins one by one.'},
+  {id:'wage',name:'Daily Wage Worker',ic:'helmet',x:0.6,w:10,pat:18,from:0,line:'Needs a hot glass before the shift.'},
+  {id:'rickshaw',name:'Rickshaw Puller',ic:'wheel',x:0.7,w:9,pat:16,from:0,line:'Parks his rickshaw by the kerb.'},
+  {id:'uncle',name:'Retired Uncle',ic:'glasses',x:0.8,w:8,pat:22,from:0,line:'Reads the newspaper and talks politics.'},
+  {id:'student',name:'College Student',ic:'book',x:0.8,w:12,pat:20,from:0,line:'Short on cash, long on friends.'},
+  {id:'regular',name:'Regular',ic:'customer',x:1,w:16,pat:18,from:0,line:'Walks up every morning.'},
+  {id:'rider',name:'Delivery Rider',ic:'bike',x:1,w:9,pat:10,from:0,line:'Engine running, in a hurry.'},
+  {id:'auto',name:'Auto Driver',ic:'wheel',x:1.1,w:8,pat:14,from:1,line:'Parks right outside.'},
+  {id:'shop',name:'Shopkeeper',ic:'store',x:1.2,w:7,pat:14,from:1,line:'Steps out from the shop next door.'},
+  {id:'teacher',name:'Teacher',ic:'board',x:1.3,w:6,pat:16,from:1,line:'Marks papers over chai.'},
+  {id:'cop',name:'Policeman',ic:'shield',x:0.5,w:5,pat:12,from:1,line:'Says the chai is on the house.'},
+  {id:'office',name:'Office Worker',ic:'briefcase',x:1.5,w:9,pat:12,from:1,line:'Tea break, ID card still on.'},
+  {id:'clerk',name:'Bank Clerk',ic:'clipboard',x:1.6,w:5,pat:12,from:2,line:'Ten minutes before the counter opens.'},
+  {id:'doctor',name:'Doctor',ic:'cross',x:2,w:4,pat:10,from:2,line:'Between two clinic visits.'},
+  {id:'techie',name:'Software Engineer',ic:'laptop',x:2.4,w:4,pat:12,from:2,line:'Laptop open on your counter.'},
+  {id:'tourist',name:'Tourist',ic:'camera',x:2.5,w:4,pat:9,from:2,line:'Pays well and leaves quickly.'},
+  {id:'influencer',name:'Influencer',ic:'phone',x:3,w:3,pat:9,from:3,line:'Filming your stall for followers.'},
+  {id:'biz',name:'Businessman',ic:'chart',x:3.5,w:3,pat:9,from:3,line:'Closing a deal over chai.'},
+  {id:'vip',name:'Seth Ji',ic:'vip',x:5,w:2,pat:8,from:3,line:'Tips big. Do not keep him waiting.'},
+  {id:'celeb',name:'Film Star',ic:'star',x:8,w:1,pat:6,from:4,line:'Crowd outside. Serve fast.'}
+];
+const QT=[
+  {k:'tap',ic:'tap',d:function(t){return 120+40*t;},w:function(t){return 1000+300*t;},
+    text:function(n){return 'Tap the kettle '+n.toLocaleString('en-IN')+' times';}},
+  {k:'earn',ic:'earn',d:function(t,c){return Math.max(1500,Math.round(c*1200));},w:function(t,c){return Math.max(25000,Math.round(c*14400));},
+    text:function(n){return 'Earn ₹'+fmt(n);}},
+  {k:'hire',ic:'staff',d:function(t){return 3+t;},w:function(t){return 15+4*t;},
+    text:function(n){return 'Buy '+n+' staff or stalls';}},
+  {k:'customer',ic:'customer',d:function(){return 5;},w:function(){return 30;},
+    text:function(n){return 'Serve '+n+' customers';}},
+  {k:'order',ic:'order',d:function(){return 1;},w:function(){return 5;},ok:function(s){return s.allEarned>=500;},
+    text:function(n){return 'Deliver '+n+' online order'+(n>1?'s':'');}},
+  {k:'rush',ic:'rush',d:function(){return 1;},w:function(){return 4;},
+    text:function(n){return n>1?'Start Rush Hour '+n+' times':'Start Rush Hour once';}},
+  {k:'happyTap',ic:'clock',d:function(){return 60;},w:function(){return 240;},
+    text:function(n){return 'Tap '+n+' times during Happy Hour';}},
+  {k:'vip',ic:'vip',w:function(){return 1;},ok:function(s){return stageIndex(s)>=3;},
+    text:function(){return 'Serve a Seth Ji customer';}},
+  {k:'snack',ic:'snack',w:function(){return 1;},ok:function(s){return menuCount(s)<MENU.length;},
+    text:function(){return 'Add a snack to your menu';}}
 ];
 const DEFAULT_NAME='Meri Chai Tapri';
 
 function fresh(){
   return {v:1,name:DEFAULT_NAME,cash:0,runEarned:0,allEarned:0,taps:0,cup:0,
-    owned:BUILDINGS.map(()=>0),up:{},fp:0,franchises:0,aw:{},rushUsed:0,rushUntil:0,rushReady:0,
-    daily:'',streak:0,maxStreak:0,sound:true,last:Date.now()};
+    owned:BUILDINGS.map(function(){return 0;}),up:{},menu:{},seen:{},fp:0,franchises:0,aw:{},rushUsed:0,rushUntil:0,rushReady:0,
+    daily:'',streak:0,maxStreak:0,sound:true,last:Date.now(),
+    served:0,qDone:0,delivered:0,pid:'',lbOn:false,seenVer:'',q:{day:'',list:[],week:'',wlist:[]}};
+}
+function cleanQuests(list){
+  if(!Array.isArray(list)) return [];
+  return list.slice(0,3).filter(function(q){
+    return q&&typeof q.k==='string'&&QT.some(function(t){return t.k===q.k;})&&typeof q.target==='number'&&isFinite(q.target)&&q.target>0;
+  }).map(function(q){
+    return {k:q.k,target:q.target,p:Math.max(0,Math.min(Number(q.p)||0,q.target)),
+      secs:Number(q.secs)||600,min:Number(q.min)||300,claimed:q.claimed===true};
+  });
 }
 function sanitize(o){
   const f=fresh();
   if(!o||typeof o!=='object') return f;
-  ['cash','runEarned','allEarned','taps','cup','fp','franchises','rushUsed','rushUntil','rushReady','streak','maxStreak','last'].forEach(function(k){
+  ['cash','runEarned','allEarned','taps','cup','fp','franchises','rushUsed','rushUntil','rushReady','streak','maxStreak','last','served','qDone','delivered'].forEach(function(k){
     if(typeof o[k]==='number'&&isFinite(o[k])&&o[k]>=0) f[k]=o[k];
   });
   f.cup=Math.min(9,Math.floor(f.cup));
@@ -457,14 +657,26 @@ function sanitize(o){
     const n=o.owned[i]; if(typeof n==='number'&&isFinite(n)&&n>=0) f.owned[i]=Math.floor(n);
   });
   if(o.up&&typeof o.up==='object') UPGRADES.forEach(function(u){if(o.up[u.id]===true) f.up[u.id]=true;});
+  if(o.menu&&typeof o.menu==='object') MENU.forEach(function(m){if(o.menu[m.id]===true) f.menu[m.id]=true;});
+  if(o.seen&&typeof o.seen==='object') CUSTOMERS.forEach(function(c){if(o.seen[c.id]===true) f.seen[c.id]=true;});
   if(o.aw&&typeof o.aw==='object') AWARDS.forEach(function(a){if(o.aw[a.id]) f.aw[a.id]=Number(o.aw[a.id])||1;});
   if(typeof o.daily==='string') f.daily=o.daily.slice(0,10);
   if(typeof o.sound==='boolean') f.sound=o.sound;
+  if(typeof o.pid==='string'&&/^[a-z0-9]{8,40}$/i.test(o.pid)) f.pid=o.pid;
+  if(typeof o.lbOn==='boolean') f.lbOn=o.lbOn;
+  if(typeof o.seenVer==='string') f.seenVer=o.seenVer.slice(0,12);
+  if(o.q&&typeof o.q==='object'){
+    if(typeof o.q.day==='string') f.q.day=o.q.day.slice(0,10);
+    if(typeof o.q.week==='string') f.q.week=o.q.week.slice(0,10);
+    f.q.list=cleanQuests(o.q.list);f.q.wlist=cleanQuests(o.q.wlist);
+  }
   return f;
 }
 
 function totalOwned(s){return s.owned.reduce(function(a,b){return a+b;},0);}
 function maxOwnedIdx(s){let m=-1;s.owned.forEach(function(n,i){if(n>0) m=i;});return m;}
+function menuCount(s){return MENU.filter(function(m){return s.menu[m.id];}).length;}
+function menuMult(s){return 1+0.1*menuCount(s);}
 function awMult(s){return 1+0.02*Object.keys(s.aw).length;}
 function fpMult(s){return 1+0.05*s.fp;}
 function upAll(s){let m=1;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.all) m*=u.all;});return m;}
@@ -472,28 +684,108 @@ function upTap(s){let m=1;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.tap) m*=
 function upPct(s){let p=0;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.pct) p+=u.pct;});return p;}
 function rushOn(s,now){return now<s.rushUntil;}
 function baseCps(s){let t=0;BUILDINGS.forEach(function(b,i){t+=s.owned[i]*b.cps;});return t;}
-function cps(s,now,withRush){
-  return baseCps(s)*fpMult(s)*awMult(s)*upAll(s)*((withRush&&rushOn(s,now))?2:1);
+// Chai Happy Hour: the first 10 minutes of every hour on the player's clock.
+const HH_LEN=600;
+function happyInfo(now){
+  const d=new Date(now),sec=d.getMinutes()*60+d.getSeconds()+d.getMilliseconds()/1000;
+  if(sec<HH_LEN) return {on:true,left:HH_LEN-sec,frac:(HH_LEN-sec)/HH_LEN};
+  return {on:false,left:3600-sec,frac:(sec-HH_LEN)/(3600-HH_LEN)};
+}
+function happyOn(now){return happyInfo(now).on;}
+// live=true adds Rush Hour and Happy Hour. Offline earnings and the daily bonus pass false.
+function cps(s,now,live){
+  return baseCps(s)*fpMult(s)*awMult(s)*upAll(s)*menuMult(s)*((live&&rushOn(s,now))?2:1)*((live&&happyOn(now))?2:1);
 }
 function tapValue(s,now){
-  return upTap(s)*fpMult(s)*awMult(s)*(rushOn(s,now)?2:1)+upPct(s)*cps(s,now,true);
+  return upTap(s)*fpMult(s)*awMult(s)*(rushOn(s,now)?2:1)*(happyOn(now)?2:1)+upPct(s)*cps(s,now,true);
 }
 function stageIndex(s){let k=0;STAGES.forEach(function(st,i){if(s.runEarned>=st.at) k=i;});return k;}
+
+function pickCustomer(tier,rnd){
+  const pool=CUSTOMERS.filter(function(c){return c.from<=tier;});
+  let sum=0;pool.forEach(function(c){sum+=c.w;});
+  let r=rnd()*sum;
+  for(let i=0;i<pool.length;i++){r-=pool[i].w;if(r<0) return pool[i];}
+  return pool[pool.length-1];
+}
+function customerPay(c,cpsLive,mult){return Math.floor(Math.max(8*c.x,cpsLive*15*c.x)*mult);}
+
+function hashStr(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function rng(seed){
+  let a=seed>>>0;
+  return function(){
+    a=(a+0x6D2B79F5)>>>0;let t=a;
+    t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);
+    return((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+// Same day or week gives the same quest kinds. Targets scale with how far the player has come.
+function genQuests(s,scope,key){
+  const r=rng(hashStr(scope+key)),tier=stageIndex(s),c=cps(s,0,false);
+  const pool=QT.filter(function(t){return t[scope]&&(!t.ok||t.ok(s));});
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const x=pool[i];pool[i]=pool[j];pool[j]=x;}
+  return pool.slice(0,3).map(function(t){
+    return {k:t.k,target:t[scope](tier,c),p:0,
+      secs:scope==='d'?600:5400,
+      min:scope==='d'?200*(1+2*tier):3000*(1+3*tier),
+      claimed:false};
+  });
+}
 // </logic>
 
 /* ---------- UI ---------- */
 const $=function(s){return document.querySelector(s);};
 function el(tag,cls,text){const e=document.createElement(tag);if(cls) e.className=cls;if(text!=null) e.textContent=text;return e;}
 function setText(n,t){if(n._t!==t){n._t=t;n.textContent=t;}}
+const ICONS={
+  tap:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/>',
+  earn:'<circle cx="12" cy="12" r="8.5"/><path d="M9 8h6M9 11h6M9.5 8c4.5 0 4.5 5.5 0 5.5l4.5 3.5"/>',
+  staff:'<circle cx="9" cy="9" r="3"/><path d="M3.5 19c.5-3.5 3-5 5.5-5s5 1.5 5.5 5"/><circle cx="17" cy="9.5" r="2.3"/><path d="M16 14.2c2.6-.3 4.3 1.2 4.7 4.3"/>',
+  customer:'<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.6-4 3.5-6 7-6s6.4 2 7 6"/>',
+  order:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+  rush:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
+  vip:'<path d="M4 18l-1-10 5 4 4-7 4 7 5-4-1 10z"/>',
+  snack:'<path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 11h20"/><path d="M8 7c0-1.5 1-1.5 1-3M12 7c0-1.5 1-1.5 1-3M16 7c0-1.5 1-1.5 1-3"/>',
+  book:'<path d="M4 5.5C7 4.5 10 5 12 7c2-2 5-2.5 8-1.5V18c-3-1-6-.5-8 1.5-2-2-5-2.5-8-1.5z"/><path d="M12 7v12.5"/>',
+  briefcase:'<rect x="4" y="8" width="16" height="11" rx="2"/><path d="M9 8V6.5A1.5 1.5 0 0 1 10.5 5h3A1.5 1.5 0 0 1 15 6.5V8M4 13h16"/>',
+  wheel:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 4v6M4.5 15l5.5-2M19.5 15l-5.5-2"/>',
+  camera:'<rect x="3.5" y="7.5" width="17" height="12" rx="2"/><circle cx="12" cy="13.5" r="3.2"/><path d="M8.5 7.5l1.2-2h4.6l1.2 2"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  smile:'<circle cx="12" cy="12" r="8.5"/><path d="M8.5 14c1 1.7 2.2 2.5 3.5 2.5s2.5-.8 3.5-2.5"/><path d="M9 9.5v.5M15 9.5v.5"/>',
+  helmet:'<path d="M5 15a7 7 0 0 1 14 0z"/><path d="M3 15h18v2.5H3z"/><path d="M12 8V5.5"/>',
+  glasses:'<circle cx="7.5" cy="13" r="3.2"/><circle cx="16.5" cy="13" r="3.2"/><path d="M10.7 13h2.6M4.3 13L3 9M19.7 13L21 9"/>',
+  bike:'<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l3 7M9 6.5h3"/>',
+  store:'<path d="M4 9l1.5-5h13L20 9z"/><path d="M5 9v10h14V9"/><path d="M10 19v-5h4v5"/>',
+  board:'<rect x="3.5" y="5" width="17" height="11" rx="1.5"/><path d="M8 20l2-4M16 20l-2-4M7 9h6M7 12h9"/>',
+  shield:'<path d="M12 3.5l7 2.5v5.5c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>',
+  clipboard:'<rect x="5.5" y="5" width="13" height="15" rx="2"/><path d="M9 5V3.5h6V5M9 10h6M9 13.5h6"/>',
+  cross:'<path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5z"/>',
+  laptop:'<rect x="5" y="6" width="14" height="9.5" rx="1.5"/><path d="M3 19h18l-1.5-3.5h-15z"/>',
+  phone:'<rect x="7.5" y="3.5" width="9" height="17" rx="2"/><path d="M11 17.5h2"/>',
+  chart:'<path d="M4 20V4M4 20h16"/><path d="M8 15l4-4 3 3 5-6"/>',
+  star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 17l-5.2 2.7 1-5.9L3.5 9.7l5.9-.8z"/>'
+};
+function iconSvg(name){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+ICONS[name]+'</svg>';}
+function setIcon(node,name){if(node._ic!==name){node._ic=name;node.classList.add('ic');node.innerHTML=iconSvg(name);}}
+
 const KEY='chai-empire-v1';
+const TABS=['stall','shop','quests','ranks','empire'];
 const E={
   main:$('#main'),app:$('#app'),cash:$('#cash'),cps:$('#cps'),stage:$('#stage'),stageFill:$('#stage-fill'),stageNote:$('#stage-note'),
   name:$('#stall-name'),tap:$('#tap'),tapVal:$('#tap-val'),cupCount:$('#cup-count'),counter:$('#counter'),coach:$('#coach'),
-  rush:$('#rush'),rushSub:$('#rush-sub'),rushChip:$('#rush-chip'),dailyBtn:$('#daily-btn'),dailySub:$('#daily-sub'),streak:$('#streak'),
-  toasts:$('#toasts'),away:$('#away'),nameInput:$('#name-input'),snd:$('#snd'),reset:$('#reset'),fbtn:$('#f-btn')
+  rush:$('#rush'),rushSub:$('#rush-sub'),rushChip:$('#rush-chip'),hh:$('#hh'),hhSub:$('#hh-sub'),hhChip:$('#hh-chip'),
+  gu:$('#cust'),guBadge:$('#cust-badge'),guName:$('#cust-name'),guSub:$('#cust-sub'),guBtn:$('#cust-btn'),
+  tk:$('#ord'),tkBadge:$('#ord-badge'),tkName:$('#ord-name'),tkSub:$('#ord-sub'),tkChip:$('#ord-chip'),
+  dailyBtn:$('#daily-btn'),dailySub:$('#daily-sub'),streak:$('#streak'),
+  toasts:$('#toasts'),away:$('#away'),news:$('#news'),nameInput:$('#name-input'),snd:$('#snd'),reset:$('#reset'),fbtn:$('#f-btn')
 };
-let S=null,mode=1,activeTab='stall',lastStage=-1,tickN=0,resetT=0,franT=0,pourT=0,levelT=0,ac=null;
-let shopRows=[],upRows=[];
+let S=null,mode=1,activeTab='stall',lastStage=-1,tickN=0,resetT=0,franT=0,leaveT=0,pourT=0,levelT=0,ac=null,wasHappy=false;
+let shopRows=[],upRows=[],menuRows=[],qRows=[];
+// Live events are not saved: a customer at the stall and an online order in progress.
+let guest=null,nextGuest=0,ticket=null,nextTicket=0,orderNo=1000+Math.floor(Math.random()*400);
+// Leaderboard state
+let lbRows=[],lbAt=0,lbBusy=false,lbLast=0,lbLastScore=0,lbLastName='',lbErr='';
 
 /* sound */
 function blip(freq,dur,type,vol){
@@ -533,8 +825,66 @@ function floater(x,y,text,big){
   if(all.length>14) all[0].remove();
 }
 
+/* quests */
+function track(k,n){
+  if(!S||!(n>0)) return;
+  const all=S.q.list.concat(S.q.wlist);
+  for(let i=0;i<all.length;i++){
+    const q=all[i];
+    if(q.k===k&&q.p<q.target) q.p=Math.min(q.target,q.p+n);
+  }
+}
+function qReward(q){return Math.floor(Math.max(q.min,cps(S,Date.now(),false)*q.secs));}
+function ensureQuests(now,force){
+  const d=new Date(now),day=dayKey(d),wk=weekKey(d);
+  let changed=!!force;
+  if(S.q.day!==day){S.q.day=day;S.q.list=genQuests(S,'d',day);changed=true;}
+  if(S.q.week!==wk){S.q.week=wk;S.q.wlist=genQuests(S,'w',wk);changed=true;}
+  if(changed) buildQuestRows();
+}
+function buildQuestRows(){
+  qRows=[];
+  [['#q-daily',S.q.list],['#q-weekly',S.q.wlist]].forEach(function(pair){
+    const ul=$(pair[0]);ul.textContent='';
+    pair[1].forEach(function(q){
+      const t=QT.find(function(x){return x.k===q.k;});
+      const li=el('li','row'),badge=el('div','badge'),mid=el('div');
+      const title=el('span','row-title',t.text(q.target)),sub=el('span','row-sub'),prog=el('div','prog'),bar=el('i');
+      prog.append(bar);mid.append(title,prog,sub);
+      const btn=el('button','btn buy'),price=el('span'),small=el('small');
+      btn.type='button';btn.append(price,small);
+      btn.addEventListener('click',function(){claimQuest(q);});
+      li.append(badge,mid,btn);ul.append(li);
+      qRows.push({q:q,li:li,badge:badge,sub:sub,bar:bar,btn:btn,price:price,small:small,ic:t.ic});
+    });
+  });
+}
+function updateQuests(now){
+  qRows.forEach(function(r){
+    const q=r.q,done=q.p>=q.target;
+    r.bar.style.width=Math.min(100,q.p/q.target*100).toFixed(1)+'%';
+    setText(r.sub,fmt(Math.floor(q.p))+' of '+fmt(q.target));
+    r.li.classList.toggle('done',q.claimed);
+    setIcon(r.badge,q.claimed?'check':r.ic);
+    setText(r.price,q.claimed?'Claimed':'₹'+fmt(qReward(q)));
+    setText(r.small,q.claimed?'':(done?'Claim':'Reward'));
+    r.small.hidden=q.claimed;
+    r.btn.disabled=q.claimed||!done;
+  });
+  const d=new Date(now);
+  setText($('#q-daily-meta'),S.q.list.filter(function(q){return q.claimed;}).length+' of '+S.q.list.length+' claimed · resets in '+fmtLong(secsToMidnight(d)));
+  setText($('#q-weekly-meta'),S.q.wlist.filter(function(q){return q.claimed;}).length+' of '+S.q.wlist.length+' claimed · resets in '+fmtLong(secsToMonday(d)));
+}
+function claimQuest(q){
+  if(q.claimed||q.p<q.target) return;
+  const r=qReward(q);
+  q.claimed=true;S.qDone++;earn(r);sAward();
+  toast('Quest done: +₹'+fmt(r));
+  updateQuests(Date.now());updateDots();
+}
+
 /* actions */
-function earn(x){if(!(x>0)) return;S.cash+=x;S.runEarned+=x;S.allEarned+=x;}
+function earn(x){if(!(x>0)) return;S.cash+=x;S.runEarned+=x;S.allEarned+=x;track('earn',x);}
 function setLevel(f){E.tap.style.setProperty('--lvl',Math.max(0.08,Math.min(1,f)).toFixed(2));}
 function pour(){
   E.tap.classList.add('pour');clearTimeout(pourT);
@@ -546,6 +896,9 @@ function doTap(x,y){
   S.cup++;
   if(S.cup>=10){S.cup=0;served=true;v*=5;}
   S.taps++;earn(v);
+  track('tap',1);
+  if(happyOn(now)) track('happyTap',1);
+  if(ticket){ticket.p++;if(ticket.p>=ticket.need) deliverTicket(now);}
   E.coach.hidden=true;
   pour();setLevel(served?1:S.cup/10);
   if(served){
@@ -564,17 +917,22 @@ function qtyFor(i){
 function buyBuilding(i){
   const b=BUILDINGS[i],n=qtyFor(i),cost=Math.ceil(bulkCost(b.base,S.owned[i],n));
   if(S.cash<cost) return;
-  S.cash-=cost;S.owned[i]+=n;sBuy();updateShop();
+  S.cash-=cost;S.owned[i]+=n;track('hire',n);sBuy();updateShop();
 }
 function buyUpgrade(id){
   const u=UPGRADES.find(function(x){return x.id===id;});
   if(!u||S.up[id]||S.cash<u.cost) return;
   S.cash-=u.cost;S.up[id]=true;sBuy();toast('Learned: '+u.name);buildUpgrades();updateShop();
 }
+function buyMenu(id){
+  const m=MENU.find(function(x){return x.id===id;});
+  if(!m||S.menu[id]||S.cash<m.cost) return;
+  S.cash-=m.cost;S.menu[id]=true;track('snack',1);sBuy();toast('On the menu: '+m.name);updateShop();
+}
 function startRush(){
   const now=Date.now();
   if(now<S.rushReady) return;
-  S.rushUntil=now+20000;S.rushReady=now+110000;S.rushUsed++;
+  S.rushUntil=now+20000;S.rushReady=now+110000;S.rushUsed++;track('rush',1);
   blip(660,0.15,'square',0.04);toast('Rush Hour! Earnings double for 20 seconds');
 }
 function claimDaily(){
@@ -587,11 +945,16 @@ function claimDaily(){
   S.daily=today;earn(reward);sAward();
   toast('Daily bonus: +₹'+fmt(reward));
 }
+function resetLive(){
+  const now=Date.now();
+  guest=null;ticket=null;nextGuest=now+8000;nextTicket=now+15000;
+}
 function openFranchise(){
   const gain=franchiseGain(S.runEarned);
   if(gain<1) return;
   const keep={name:S.name,fp:S.fp+gain,franchises:S.franchises+1,allEarned:S.allEarned,taps:S.taps,aw:S.aw,
-    rushUsed:S.rushUsed,daily:S.daily,streak:S.streak,maxStreak:S.maxStreak,sound:S.sound};
+    rushUsed:S.rushUsed,daily:S.daily,streak:S.streak,maxStreak:S.maxStreak,sound:S.sound,
+    served:S.served,seen:S.seen,qDone:S.qDone,delivered:S.delivered,pid:S.pid,lbOn:S.lbOn,seenVer:S.seenVer,q:S.q};
   S=Object.assign(fresh(),keep);
   rebuildAll();save();sAward();
   toast('Franchise opened: +'+gain+' Franchise Points');
@@ -600,9 +963,91 @@ function checkAwards(){
   AWARDS.forEach(function(a){
     if(!S.aw[a.id]&&a.test(S)){
       S.aw[a.id]=Date.now();toast('Award: '+a.name+' (+2% income)');sAward();
-      if(activeTab==='awards') renderAwards();
+      if(activeTab==='empire') renderAwards();
     }
   });
+}
+
+/* customers */
+function wantText(g){
+  if(g.want==='chai') return 'Wants a glass of chai. '+g.t.line;
+  const m=MENU.find(function(x){return x.id===g.want;});
+  return 'Wants '+m.name+'. '+(g.mult>1?'It is on your menu, so he pays ×'+SNACK_PAY+'.':'Not on your menu yet.');
+}
+function spawnGuest(now){
+  const t=pickCustomer(stageIndex(S),Math.random);
+  let want='chai';
+  if(Math.random()<0.45) want=MENU[Math.floor(Math.random()*MENU.length)].id;
+  if(!S.seen[t.id]){S.seen[t.id]=true;toast('New customer: '+t.name+' ('+Object.keys(S.seen).length+' of '+CUSTOMERS.length+' met)');}
+  guest={t:t,want:want,mult:(want!=='chai'&&S.menu[want])?SNACK_PAY:1,until:now+t.pat*1000,pat:t.pat*1000};
+  blip(700,0.08,'sine',0.04);
+}
+function guestPay(now){return customerPay(guest.t,cps(S,now,true),guest.mult);}
+function serveGuest(){
+  if(!guest) return;
+  const now=Date.now(),pay=guestPay(now),t=guest.t;
+  earn(pay);S.served++;track('customer',1);
+  if(t.id==='vip') track('vip',1);
+  if(t.x>=3) track('rich',1);
+  floater(null,null,'+₹'+fmt(pay)+' from '+t.name,t.x>=3);
+  sBuy();
+  guest=null;nextGuest=now+(25+Math.random()*20)*1000;
+  updateGuest(now);
+}
+function updateGuest(now){
+  if(!guest&&now>=nextGuest) spawnGuest(now);
+  if(guest&&now>=guest.until){guest=null;nextGuest=now+(25+Math.random()*20)*1000;}
+  if(!guest){
+    E.gu.dataset.state='idle';E.gu.dataset.rich='';
+    setIcon(E.guBadge,'customer');
+    setText(E.guName,'Waiting for the next customer');
+    setText(E.guSub,'Customers walk up now and then. Serve them for a bonus.');
+    setText(E.guBtn,'Serve');E.guBtn.disabled=true;
+    E.gu.style.setProperty('--p','0%');
+    return;
+  }
+  E.gu.dataset.state='active';E.gu.dataset.rich=guest.t.x>=3?'1':'';
+  setIcon(E.guBadge,guest.t.ic);
+  setText(E.guName,guest.t.name+' · pays ×'+guest.t.x);
+  setText(E.guSub,wantText(guest));
+  setText(E.guBtn,'Serve +₹'+fmt(guestPay(now)));E.guBtn.disabled=false;
+  E.gu.style.setProperty('--p',Math.max(0,Math.min(100,(guest.until-now)/guest.pat*100)).toFixed(1)+'%');
+}
+
+/* online orders */
+function spawnTicket(now){
+  const tier=stageIndex(S);
+  ticket={no:orderNo++,need:20+10*tier,p:0,until:now+30000,secs:90,min:50*(1+3*tier)};
+  blip(600,0.06,'square',0.03);
+}
+function ticketPay(now){return Math.floor(Math.max(ticket.min,cps(S,now,true)*ticket.secs));}
+function deliverTicket(now){
+  const pay=ticketPay(now);
+  earn(pay);S.delivered++;track('order',1);
+  floater(null,null,'Order delivered! +₹'+fmt(pay),true);
+  toast('Online order delivered: +₹'+fmt(pay));sAward();
+  ticket=null;nextTicket=now+(60+Math.random()*40)*1000;
+}
+function updateTicket(now){
+  if(!ticket&&S.allEarned>=500&&now>=nextTicket) spawnTicket(now);
+  if(ticket&&now>=ticket.until){
+    toast('Online order cancelled. Pour faster next time.');
+    ticket=null;nextTicket=now+(45+Math.random()*30)*1000;
+  }
+  setIcon(E.tkBadge,'order');
+  if(!ticket){
+    E.tk.dataset.state='idle';
+    setText(E.tkName,'Online orders');
+    setText(E.tkSub,S.allEarned<500?'Online orders open after you earn ₹500.':'The next online order is on its way.');
+    setText(E.tkChip,'--');
+    E.tk.style.setProperty('--p','0%');
+    return;
+  }
+  E.tk.dataset.state='active';
+  setText(E.tkName,'Online order #'+ticket.no);
+  setText(E.tkSub,(ticket.p===0?'Tap the kettle '+ticket.need+' times':ticket.p+' of '+ticket.need+' glasses')+' · pays ₹'+fmt(ticketPay(now)));
+  setText(E.tkChip,Math.ceil((ticket.until-now)/1000)+'s');
+  E.tk.style.setProperty('--p',Math.min(100,ticket.p/ticket.need*100).toFixed(1)+'%');
 }
 
 /* away earnings */
@@ -615,6 +1060,60 @@ function handleAway(dt){
     setText($('#away-time'),fmtDur(dt));setText($('#away-gain'),'₹'+fmt(Math.floor(gain)));
     E.away.hidden=false;$('#away-ok').focus();
   }
+}
+
+/* leaderboard */
+function cleanName(v){return String(v==null?'':v).replace(/[\u0000-\u001f\u007f<>]/g,'').replace(/\s+/g,' ').trim().slice(0,24);}
+function newPid(){
+  try{const a=new Uint8Array(10);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(b){return (b<16?'0':'')+b.toString(16);}).join('');}
+  catch(e){return (Math.random().toString(36)+Math.random().toString(36)).replace(/[^a-z0-9]/g,'').slice(0,20).padEnd(10,'x');}
+}
+function lbSubmit(){
+  if(!LB_URL||!S.lbOn||!S.pid) return Promise.resolve(false);
+  const body=JSON.stringify({name:S.name,score:Math.min(Math.floor(S.allEarned),1e18),franchises:S.franchises,ts:Date.now()});
+  lbLast=Date.now();lbLastScore=S.allEarned;lbLastName=S.name;
+  return fetch(LB_URL+'/scores/'+S.pid+'.json',{method:'PUT',body:body,keepalive:true})
+    .then(function(r){return r.ok;}).catch(function(){return false;});
+}
+function lbAuto(now){
+  if(!LB_URL||!S.lbOn) return;
+  if(now-lbLast>120000&&(Math.floor(S.allEarned)>Math.floor(lbLastScore)||S.name!==lbLastName)) lbSubmit();
+}
+function lbLoad(){
+  if(!LB_URL||lbBusy) return;
+  lbBusy=true;lbErr='';renderRanks();
+  fetch(LB_URL+'/scores.json?orderBy=%22score%22&limitToLast=50')
+    .then(function(r){if(!r.ok) throw new Error('bad status');return r.json();})
+    .then(function(data){
+      data=(data&&typeof data==='object')?data:{};
+      lbRows=Object.keys(data).filter(function(k){return data[k]&&typeof data[k]==='object';}).map(function(k){
+        return {pid:k,name:cleanName(data[k].name)||'Chai lover',score:Number(data[k].score)||0,fr:Number(data[k].franchises)||0};
+      }).sort(function(a,b){return b.score-a.score;});
+      lbAt=Date.now();
+    })
+    .catch(function(){lbErr="Can't reach the leaderboard. Check your internet and try again.";})
+    .then(function(){lbBusy=false;renderRanks();});
+}
+function renderRanks(){
+  const off=!LB_URL,joined=!!(S.lbOn&&S.pid);
+  $('#lb-off').hidden=!off;
+  $('#lb-join').hidden=off||joined;
+  $('#lb-live').hidden=off||!joined;
+  if(off||!joined) return;
+  const list=$('#lb-list');list.textContent='';
+  let seen=false;
+  lbRows.forEach(function(r,i){
+    const me=r.pid===S.pid;if(me) seen=true;
+    const li=el('li','row'+(me?' me':'')+(i<3?' top':'')),badge=el('div','badge small','#'+(i+1)),mid=el('div');
+    mid.append(el('span','row-title',r.name+(me?' (you)':'')),el('span','row-sub',r.fr?r.fr+(r.fr>1?' franchises':' franchise'):'No franchise yet'));
+    li.append(badge,mid,el('span','chip','₹'+fmt(r.score)));list.append(li);
+  });
+  if(!seen){
+    const li=el('li','row me'),badge=el('div','badge small','You'),mid=el('div');
+    mid.append(el('span','row-title',S.name+' (you)'),el('span','row-sub',lbRows.length?'Keep earning to reach the top 50.':'Your score shows here once it is sent.'));
+    li.append(badge,mid,el('span','chip','₹'+fmt(Math.floor(S.allEarned))));list.append(li);
+  }
+  setText($('#lb-status'),lbBusy?'Loading…':lbErr||(lbAt?'Updated at '+new Date(lbAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'. Your stall name is your leaderboard name.':'Loading…'));
 }
 
 /* building the lists */
@@ -644,19 +1143,33 @@ function buildUpgrades(){
   if(!avail.length) list.append(el('li','empty','Every recipe is learned. Open a franchise to start over with a bonus.'));
   setText($('#up-count'),(UPGRADES.length-avail.length)+' of '+UPGRADES.length+' learned');
 }
+function buildMenu(){
+  const list=$('#menu-list');list.textContent='';menuRows=[];
+  MENU.forEach(function(m){
+    const li=el('li','row'),badge=el('div','badge small'),mid=el('div');
+    mid.append(el('span','row-title',m.name),el('span','row-sub',m.desc),el('span','meta','Customers who order it pay ×'+SNACK_PAY+'. All income +10%.'));
+    const btn=el('button','btn buy'),price=el('span'),sub=el('small',null,'Add');
+    btn.type='button';btn.append(price,sub);
+    btn.addEventListener('click',function(){buyMenu(m.id);});
+    li.append(badge,mid,btn);list.append(li);
+    menuRows.push({m:m,li:li,badge:badge,btn:btn,price:price,sub:sub,have:null});
+  });
+}
 function renderAwards(){
   const list=$('#aw-list');list.textContent='';let n=0;
   AWARDS.forEach(function(a){
     const done=!!S.aw[a.id];if(done) n++;
     const li=el('li','row plain'+(done?' done':'')),badge=el('div','badge small'),mid=el('div');
-    if(done) badge.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    if(done) badge.innerHTML=iconSvg('check');
     else badge.textContent='+2%';
     mid.append(el('span','row-title',a.name+(done?' (unlocked)':'')),el('span','row-sub',a.desc));
     li.append(badge,mid);list.append(li);
   });
   setText($('#aw-count'),n+' of '+AWARDS.length+' · +'+(n*2)+'% income');
   const st=$('#stats');st.textContent='';
-  [['Total taps',S.taps.toLocaleString('en-IN')],['Earned all time','₹'+fmt(S.allEarned)],['Franchises opened',String(S.franchises)]].forEach(function(p){
+  [['Total taps',S.taps.toLocaleString('en-IN')],['Customers served',S.served.toLocaleString('en-IN')],
+   ['Online orders delivered',S.delivered.toLocaleString('en-IN')],['Quests claimed',S.qDone.toLocaleString('en-IN')],
+   ['Customer types met',Object.keys(S.seen).length+' of '+CUSTOMERS.length],['Earned all time','₹'+fmt(S.allEarned)],['Franchises opened',String(S.franchises)]].forEach(function(p){
     st.append(el('dt',null,p[0]),el('dd',null,p[1]));
   });
 }
@@ -696,6 +1209,19 @@ function updateRush(now){
   E.rush.style.setProperty('--p',Math.max(0,Math.min(100,p)).toFixed(1)+'%');
   E.app.classList.toggle('is-rush',state==='active');
 }
+function updateHappy(now){
+  const h=happyInfo(now);
+  E.hh.dataset.state=h.on?'on':'off';
+  setText(E.hhChip,h.on?fmtDur(h.left):'in '+fmtDur(h.left));
+  setText(E.hhSub,h.on?'Happy Hour is on. Earnings are doubled.':'Earnings double during the first 10 minutes of every hour.');
+  E.hh.style.setProperty('--p',Math.max(0,Math.min(100,h.frac*100)).toFixed(1)+'%');
+  E.app.classList.toggle('is-happy',h.on);
+  if(h.on!==wasHappy){
+    wasHappy=h.on;
+    if(h.on){toast('Chai Happy Hour! Earnings double for 10 minutes');blip(660,0.15,'square',0.04);}
+    else toast('Happy Hour is over. The next one starts on the hour');
+  }
+}
 function updateDaily(now){
   const d=new Date(now),today=dayKey(d),y=new Date(d);y.setDate(y.getDate()-1);
   const claimed=S.daily===today,live=claimed||S.daily===dayKey(y);
@@ -712,7 +1238,7 @@ function updateDaily(now){
   }
 }
 function updateShop(){
-  const g=fpMult(S)*awMult(S)*upAll(S),mi=maxOwnedIdx(S);
+  const g=fpMult(S)*awMult(S)*upAll(S)*menuMult(S),mi=maxOwnedIdx(S);
   BUILDINGS.forEach(function(b,i){
     const r=shopRows[i];
     if(i>mi+2){r.li.hidden=true;return;}
@@ -729,6 +1255,15 @@ function updateShop(){
     r.btn.disabled=teaser||S.cash<cost;
   });
   upRows.forEach(function(r){r.btn.disabled=S.cash<r.u.cost;});
+  menuRows.forEach(function(r){
+    const have=!!S.menu[r.m.id];
+    r.li.classList.toggle('done',have);
+    if(r.have!==have){r.have=have;if(have) r.badge.innerHTML=iconSvg('check');else r.badge.textContent='×'+SNACK_PAY;}
+    setText(r.price,have?'On menu':'₹'+fmt(r.m.cost));
+    r.sub.hidden=have;
+    r.btn.disabled=have||S.cash<r.m.cost;
+  });
+  setText($('#menu-count'),menuCount(S)+' of '+MENU.length+' on the menu');
 }
 function updateFranchise(){
   const gain=franchiseGain(S.runEarned),next=5e6*Math.pow(gain+1,2),prev=5e6*Math.pow(gain,2);
@@ -747,13 +1282,18 @@ function updateDots(){
     if(S.cash>=Math.ceil(bulkCost(BUILDINGS[i].base,S.owned[i],1))){can=true;break;}
   }
   if(!can) can=UPGRADES.filter(function(u){return !S.up[u.id];}).slice(0,3).some(function(u){return S.cash>=u.cost;});
+  if(!can) can=MENU.some(function(m){return !S.menu[m.id]&&S.cash>=m.cost;});
   $('#tabbtn-shop').classList.toggle('has',can&&activeTab!=='shop');
-  $('#tabbtn-franchise').classList.toggle('has',franchiseGain(S.runEarned)>=1&&activeTab!=='franchise');
+  $('#tabbtn-empire').classList.toggle('has',franchiseGain(S.runEarned)>=1&&activeTab!=='empire');
+  $('#tabbtn-stall').classList.toggle('has',(happyOn(Date.now())||!!guest||!!ticket)&&activeTab!=='stall');
+  const claimable=S.q.list.concat(S.q.wlist).some(function(q){return !q.claimed&&q.p>=q.target;});
+  $('#tabbtn-quests').classList.toggle('has',claimable&&activeTab!=='quests');
 }
 function render(now){
-  updateHud(now);updateRush(now);updateDaily(now);
+  updateHud(now);updateRush(now);updateHappy(now);updateGuest(now);updateTicket(now);updateDaily(now);
   if(activeTab==='shop') updateShop();
-  if(activeTab==='franchise') updateFranchise();
+  if(activeTab==='empire') updateFranchise();
+  if(activeTab==='quests') updateQuests(now);
   if(tickN%5===0) updateDots();
 }
 function tick(){
@@ -764,28 +1304,76 @@ function tick(){
   if(dt>0){const c=cps(S,now,true);if(c>0) earn(c*dt);}
   checkAwards();
   tickN++;
+  if(tickN%10===0) ensureQuests(now);
   render(now);
+  if(tickN%100===0) lbAuto(now);
   if(tickN%50===0) save();
 }
+
+/* what's new */
+function newsItems(){return CHANGELOG[0].items.slice();}
+const CHANGELOG=[
+  {v:'1.2',date:'9 Nov 2026',items:[
+    '20 customer types instead of 6, from Street Kids and Rickshaw Pullers to Doctors, Influencers and a Film Star.',
+    'Every customer pays differently. Poor customers pay less, rich ones pay a lot more, and the Policeman wants chai on the house.',
+    'Each card shows how much that customer pays compared with a Regular.',
+    'Meet every type to fill your customer count. Two new awards for it.',
+    'An update log button at the top of the screen.'
+  ]},
+  {v:'1.1',date:'9 Nov 2026',items:[
+    'Daily and weekly quests with cash rewards, in the new Quests tab.',
+    'Six customer types walk up to your stall: Regulars, College Students, Office Babus, Auto Drivers, Tourists and Seth Ji.',
+    'Snack menu with Bun Maska, Samosa, Pakoda, Masala Maggi and Kulhad Lassi. Customers who order a snack you sell pay triple.',
+    'Online orders: tap the kettle enough times before the clock runs out.',
+    'Chai Happy Hour: earnings double in the first 10 minutes of every hour.',
+    'Leaderboard in the Ranks tab. Join with your name or your chai place name.',
+    'Five new awards, an update log, and a button to get the latest version.'
+  ]},
+  {v:'1.0',date:'8 Nov 2026',items:[
+    'First release: tap the kettle, hire staff and stalls, learn recipes.',
+    'Rush Hour, daily bonus, offline earnings, awards and franchises.'
+  ]}
+];
+function renderLog(box){
+  box.textContent='';
+  CHANGELOG.forEach(function(c){
+    const v=el('div','logv'),h=el('h3',null,'Version '+c.v),d=el('small',null,c.date),ul=el('ul','guide');
+    h.append(d);
+    c.items.forEach(function(t){ul.append(el('li',null,t));});
+    v.append(h,ul);box.append(v);
+  });
+}
+function showNews(){
+  const ul=$('#news-list');ul.textContent='';
+  newsItems().forEach(function(t){ul.append(el('li',null,t));});
+  E.news.hidden=false;$('#news-ok').focus({preventScroll:true});$('#news .sheet').scrollTop=0;
+}
+function closeNews(){E.news.hidden=true;S.seenVer=VERSION;save();}
 
 /* tabs and rebuild */
 function showTab(name){
   activeTab=name;
-  ['stall','shop','franchise','awards'].forEach(function(t){
+  TABS.forEach(function(t){
     $('#tab-'+t).hidden=(t!==name);
     const b=$('#tabbtn-'+t);b.setAttribute('aria-selected',String(t===name));b.tabIndex=(t===name)?0:-1;
   });
   E.main.scrollTop=0;
-  if(name==='awards') renderAwards();
+  if(name==='empire') renderAwards();
+  if(name==='ranks'){
+    renderRanks();
+    if(LB_URL&&S.lbOn&&Date.now()-lbAt>15000) lbSubmit().then(lbLoad);
+  }
   render(Date.now());updateDots();
 }
 function rebuildAll(){
-  buildUpgrades();renderAwards();
+  resetLive();
+  buildUpgrades();buildMenu();ensureQuests(Date.now(),true);renderAwards();
   E.nameInput.value=S.name;
   E.snd.setAttribute('aria-checked',String(S.sound));
   E.coach.hidden=(S.taps>0||S.allEarned>0);
   setLevel(S.cup/10);
   lastStage=-1;
+  setText($('#ver'),'Version '+VERSION);renderLog($('#log-list'));
   render(Date.now());updateDots();
 }
 
@@ -797,14 +1385,15 @@ E.tap.addEventListener('pointerdown',function(e){
 E.tap.addEventListener('click',function(e){if(e.detail===0) doTap(null,null);});
 E.rush.addEventListener('click',function(){if(Date.now()>=S.rushReady) startRush();});
 E.dailyBtn.addEventListener('click',claimDaily);
+E.guBtn.addEventListener('click',serveGuest);
 document.querySelectorAll('.tab').forEach(function(b){
   b.addEventListener('click',function(){showTab(b.dataset.tab);});
   b.addEventListener('keydown',function(e){
-    const order=['stall','shop','franchise','awards'],i=order.indexOf(b.dataset.tab);
+    const i=TABS.indexOf(b.dataset.tab);
     let j=-1;
-    if(e.key==='ArrowRight') j=(i+1)%order.length;
-    if(e.key==='ArrowLeft') j=(i+order.length-1)%order.length;
-    if(j>=0){e.preventDefault();showTab(order[j]);$('#tabbtn-'+order[j]).focus();}
+    if(e.key==='ArrowRight') j=(i+1)%TABS.length;
+    if(e.key==='ArrowLeft') j=(i+TABS.length-1)%TABS.length;
+    if(j>=0){e.preventDefault();showTab(TABS[j]);$('#tabbtn-'+TABS[j]).focus();}
   });
 });
 document.querySelectorAll('.seg button').forEach(function(b){
@@ -829,24 +1418,68 @@ E.reset.addEventListener('click',function(){
   }
   clearTimeout(resetT);resetT=0;setText(E.reset,'Erase save and start over');
   try{localStorage.removeItem(KEY);}catch(e){}
-  S=fresh();rebuildAll();showTab('stall');toast('Save erased');
+  S=fresh();S.seenVer=VERSION;rebuildAll();showTab('stall');toast('Save erased');
 });
 E.snd.addEventListener('click',function(){
   S.sound=!S.sound;E.snd.setAttribute('aria-checked',String(S.sound));
   if(S.sound) blip(660,0.1,'sine',0.05);
 });
 E.nameInput.addEventListener('input',function(){
-  S.name=E.nameInput.value.trim().slice(0,24)||DEFAULT_NAME;
+  S.name=cleanName(E.nameInput.value)||DEFAULT_NAME;
+});
+$('#refresh').addEventListener('click',function(){
+  save();
+  const jobs=[];
+  try{if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations) jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}));}catch(e){}
+  try{if(window.caches&&caches.keys) jobs.push(caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k);}));}));}catch(e){}
+  Promise.all(jobs).catch(function(){}).then(function(){location.reload();});
+});
+$('#lb-join-btn').addEventListener('click',function(){
+  const name=cleanName($('#lb-name').value);
+  if(!name){setText($('#lb-join-msg'),'Enter a name or your chai place name first.');return;}
+  setText($('#lb-join-msg'),'');
+  S.name=name;E.nameInput.value=name;S.lbOn=true;if(!S.pid) S.pid=newPid();
+  save();renderRanks();
+  lbSubmit().then(lbLoad);
+});
+$('#lb-refresh').addEventListener('click',function(){lbSubmit().then(lbLoad);});
+$('#lb-leave').addEventListener('click',function(){
+  const b=$('#lb-leave');
+  if(!leaveT){
+    leaveT=setTimeout(function(){leaveT=0;setText(b,'Leave leaderboard');},4000);
+    setText(b,'Tap again to leave');return;
+  }
+  clearTimeout(leaveT);leaveT=0;setText(b,'Leave leaderboard');
+  if(LB_URL&&S.pid) fetch(LB_URL+'/scores/'+S.pid+'.json',{method:'DELETE'}).catch(function(){});
+  S.lbOn=false;lbRows=lbRows.filter(function(r){return r.pid!==S.pid;});
+  save();renderRanks();toast('You left the leaderboard');
 });
 $('#away-ok').addEventListener('click',function(){E.away.hidden=true;});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!E.away.hidden) E.away.hidden=true;});
-document.addEventListener('visibilitychange',function(){if(document.hidden&&S) save();});
+$('#news-ok').addEventListener('click',closeNews);
+$('#log-btn').addEventListener('click',function(){renderLog($('#log-pop'));$('#logpop').hidden=false;$('#logpop-ok').focus({preventScroll:true});$('#logpop .sheet').scrollTop=0;});
+$('#logpop-ok').addEventListener('click',function(){$('#logpop').hidden=true;});
+$('#logpop').addEventListener('click',function(e){if(e.target===this) this.hidden=true;});
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape') return;
+  if(!$('#logpop').hidden) $('#logpop').hidden=true;
+  else if(!E.news.hidden) closeNews();
+  else if(!E.away.hidden) E.away.hidden=true;
+});
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden&&S){
+    save();
+    if(LB_URL&&S.lbOn&&Math.floor(S.allEarned)>Math.floor(lbLastScore)) lbSubmit();
+  }
+});
 window.addEventListener('pagehide',function(){if(S) save();});
 
 /* boot */
 function init(data){
   S=(data&&data.v===1)?sanitize(data):(loadSave()||fresh());
   buildShop();rebuildAll();showTab('stall');
+  if(S.seenVer!==VERSION){
+    if(S.taps>0) showNews();else S.seenVer=VERSION;
+  }
   setInterval(tick,100);
 }
 try{
