@@ -150,6 +150,7 @@ main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 12px;ov
 .row>div{min-width:0}
 .row.plain{grid-template-columns:auto 1fr}
 .row.teaser{opacity:.65}
+.row.locked{opacity:.6}
 .badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font:800 18px var(--font-display);font-variant-numeric:tabular-nums}
 .badge.small{font-size:15px}
 .row.done .badge{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
@@ -174,6 +175,10 @@ main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 12px;ov
 .field label{font:700 12px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
 input[type="text"]{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
 input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
+.row.adm{grid-template-columns:auto 1fr auto auto}
+.owner-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.owner-grid .btn{min-height:44px}
+#ver,#settings-h{user-select:none;-webkit-user-select:none}
 .setting{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .switch{position:relative;flex:none;width:50px;height:30px;padding:0;border:1px solid var(--line);border-radius:99px;background:var(--surface);cursor:pointer}
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--ink-2);transition:transform .15s,background .15s}
@@ -209,7 +214,7 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 .guide li::marker{color:var(--chai);font-weight:700}
 
 /* Tab bar */
-.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin:6px 0 8px;padding:5px;background:var(--raised);border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 20px var(--shadow)}
+.nav{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;margin:6px 0 8px;padding:5px;background:var(--raised);border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 20px var(--shadow)}
 .tab{position:relative;display:grid;justify-items:center;gap:2px;min-height:50px;padding:7px 4px;border:0;border-radius:16px;background:transparent;color:var(--ink-2);font:700 11px var(--font-display);letter-spacing:.02em;cursor:pointer;touch-action:manipulation}
 .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tab[aria-selected="true"]{background:var(--brand);color:var(--on-brand)}
@@ -225,6 +230,36 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 .sheet>.btn:last-child{position:sticky;bottom:0}
 .sheet h2{font:800 22px var(--font-display)}
 @keyframes sheet{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+
+/* statline, staff events, view switch */
+.statline{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{display:grid;gap:4px;padding:10px 12px;background:var(--raised);border:1px solid var(--line);border-radius:16px}
+.stat span{font:700 12px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.stat b{font:800 20px var(--font-display);font-variant-numeric:tabular-nums}
+.stat i{display:block;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.stat u{display:block;height:100%;width:0;border-radius:inherit;background:var(--brand);text-decoration:none;transition:width .5s ease,background-color .3s}
+.stat.warn u{background:var(--danger)}
+.stat.warn b{color:var(--danger)}
+.evt{position:relative;overflow:hidden;display:grid;gap:10px;padding:12px 14px 16px;border-radius:16px;border:1px solid var(--gold);background:var(--raised);box-shadow:0 0 0 3px var(--halo);animation:panelIn .25s ease-out}
+.evt .bar{position:absolute;left:0;bottom:0;height:4px;width:var(--p,100%);background:var(--gold);transition:width .2s linear}
+.evt .actions .btn{flex:1;min-width:120px}
+.vseg{display:flex;gap:2px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.vseg button{flex:1;min-height:38px;padding:6px 10px;border:0;border-radius:9px;background:transparent;color:var(--ink-2);font:700 13px var(--font-display);cursor:pointer;touch-action:manipulation}
+.vseg button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.vseg button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.card .actions .btn{min-height:40px;padding:6px 12px;font-size:14px}
+.buyc{display:grid;gap:6px;justify-items:stretch}
+.btn.small{min-height:32px;padding:4px 10px;font-size:13px}
+
+/* smoother motion */
+.panel{animation:panelIn .24s ease-out}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.btn,.row,.rush,.hh,.live,.tab,.iconbtn,.vseg button,.seg button,.stat{transition:background-color .18s,border-color .18s,color .18s,opacity .2s,transform .1s,box-shadow .2s}
+.btn:not(:disabled):active,.rush:active,.iconbtn:active,.tab:active{transform:scale(.97)}
+.overlay{animation:fade .2s ease-out}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.row.done,.row.locked{transition:opacity .3s,background-color .3s}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
@@ -292,6 +327,17 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         <div class="tapinfo"><span id="tap-val">₹1 per tap</span><span id="cup-count">Glass 0 of 10</span></div>
       </div>
 
+      <div class="statline">
+        <div class="stat" id="st-morale-box"><span>Team morale</span><b id="st-morale">75%</b><i><u id="st-morale-bar"></u></i></div>
+        <div class="stat" id="st-rep-box"><span>Reputation</span><b id="st-rep">50%</b><i><u id="st-rep-bar"></u></i></div>
+      </div>
+
+      <div class="evt" id="evt" hidden>
+        <div><span class="row-title" id="evt-title"></span><span class="row-sub" id="evt-sub"></span></div>
+        <div class="actions"><button class="btn" id="evt-a" type="button"></button><button class="btn ghost" id="evt-b" type="button"></button></div>
+        <span class="bar"></span>
+      </div>
+
       <div class="live" id="cust" data-state="idle" data-rich="">
         <div class="badge" id="cust-badge"></div>
         <div><span class="row-title" id="cust-name">Waiting for the next customer</span><span class="row-sub" id="cust-sub">Customers walk up now and then. Serve them for a bonus.</span></div>
@@ -318,6 +364,12 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         <span class="bar"></span>
       </button>
 
+      <button class="rush" id="celeb" type="button" data-state="ready" aria-disabled="false" hidden>
+        <span><span class="row-title">Celebrity Campaign</span><span class="row-sub" id="celeb-sub">Customers queue up for a minute</span></span>
+        <span class="chip" id="celeb-chip">Start</span>
+        <span class="bar"></span>
+      </button>
+
       <div class="daily">
         <div class="daily-head">
           <div><span class="row-title">Daily bonus</span><span class="row-sub" id="daily-sub">Come back every day to grow the streak</span></div>
@@ -329,6 +381,11 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 
     <!-- KITCHEN -->
     <section id="tab-shop" class="panel" role="tabpanel" aria-labelledby="tabbtn-shop" hidden>
+      <div class="vseg" id="shop-views" role="group" aria-label="Kitchen view">
+        <button type="button" data-view="menu" aria-pressed="true">Menu and stalls</button>
+        <button type="button" data-view="team" aria-pressed="false">Team</button>
+      </div>
+      <div id="shop-menu" class="panel">
       <div class="sec-head"><h2>Recipes</h2><small id="up-count"></small></div>
       <ul id="up-list" class="list"></ul>
       <div class="sec-head"><h2>Snack menu</h2><small id="menu-count"></small></div>
@@ -342,6 +399,76 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         </div>
       </div>
       <ul id="bld-list" class="list"></ul>
+      </div>
+      <div id="shop-team" class="panel" hidden>
+        <div class="card">
+          <h2>Team morale</h2>
+          <div class="big-line"><b id="tm-morale">75%</b><span id="tm-mood">Steady</span></div>
+          <div class="stagebar"><i id="tm-fill"></i></div>
+          <dl class="kv">
+            <dt>Output before wages</dt><dd id="tm-gross">₹0/sec</dd>
+            <dt>Wages</dt><dd id="tm-wages">−₹0/sec</dd>
+            <dt>Income after wages</dt><dd id="tm-net">₹0/sec</dd>
+          </dl>
+          <div class="field">
+            <label>Pay policy</label>
+            <div class="vseg" id="pay-seg" role="group" aria-label="Pay policy">
+              <button type="button" data-pay="0" aria-pressed="false">Low</button>
+              <button type="button" data-pay="1" aria-pressed="true">Fair</button>
+              <button type="button" data-pay="2" aria-pressed="false">Generous</button>
+            </div>
+          </div>
+          <p class="note" id="tm-paynote"></p>
+          <button class="btn ghost" id="tm-break" type="button">Chai break</button>
+          <p class="note">Rush Hour and campaigns tire your crew. Missed customers and cancelled orders hurt morale too.</p>
+        </div>
+        <div class="sec-head"><h2>Staff roles</h2><small id="ro-count"></small></div>
+        <p class="note">Hire people for specific jobs. Each draws wages as a share of your income, and their effect scales with morale.</p>
+        <ul id="ro-list" class="list"></ul>
+        <div class="sec-head"><h2>Managers</h2><small id="mg-count"></small></div>
+        <p class="note">One manager per crew. Strict gets more out of people but wears them down. Friendly keeps spirits up. Frugal trims wages. Replacing a manager costs half the hiring fee.</p>
+        <ul id="mg-list" class="list"></ul>
+        <div class="sec-head"><h2>Training</h2><small id="tr-count"></small></div>
+        <ul id="tr-list" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- EXPAND -->
+    <section id="tab-expand" class="panel" role="tabpanel" aria-labelledby="tabbtn-expand" hidden>
+      <div class="card">
+        <h2>Expansion</h2>
+        <p class="note">New ways to earn. Each upgrade needs a stage, and sometimes another upgrade first. Upgrades, factories and branches start over when you open a franchise. Research and awards stay.</p>
+        <dl class="kv">
+          <dt>Upgrades learned</dt><dd id="ex-count">0 of 30 learned</dd>
+          <dt>Research points</dt><dd id="ex-rp">0</dd>
+        </dl>
+      </div>
+      <div class="sec-head"><h2>Production</h2><small id="ex-prod-count"></small></div>
+      <ul id="ex-prod" class="list"></ul>
+      <div class="sec-head"><h2>Business</h2><small id="ex-biz-count"></small></div>
+      <ul id="ex-biz" class="list"></ul>
+      <div class="sec-head"><h2>Special mechanics</h2><small id="ex-spec-count"></small></div>
+      <ul id="ex-spec" class="list"></ul>
+      <div class="sec-head"><h2>Endgame</h2><small id="ex-end-count"></small></div>
+      <ul id="ex-end" class="list"></ul>
+      <div class="sec-head"><h2>Factory</h2></div>
+      <div class="card">
+        <p class="note" id="fac-note"></p>
+        <dl class="kv">
+          <dt>Factories</dt><dd id="fac-n">0</dd>
+          <dt>Ingredients made</dt><dd id="fac-out">0 a second</dd>
+          <dt>Stock on hand</dt><dd id="fac-stock">0 of 0</dd>
+        </dl>
+        <button class="btn" id="fac-buy" type="button">Build factory</button>
+      </div>
+      <ul id="fac-ups" class="list"></ul>
+      <div class="sec-head"><h2>Branches</h2><small id="br-count"></small></div>
+      <ul id="br-list" class="list"></ul>
+      <div class="sec-head"><h2>Tea Research</h2><small id="rs-count"></small></div>
+      <div class="card" id="rs-locked">
+        <p class="note">Build a Chai Research Laboratory to start researching rare teas. You earn research points by serving customers, delivering online orders and running the Luxury Tea Estate.</p>
+      </div>
+      <ul id="rs-list" class="list"></ul>
     </section>
 
     <!-- QUESTS -->
@@ -398,11 +525,18 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         </dl>
       </div>
       <div class="card">
+        <h2>Franchise milestones</h2>
+        <p class="note">Hold more Franchise Points to unlock permanent perks.</p>
+        <ul id="fm-list" class="list"></ul>
+      </div>
+      <div class="card">
         <h3>What resets</h3>
-        <p class="note">Cash, staff, stalls, recipes and your snack menu go back to the start. Awards, Franchise Points, quests, your daily streak and your stall name stay.</p>
+        <p class="note">Cash, staff, stalls, recipes, your snack menu, Expansion upgrades, factories, branches, hired staff, training and managers go back to the start. Awards, Research, Franchise Points, quests, your daily streak, your pay policy, reputation and stall name stay.</p>
       </div>
       <div class="sec-head"><h2>Awards</h2><small id="aw-count"></small></div>
       <ul id="aw-list" class="list"></ul>
+      <div class="sec-head"><h2>Long-term goals</h2><small id="lt-count"></small></div>
+      <ul id="lt-list" class="list"></ul>
       <div class="card">
         <h2>Update log</h2>
         <div id="log-list" class="logs"></div>
@@ -411,16 +545,18 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         <h2>How to play</h2>
         <ol class="guide">
           <li>Tap the kettle to earn rupees. Every tenth glass pays five times.</li>
-          <li>Hire staff in the Kitchen tab. They keep earning while you are away, at half speed.</li>
+          <li>Hire staff in the Kitchen tab. They keep earning while you are away, at reduced speed that improves with franchise milestones.</li>
           <li>Learn recipes to boost your taps and your income.</li>
+          <li>Your crew draws wages and has morale. In Kitchen, open Team to set pay, hire staff for specific jobs, hire managers, train stalls and handle staff events.</li>
+          <li>The Expand tab unlocks new mechanics: factories, branches, new customers, Night Shift and tea research. Some need a stage or another upgrade first.</li>
           <li>Serve customers and deliver online orders on the Stall tab. Snacks on your menu make customers pay triple.</li>
           <li>Finish daily and weekly quests in the Quests tab, then claim the cash.</li>
           <li>Every hour, the first 10 minutes are Chai Happy Hour with double earnings. Start Rush Hour any time for another double, and claim the daily bonus each day.</li>
-          <li>Once a run reaches ₹50 Lakh, open a franchise for a permanent bonus.</li>
+          <li>Once a run reaches ₹50 Arab, open a franchise for a permanent bonus. Franchise milestones unlock bigger perks.</li>
         </ol>
       </div>
       <div class="card">
-        <h2>Settings</h2>
+        <h2 id="settings-h">Settings</h2>
         <div class="field">
           <label for="name-input">Stall name</label>
           <input type="text" id="name-input" maxlength="24" autocomplete="off" spellcheck="false">
@@ -431,6 +567,17 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
         <p class="note" id="ver"></p>
         <button class="btn danger" id="reset" type="button">Erase save and start over</button>
       </div>
+      <div class="card" id="admin-card" hidden>
+        <h2>Admin</h2>
+        <p class="note">Open the Ranks tab to remove players from the leaderboard. Tap Remove, then tap again to confirm. Admin does not change your own score.</p>
+        <button class="btn ghost" id="admin-exit" type="button">Exit admin mode</button>
+      </div>
+      <div class="card" id="owner-card" hidden>
+        <h2>Owner powers</h2>
+        <p class="note" id="owner-note"></p>
+        <div class="owner-grid" id="owner-grid"></div>
+        <button class="btn ghost" id="owner-exit" type="button">Exit owner mode</button>
+      </div>
     </section>
   </main>
 
@@ -440,6 +587,9 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
     </button>
     <button class="tab" role="tab" id="tabbtn-shop" data-tab="shop" aria-selected="false" aria-controls="tab-shop" tabindex="-1">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 11h20"/><path d="M8 7c0-1.5 1-1.5 1-3M12 7c0-1.5 1-1.5 1-3M16 7c0-1.5 1-1.5 1-3"/></svg><span>Kitchen</span><i class="dot"></i>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-expand" data-tab="expand" aria-selected="false" aria-controls="tab-expand" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg><span>Expand</span><i class="dot"></i>
     </button>
     <button class="tab" role="tab" id="tabbtn-quests" data-tab="quests" aria-selected="false" aria-controls="tab-quests" tabindex="-1">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.3 1.3L7 5M3.5 12l1.3 1.3L7 11M3.5 18l1.3 1.3L7 17"/></svg><span>Quests</span><i class="dot"></i>
@@ -458,7 +608,7 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 <div class="overlay" id="away" role="dialog" aria-modal="true" aria-labelledby="away-title" hidden>
   <div class="sheet">
     <h2 id="away-title">Welcome back</h2>
-    <p class="note">You were away for <b id="away-time"></b>. Your crew kept the kettles on and earned <b id="away-gain"></b> at half speed.</p>
+    <p class="note">You were away for <b id="away-time"></b>. Your crew kept the kettles on and earned <b id="away-gain"></b> at <b id="away-rate"></b> of normal speed.</p>
     <button class="btn" id="away-ok" type="button">Back to the stall</button>
   </div>
 </div>
@@ -482,18 +632,18 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
 <script>
 'use strict';
 
-const VERSION='1.2';
+const VERSION='1.4';
 // To switch the leaderboard on, paste your Firebase Realtime Database URL between the quotes.
 const LB_URL_SETTING='https://chai-empire-55501-default-rtdb.asia-southeast1.firebasedatabase.app';
 const LB_URL=String(window.CHAI_LB_URL||LB_URL_SETTING).trim().replace(/\/+$/,'');
 
 // <logic>
-const SUFFIX=[[1e17,' Shankh'],[1e15,' Padma'],[1e13,' Neel'],[1e11,' Kharab'],[1e9,' Arab'],[1e7,' Cr'],[1e5,' L'],[1e3,'K']];
+const SUFFIX=[[1e23,' Jaladhi'],[1e21,' Ank'],[1e19,' Maha Shankh'],[1e17,' Shankh'],[1e15,' Padma'],[1e13,' Neel'],[1e11,' Kharab'],[1e9,' Arab'],[1e7,' Cr'],[1e5,' L'],[1e3,'K']];
 function trim(v,d){return String(+v.toFixed(d));}
 function fmt(n){
   if(!(n>0)) return '0';
   if(n<1000) return (n<10&&n!==Math.floor(n))?trim(n,1):String(Math.floor(n));
-  if(n>=1e20) return n.toExponential(2).replace('e+','e');
+  if(n>=1e26) return n.toExponential(2).replace('e+','e');
   for(let i=0;i<SUFFIX.length;i++){
     if(n>=SUFFIX[i][0]){const x=n/SUFFIX[i][0];return trim(x,x>=100?0:x>=10?1:2)+SUFFIX[i][1];}
   }
@@ -511,16 +661,18 @@ function fmtLong(sec){
   if(sec>=86400) return Math.floor(sec/86400)+'d '+Math.floor(sec%86400/3600)+'h';
   return fmtDur(sec);
 }
-function bulkCost(base,owned,n){const r=1.15;return base*Math.pow(r,owned)*(Math.pow(r,n)-1)/(r-1);}
-function maxBuy(base,owned,cash){
-  const r=1.15,unit=base*Math.pow(r,owned);
+function bulkCost(base,owned,n,r){r=r||1.15;return base*Math.pow(r,owned)*(Math.pow(r,n)-1)/(r-1);}
+function maxBuy(base,owned,cash,r){
+  r=r||1.15;const unit=base*Math.pow(r,owned);
   let n=Math.floor(Math.log(cash*(r-1)/unit+1)/Math.log(r));
   if(!(n>0)) return 0;
-  while(n>0&&Math.ceil(bulkCost(base,owned,n))>cash) n--;
-  while(n<10000&&Math.ceil(bulkCost(base,owned,n+1))<=cash) n++;
+  while(n>0&&Math.ceil(bulkCost(base,owned,n,r))>cash) n--;
+  while(n<10000&&Math.ceil(bulkCost(base,owned,n+1,r))<=cash) n++;
   return n;
 }
-function franchiseGain(run){return Math.floor(Math.sqrt(Math.max(0,run)/5e6));}
+// A run earns Franchise Points in proportion to the square root of its earnings.
+const FR_BASE=50000000000;
+function franchiseGain(run){return Math.floor(Math.sqrt(Math.max(0,run)/FR_BASE));}
 function dayKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function weekKey(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return dayKey(x);}
 function secsToMidnight(d){return (new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)-d)/1000;}
@@ -528,40 +680,64 @@ function secsToMonday(d){return (new Date(d.getFullYear(),d.getMonth(),d.getDate
 function dailyReward(cpsNow,nextStreak){return Math.max(100,cpsNow*300)*(1+0.2*(Math.min(nextStreak,7)-1));}
 
 const BUILDINGS=[
-  {name:'Chhotu',desc:'Wipes glasses and runs orders next door.',base:15,cps:0.5},
-  {name:'Second Kettle',desc:'Two boil at once, so nobody waits.',base:120,cps:4},
-  {name:'Biscuit Rack',desc:'Rusk and biscuits beside every glass.',base:1300,cps:30},
-  {name:'Kulhad Kiln',desc:'Clay cups baked fresh each morning.',base:15000,cps:190},
-  {name:'Corner Stall',desc:'A second tapri across the chauraha.',base:180000,cps:1200},
-  {name:'Assam Tea Estate',desc:'Your own leaves, picked at sunrise.',base:2500000,cps:8500},
-  {name:'Chai Café',desc:'Seats, ceiling fans and a menu board.',base:40000000,cps:60000},
-  {name:'Export House',desc:'Boxes of your blend shipped abroad.',base:7e8,cps:450000},
-  {name:'Vending Network',desc:'A chai machine at every station and office.',base:1.3e10,cps:3.5e6},
-  {name:'Empire Tower',desc:'A glass tower shaped like a kulhad.',base:2.5e11,cps:2.8e7}
+  {name:'Chhotu',desc:'Wipes glasses and runs orders next door.',base:15,cps:0.5,g:1.16},
+  {name:'Second Kettle',desc:'Two boil at once, so nobody waits.',base:280,cps:4,g:1.18},
+  {name:'Biscuit Rack',desc:'Rusk and biscuits beside every glass.',base:5100,cps:30,g:1.2},
+  {name:'Kulhad Kiln',desc:'Clay cups baked fresh each morning.',base:85500,cps:190,g:1.22},
+  {name:'Corner Stall',desc:'A second tapri across the chauraha.',base:1680000,cps:1200,g:1.24},
+  {name:'Assam Tea Estate',desc:'Your own leaves, picked at sunrise.',base:42500000,cps:8500,g:1.26},
+  {name:'Chai Café',desc:'Seats, ceiling fans and a menu board.',base:1080000000,cps:60000,g:1.28},
+  {name:'Export House',desc:'Boxes of your blend shipped abroad.',base:31500000000,cps:450000,g:1.3},
+  {name:'Vending Network',desc:'A chai machine at every station and office.',base:980000000000,cps:3500000,g:1.32},
+  {name:'Empire Tower',desc:'A glass tower shaped like a kulhad.',base:33600000000000,cps:28000000,g:1.34}
 ];
+function bCost(s,i,n){const b=BUILDINGS[i];return Math.ceil(bulkCost(b.base*fxMult(s,'cost')*DIFF.cost,s.owned[i],n,b.g));}
+function bMax(s,i,cash){const b=BUILDINGS[i];return maxBuy(b.base*fxMult(s,'cost')*DIFF.cost,s.owned[i],cash,b.g);}
+// Every stall type doubles its output at 10, 25, 50 and 100 owned, then grows more slowly.
+const STALL_STEPS=[[10,2],[25,2],[50,2],[100,2],[150,1.5],[200,1.5],[300,1.5],[400,1.5]];
+function stallMult(n){let m=1;STALL_STEPS.forEach(function(p){if(n>=p[0]) m*=p[1];});return m;}
+function nextStep(n){for(let i=0;i<STALL_STEPS.length;i++){if(n<STALL_STEPS[i][0]) return STALL_STEPS[i];}return null;}
 const UPGRADES=[
-  {id:'elaichi',name:'Elaichi Crush',desc:'Cardamom in every glass. Taps earn double.',badge:'×2',cost:100,tap:2},
-  {id:'adrak',name:'Fresh Adrak',desc:'A ginger kick. Taps earn double.',badge:'×2',cost:1000,tap:2},
-  {id:'copper',name:'Copper Kettles',desc:'Heats faster. All income +25%.',badge:'+25%',cost:8000,all:1.25},
-  {id:'sign',name:'Painted Signboard',desc:'Passers-by notice you. All income +25%.',badge:'+25%',cost:60000,all:1.25},
-  {id:'kesar',name:'Kesar Strands',desc:'A few strands of saffron. Taps earn triple.',badge:'×3',cost:120000,tap:3},
-  {id:'wrists',name:'Strong Wrists',desc:'Each tap also adds 2% of your income per second.',badge:'2%',cost:600000,pct:0.02},
-  {id:'kulhad',name:'Kulhad Cups',desc:'Clay cups taste better. All income +50%.',badge:'+50%',cost:5e6,all:1.5},
-  {id:'neon',name:'Neon Signboard',desc:'Open till midnight. All income +50%.',badge:'+50%',cost:9e7,all:1.5},
-  {id:'loyalty',name:'Loyalty Cards',desc:'Every tenth glass is free and everyone returns. All income doubles.',badge:'×2',cost:2e9,all:2}
+  {id:'elaichi',name:'Elaichi Crush',desc:'Cardamom in every glass. Taps earn double.',badge:'×2',cost:250,tap:2},
+  {id:'adrak',name:'Fresh Adrak',desc:'A ginger kick. Taps earn double.',badge:'×2',cost:3000,tap:2},
+  {id:'copper',name:'Copper Kettles',desc:'Heats faster. All income +25%.',badge:'+25%',cost:40000,all:1.25},
+  {id:'sign',name:'Painted Signboard',desc:'Passers-by notice you. All income +25%.',badge:'+25%',cost:500000,all:1.25},
+  {id:'kesar',name:'Kesar Strands',desc:'A few strands of saffron. Taps earn triple.',badge:'×3',cost:2000000,tap:3},
+  {id:'wrists',name:'Strong Wrists',desc:'Each tap also adds 2% of your income per second.',badge:'2%',cost:10000000,pct:0.02},
+  {id:'kulhad',name:'Kulhad Cups',desc:'Clay cups taste better. All income +50%.',badge:'+50%',cost:150000000,all:1.5},
+  {id:'neon',name:'Neon Signboard',desc:'Open till midnight. All income +50%.',badge:'+50%',cost:5000000000,all:1.5},
+  {id:'loyalty',name:'Loyalty Cards',desc:'Every tenth glass is free and everyone returns. All income doubles.',badge:'×2',cost:200000000000,all:2},
+  {id:'cauldron',name:'Brass Cauldrons',desc:'Brew by the barrel. All income +50%.',badge:'+50%',cost:5000000000000,all:1.5},
+  {id:'hoardings',name:'City Hoardings',desc:'Your kulhad on every main road. All income doubles.',badge:'×2',cost:100000000000000,all:2},
+  {id:'robots',name:'Chai Robots',desc:'Perfect glasses, all night. All income doubles.',badge:'×2',cost:3e+15,all:2},
+  {id:'legend',name:'Legendary Blend',desc:'A recipe people travel for. All income triples.',badge:'×3',cost:1e+17,all:3}
 ];
 const SNACK_PAY=3;
 const MENU=[
-  {id:'bun',name:'Bun Maska',cost:2500,desc:'Soft bun with butter, made for dipping.'},
-  {id:'samosa',name:'Samosa',cost:45000,desc:'Hot, crisp and gone by evening.'},
-  {id:'pakoda',name:'Pakoda',cost:1.2e6,desc:'Fried fresh whenever it rains.'},
-  {id:'maggi',name:'Masala Maggi',cost:4e7,desc:'The midnight favourite.'},
-  {id:'lassi',name:'Kulhad Lassi',cost:3e9,desc:'Thick, cold and served in clay.'}
+  {id:'bun',name:'Bun Maska',cost:5000,desc:'Soft bun with butter, made for dipping.'},
+  {id:'samosa',name:'Samosa',cost:200000,desc:'Hot, crisp and gone by evening.'},
+  {id:'pakoda',name:'Pakoda',cost:10000000,desc:'Fried fresh whenever it rains.'},
+  {id:'maggi',name:'Masala Maggi',cost:500000000,desc:'The midnight favourite.'},
+  {id:'lassi',name:'Kulhad Lassi',cost:50000000000,desc:'Thick, cold and served in clay.'}
 ];
 const STAGES=[
-  {at:0,name:'Thela'},{at:1e4,name:'Nukkad Tapri'},{at:3e5,name:'Chauraha Stall'},
-  {at:8e6,name:'Chai Café'},{at:3e8,name:'City Chain'},{at:2e10,name:'Chai Empire'}
+  {at:0,name:'Thela'},{at:100000,name:'Nukkad Tapri'},{at:30000000,name:'Chauraha Stall'},{at:20000000000,name:'Chai Café'},{at:50000000000000,name:'City Chain'},{at:1e+17,name:'Chai Empire'}
 ];
+const FMS=[
+  {at:1,name:'Family Recipe',desc:'Start every run with ₹1,000.',start:1000},
+  {at:3,name:'Trusted Brand',desc:'All income +10%.',mult:1.1},
+  {at:10,name:'Local Fame',desc:'Start every run with ₹50,000.',start:50000},
+  {at:30,name:'Chain Reputation',desc:'All income ×1.25. Offline earnings rise to 75%.',mult:1.25,offline:0.75},
+  {at:100,name:'State Level',desc:'All income ×1.5.',mult:1.5},
+  {at:300,name:'National Brand',desc:'All income ×2. Offline earnings rise to 100%. Start with ₹10 Lakh.',mult:2,offline:1,start:1e6},
+  {at:1000,name:'Global Brand',desc:'All income ×3.',mult:3},
+  {at:3000,name:'Chai Legend',desc:'All income ×5. Start with ₹5 Crore.',mult:5,start:5e7}
+];
+function fmMult(s){let m=1;FMS.forEach(function(f){if(f.mult&&s.fp>=f.at) m*=f.mult;});return m;}
+function startCash(s){let c=0;FMS.forEach(function(f){if(f.start&&s.fp>=f.at) c=Math.max(c,f.start);});return c;}
+function offlineRate(s){let r=0.5;FMS.forEach(function(f){if(f.offline&&s.fp>=f.at) r=Math.max(r,f.offline);});return Math.min(1,r+fxSum(s,'offline'));}
+// Long-term goals are awards worth +5% income each.
+function LT(id,name,desc,goal,cur){return {id:id,name:name,desc:desc,lt:true,bonus:0.05,goal:goal,cur:cur,test:function(s){return cur(s)>=goal;}};}
 const AWARDS=[
   {id:'pehli',name:'Pehli Chai',desc:'Pour your first glass.',test:s=>s.taps>=1},
   {id:'cups100',name:'Hundred Cups',desc:'Tap 100 times.',test:s=>s.taps>=100},
@@ -583,7 +759,22 @@ const AWARDS=[
   {id:'order10',name:'Fast Delivery',desc:'Deliver 10 online orders.',test:s=>s.delivered>=10},
   {id:'menu5',name:'Full Menu',desc:'Put every snack on your menu.',test:s=>menuCount(s)>=MENU.length},
   {id:'folks10',name:'Know the Neighbourhood',desc:'Meet 10 types of customers.',test:s=>Object.keys(s.seen).length>=10},
-  {id:'folks20',name:'Everyone Drinks Chai',desc:'Meet all 20 types of customers.',test:s=>Object.keys(s.seen).length>=CUSTOMERS.length}
+  {id:'folks20',name:'Everyone Drinks Chai',desc:'Meet all 20 types of customers.',test:s=>Object.keys(s.seen).length>=CUSTOMERS.length},
+  LT('lt_neel','Neelpati','Earn ₹1 Neel in total.',1e13,function(s){return s.allEarned;}),
+  LT('lt_padma','Padmapati','Earn ₹1 Padma in total.',1e15,function(s){return s.allEarned;}),
+  LT('lt_shankh','Shankhpati','Earn ₹1 Shankh in total.',1e17,function(s){return s.allEarned;}),
+  LT('lt_cups10k','Ten Thousand Cups','Tap 10,000 times.',1e4,function(s){return s.taps;}),
+  LT('lt_cups100k','Hundred Thousand Cups','Tap 100,000 times.',1e5,function(s){return s.taps;}),
+  LT('lt_fr5','Five Franchises','Open 5 franchises.',5,function(s){return s.franchises;}),
+  LT('lt_fr25','Chai Dynasty','Open 25 franchises.',25,function(s){return s.franchises;}),
+  LT('lt_fp100','Franchise Empire','Hold 500 Franchise Points.',500,function(s){return s.fp;}),
+  LT('lt_quest100','Quest Legend','Claim 100 quest rewards.',100,function(s){return s.qDone;}),
+  LT('lt_serve1000','Neighbourhood Favourite','Serve 1,000 customers.',1000,function(s){return s.served;}),
+  LT('lt_serve10000','City Favourite','Serve 10,000 customers.',1e4,function(s){return s.served;}),
+  LT('lt_order100','Delivery King','Deliver 100 online orders.',100,function(s){return s.delivered;}),
+  LT('lt_streak30','Monthly Regular','Reach a 30 day bonus streak.',30,function(s){return s.maxStreak;}),
+  LT('lt_streak100','Hundred Days','Reach a 100 day bonus streak.',100,function(s){return s.maxStreak;}),
+  LT('lt_crew500','Mega Chain','Own 500 staff and stalls at once.',500,function(s){return totalOwned(s);})
 ];
 // x is how much a customer pays compared with a Regular (x=1). Poor customers pay less, rich ones pay a lot more.
 const CUSTOMERS=[
@@ -605,7 +796,11 @@ const CUSTOMERS=[
   {id:'tourist',name:'Tourist',ic:'camera',x:2.5,w:4,pat:9,from:2,line:'Pays well and leaves quickly.'},
   {id:'influencer',name:'Influencer',ic:'phone',x:3,w:3,pat:9,from:3,line:'Filming your stall for followers.'},
   {id:'biz',name:'Businessman',ic:'chart',x:3.5,w:3,pat:9,from:3,line:'Closing a deal over chai.'},
-  {id:'vip',name:'Seth Ji',ic:'vip',x:5,w:2,pat:8,from:3,line:'Tips big. Do not keep him waiting.'},
+  {id:'vip',name:'Seth Ji',ic:'vip',x:5,w:2,pat:8,from:2,need:'vip',line:'Tips big. Do not keep him waiting.'},
+  {id:'commuter',name:'Railway Commuter',ic:'customer',x:1.2,w:8,pat:14,from:1,need:'rail',loc:'rail',line:'Just off the train, bag on one shoulder.'},
+  {id:'coolie',name:'Railway Coolie',ic:'helmet',x:0.5,w:6,pat:14,from:1,need:'rail',loc:'rail',line:'Red shirt, heavy trunk, wants tea first.'},
+  {id:'mallshop',name:'Mall Shopper',ic:'phone',x:2.5,w:4,pat:10,from:2,need:'mall',loc:'mall',line:'Shopping bags on both arms.'},
+  {id:'traveller',name:'Airport Traveller',ic:'camera',x:4,w:3,pat:9,from:3,need:'airport',loc:'airport',line:'Boarding in forty minutes. Pays for speed.'},
   {id:'celeb',name:'Film Star',ic:'star',x:8,w:1,pat:6,from:4,line:'Crowd outside. Serve fast.'}
 ];
 const QT=[
@@ -634,7 +829,7 @@ function fresh(){
   return {v:1,name:DEFAULT_NAME,cash:0,runEarned:0,allEarned:0,taps:0,cup:0,
     owned:BUILDINGS.map(function(){return 0;}),up:{},menu:{},seen:{},fp:0,franchises:0,aw:{},rushUsed:0,rushUntil:0,rushReady:0,
     daily:'',streak:0,maxStreak:0,sound:true,last:Date.now(),
-    served:0,qDone:0,delivered:0,pid:'',lbOn:false,seenVer:'',q:{day:'',list:[],week:'',wlist:[]}};
+    served:0,qDone:0,delivered:0,pid:'',lbOn:false,seenVer:'',q:{day:'',list:[],week:'',wlist:[]},tech:{},res:{},rp:0,fac:{n:0,up:{},stock:0},br:{},vis:{},corpNext:0,celebUntil:0,celebReady:0,morale:75,pay:1,train:BUILDINGS.map(function(){return 0;}),mgr:{},rep:50,breakReady:0,sickUntil:0,roles:{},owner:false,boost:false,admin:false};
 }
 function cleanQuests(list){
   if(!Array.isArray(list)) return [];
@@ -648,7 +843,7 @@ function cleanQuests(list){
 function sanitize(o){
   const f=fresh();
   if(!o||typeof o!=='object') return f;
-  ['cash','runEarned','allEarned','taps','cup','fp','franchises','rushUsed','rushUntil','rushReady','streak','maxStreak','last','served','qDone','delivered'].forEach(function(k){
+  ['cash','runEarned','allEarned','taps','cup','fp','franchises','rushUsed','rushUntil','rushReady','streak','maxStreak','last','served','qDone','delivered','rp','corpNext','celebUntil','celebReady','breakReady','sickUntil'].forEach(function(k){
     if(typeof o[k]==='number'&&isFinite(o[k])&&o[k]>=0) f[k]=o[k];
   });
   f.cup=Math.min(9,Math.floor(f.cup));
@@ -660,10 +855,28 @@ function sanitize(o){
   if(o.menu&&typeof o.menu==='object') MENU.forEach(function(m){if(o.menu[m.id]===true) f.menu[m.id]=true;});
   if(o.seen&&typeof o.seen==='object') CUSTOMERS.forEach(function(c){if(o.seen[c.id]===true) f.seen[c.id]=true;});
   if(o.aw&&typeof o.aw==='object') AWARDS.forEach(function(a){if(o.aw[a.id]) f.aw[a.id]=Number(o.aw[a.id])||1;});
+  if(o.tech&&typeof o.tech==='object') TECH.forEach(function(t){if(o.tech[t.id]===true) f.tech[t.id]=true;});
+  if(o.res&&typeof o.res==='object') RESEARCH.forEach(function(r){if(o.res[r.id]===true) f.res[r.id]=true;});
+  if(o.br&&typeof o.br==='object') BRANCHES.forEach(function(b){if(o.br[b.id]===true) f.br[b.id]=true;});
+  if(o.vis&&typeof o.vis==='object') CUSTOMERS.forEach(function(c){const n=o.vis[c.id];if(typeof n==='number'&&isFinite(n)&&n>=0) f.vis[c.id]=Math.floor(n);});
+  if(o.fac&&typeof o.fac==='object'){
+    if(typeof o.fac.n==='number'&&isFinite(o.fac.n)&&o.fac.n>=0) f.fac.n=Math.floor(o.fac.n);
+    if(typeof o.fac.stock==='number'&&isFinite(o.fac.stock)&&o.fac.stock>=0) f.fac.stock=o.fac.stock;
+    if(o.fac.up&&typeof o.fac.up==='object') FACUP.forEach(function(u){if(o.fac.up[u.id]===true) f.fac.up[u.id]=true;});
+  }
+  if(typeof o.morale==='number'&&isFinite(o.morale)) f.morale=Math.max(0,Math.min(100,o.morale));
+  if(typeof o.rep==='number'&&isFinite(o.rep)) f.rep=Math.max(0,Math.min(100,o.rep));
+  if(o.pay===0||o.pay===1||o.pay===2) f.pay=o.pay;
+  if(Array.isArray(o.train)) BUILDINGS.forEach(function(_,i){const n=o.train[i];if(typeof n==='number'&&isFinite(n)&&n>=0) f.train[i]=Math.min(5,Math.floor(n));});
+  if(o.roles&&typeof o.roles==='object') ROLES.forEach(function(r){const n=o.roles[r.id];if(typeof n==='number'&&isFinite(n)&&n>0) f.roles[r.id]=Math.min(r.max,Math.floor(n));});
+  if(o.mgr&&typeof o.mgr==='object') GROUPS.forEach(function(g){if(MGR_STYLES.some(function(x){return x.id===o.mgr[g.id];})) f.mgr[g.id]=o.mgr[g.id];});
   if(typeof o.daily==='string') f.daily=o.daily.slice(0,10);
   if(typeof o.sound==='boolean') f.sound=o.sound;
   if(typeof o.pid==='string'&&/^[a-z0-9]{8,40}$/i.test(o.pid)) f.pid=o.pid;
   if(typeof o.lbOn==='boolean') f.lbOn=o.lbOn;
+  if(typeof o.owner==='boolean') f.owner=o.owner;
+  if(typeof o.admin==='boolean') f.admin=o.admin;
+  if(typeof o.boost==='boolean') f.boost=o.boost;
   if(typeof o.seenVer==='string') f.seenVer=o.seenVer.slice(0,12);
   if(o.q&&typeof o.q==='object'){
     if(typeof o.q.day==='string') f.q.day=o.q.day.slice(0,10);
@@ -677,13 +890,14 @@ function totalOwned(s){return s.owned.reduce(function(a,b){return a+b;},0);}
 function maxOwnedIdx(s){let m=-1;s.owned.forEach(function(n,i){if(n>0) m=i;});return m;}
 function menuCount(s){return MENU.filter(function(m){return s.menu[m.id];}).length;}
 function menuMult(s){return 1+0.1*menuCount(s);}
-function awMult(s){return 1+0.02*Object.keys(s.aw).length;}
-function fpMult(s){return 1+0.05*s.fp;}
+function awMult(s){let m=0;AWARDS.forEach(function(a){if(s.aw[a.id]) m+=(a.bonus||0.02);});return 1+m;}
+function fpMult(s){return 1+(0.05+fxSum(s,'fpRate'))*s.fp;}
 function upAll(s){let m=1;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.all) m*=u.all;});return m;}
 function upTap(s){let m=1;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.tap) m*=u.tap;});return m;}
 function upPct(s){let p=0;UPGRADES.forEach(function(u){if(s.up[u.id]&&u.pct) p+=u.pct;});return p;}
 function rushOn(s,now){return now<s.rushUntil;}
-function baseCps(s){let t=0;BUILDINGS.forEach(function(b,i){t+=s.owned[i]*b.cps;});return t;}
+function bldMult(s,i){let m=fxMult(s,'prod')*fxMult(s,'stall');if(i<3) m*=fxMult(s,'staff');if(s.owned[i]>=25) m*=fxMult(s,'bottle');return m;}
+function baseCps(s){let t=0;BUILDINGS.forEach(function(b,i){const n=s.owned[i];if(n>0) t+=n*bldUnit(s,i).net;});return t;}
 // Chai Happy Hour: the first 10 minutes of every hour on the player's clock.
 const HH_LEN=600;
 function happyInfo(now){
@@ -694,21 +908,32 @@ function happyInfo(now){
 function happyOn(now){return happyInfo(now).on;}
 // live=true adds Rush Hour and Happy Hour. Offline earnings and the daily bonus pass false.
 function cps(s,now,live){
-  return baseCps(s)*fpMult(s)*awMult(s)*upAll(s)*menuMult(s)*((live&&rushOn(s,now))?2:1)*((live&&happyOn(now))?2:1);
+  let m=fpMult(s)*fmMult(s)*awMult(s)*upAll(s)*menuMult(s)*fxMult(s,'all')*brMult(s)*DIFF.income;
+  if(now<s.sickUntil) m*=0.8;
+  m*=1-roleWages(s);
+  if(live){
+    if(rushOn(s,now)) m*=2;
+    if(happyOn(now)) m*=2*fxMult(s,'happy');
+    if(nightOn(now)) m*=fxMult(s,'night');
+    m*=facBonus(s);
+  }
+  return baseCps(s)*m;
 }
 function tapValue(s,now){
-  return upTap(s)*fpMult(s)*awMult(s)*(rushOn(s,now)?2:1)*(happyOn(now)?2:1)+upPct(s)*cps(s,now,true);
+  return upTap(s)*fpMult(s)*fmMult(s)*awMult(s)*fxMult(s,'tap')*fxMult(s,'all')*DIFF.income*roleTap(s)*(rushOn(s,now)?2:1)*(happyOn(now)?2*fxMult(s,'happy'):1)+upPct(s)*cps(s,now,true);
 }
 function stageIndex(s){let k=0;STAGES.forEach(function(st,i){if(s.runEarned>=st.at) k=i;});return k;}
 
-function pickCustomer(tier,rnd){
-  const pool=CUSTOMERS.filter(function(c){return c.from<=tier;});
-  let sum=0;pool.forEach(function(c){sum+=c.w;});
+function pickCustomer(s,rnd){
+  const tier=stageIndex(s);
+  const pool=CUSTOMERS.filter(function(c){return c.from<=tier&&(!c.need||hasT(s,c.need));});
+  const wt=function(c){return c.w*(c.x>=3?fxMult(s,'premium'):1)*(c.loc&&brOpen(s,c.loc)?2:1);};
+  let sum=0;pool.forEach(function(c){sum+=wt(c);});
   let r=rnd()*sum;
-  for(let i=0;i<pool.length;i++){r-=pool[i].w;if(r<0) return pool[i];}
+  for(let k=0;k<pool.length;k++){r-=wt(pool[k]);if(r<0) return pool[k];}
   return pool[pool.length-1];
 }
-function customerPay(c,cpsLive,mult){return Math.floor(Math.max(8*c.x,cpsLive*15*c.x)*mult);}
+function customerPay(c,cpsLive,mult,extra){return Math.floor(Math.max(8*c.x,cpsLive*15*c.x)*mult*(extra||1));}
 
 function hashStr(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 function rng(seed){
@@ -731,6 +956,218 @@ function genQuests(s,scope,key){
       claimed:false};
   });
 }
+/* ---------- Expansion: 30 upgrades in four trees, factories, branches, tea research ---------- */
+// Each upgrade has a minimum stage, prerequisites, and a cash cost. fx values multiply (1.5 = +50%),
+// except steam and offline, which add. orderRate and orderTime scale online-order timers.
+const TECH=[
+  {id:'boiler',tree:'prod',name:'Industrial Boiler',desc:'Every stall makes 50% more chai.',badge:'×1.5',cost:1500,st:0,need:[],fx:{prod:1.5}},
+  {id:'bulk',tree:'prod',name:'Bulk Tea Procurement',desc:'Stalls cost 15% less to build.',badge:'−15%',cost:20000,st:1,need:['boiler'],fx:{cost:0.85}},
+  {id:'pasteur',tree:'prod',name:'Milk Pasteurisation Plant',desc:'Chai is worth 10% more per tap, and customers pay 25% more.',badge:'+25%',cost:50000,st:1,need:['boiler'],fx:{tap:1.1,pay:1.25}},
+  {id:'stirring',tree:'prod',name:'Automated Stirring',desc:'The first three stall types make double. Unlocks factories.',badge:'×2',cost:150000,st:1,need:['bulk'],fx:{staff:2}},
+  {id:'steam',tree:'prod',name:'Steam-Powered Kettle',desc:'8% of taps also pour a bonus batch worth five taps.',badge:'8%',cost:1500000,st:2,need:['stirring'],fx:{steam:0.08}},
+  {id:'sugar',tree:'prod',name:'Precision Sugar Dispenser',desc:'Online orders need 15% fewer taps.',badge:'−15%',cost:3000000,st:2,need:['steam'],fx:{orderTaps:0.85}},
+  {id:'bottling',tree:'prod',name:'High-Speed Bottling Line',desc:'Stall types with 25 or more owned make 25% more.',badge:'+25%',cost:8000000,st:2,need:['stirring'],fx:{bottle:1.25}},
+  {id:'cold',tree:'prod',name:'Cold Storage Facility',desc:'Away earnings rise by 25 points, up to 100%.',badge:'+25%',cost:200000000,st:3,need:['bottling'],fx:{offline:0.25}},
+
+  {id:'ads',tree:'biz',name:'Advertising Agency',desc:'Customers arrive 60% more often.',badge:'+60%',cost:30000,st:1,need:[],fx:{arrive:1.6}},
+  {id:'delivery',tree:'biz',name:'Delivery Headquarters',desc:'Online orders come twice as often and last 50% longer.',badge:'×2',cost:100000,st:1,need:['ads'],fx:{orderRate:2,orderTime:1.5}},
+  {id:'rail',tree:'biz',name:'Railway Station Outlet',desc:'Unlocks railway customers and a station branch.',badge:'New',cost:3000000,st:2,need:['ads'],fx:{}},
+  {id:'corporate',tree:'biz',name:'Corporate Contracts',desc:'Every five minutes an office orders bulk chai, paying two minutes of income.',badge:'Auto',cost:6000000,st:2,need:['ads'],fx:{}},
+  {id:'supplier',tree:'biz',name:'Supplier Network',desc:'Recipes and snack menu items cost 15% less.',badge:'−15%',cost:200000000,st:3,need:['delivery'],fx:{recipe:0.85}},
+  {id:'mall',tree:'biz',name:'Shopping Mall Branch',desc:'Unlocks mall shoppers and a mall branch.',badge:'New',cost:500000000,st:3,need:['rail'],fx:{}},
+  {id:'airport',tree:'biz',name:'Airport Franchise',desc:'Unlocks premium travellers and an airport branch.',badge:'New',cost:1000000000,st:3,need:['rail'],fx:{}},
+  {id:'natdist',tree:'biz',name:'National Distribution',desc:'Each franchise point adds 7.5% to income instead of 5%.',badge:'+50%',cost:50000000000,st:4,need:['supplier'],fx:{fpRate:0.025}},
+
+  {id:'vip',tree:'spec',name:'VIP Membership',desc:'Unlocks VIP customers, like Seth Ji.',badge:'New',cost:10000000,st:2,need:['ads'],fx:{}},
+  {id:'loyal',tree:'spec',name:'Loyalty Cards',desc:'Customers who come back pay 25% more.',badge:'+25%',cost:8000000,st:2,need:['vip'],fx:{}},
+  {id:'feedback',tree:'spec',name:'Customer Feedback Desk',desc:'Customers wait 50% longer and pay 10% more.',badge:'+10%',cost:400000000,st:3,need:['loyal'],fx:{pay:1.1,pat:1.5}},
+  {id:'celeb',tree:'spec',name:'Celebrity Campaign',desc:'Adds a button on the Stall tab: a minute of busy customers, every four minutes.',badge:'Button',cost:300000000,st:3,need:['loyal'],fx:{}},
+  {id:'festival',tree:'spec',name:'Festival Marketing',desc:'During Happy Hour and Rush Hour, customers pay 50% more.',badge:'×1.5',cost:600000000,st:3,need:['celeb'],fx:{}},
+  {id:'rushmgr',tree:'spec',name:'Rush Hour Manager',desc:'Rush Hour lasts 35 seconds, and the kettle rests for 60.',badge:'35s',cost:500000000,st:3,need:['celeb'],fx:{}},
+  {id:'quality',tree:'spec',name:'Quality Inspection',desc:'Premium customers come twice as often, and online orders pay 50% more.',badge:'×2',cost:20000000000,st:4,need:['feedback'],fx:{premium:2,orderPay:1.5}},
+  {id:'night',tree:'spec',name:'Night Shift',desc:'Earnings are 50% higher from 10pm to 6am.',badge:'+50%',cost:40000000000,st:4,need:['rushmgr'],fx:{night:1.5}},
+
+  {id:'research_lab',tree:'end',name:'Chai Research Laboratory',desc:'Unlocks Tea Research below.',badge:'Lab',cost:100000000000,st:4,need:['natdist'],fx:{}},
+  {id:'estate',tree:'end',name:'Luxury Tea Estate',desc:'Grows rare leaves: one research point every two minutes.',badge:'+RP',cost:300000000000,st:4,need:['research_lab'],fx:{}},
+  {id:'intl',tree:'end',name:'International Expansion',desc:'Unlocks an overseas branch.',badge:'New',cost:200000000000,st:4,need:['natdist'],fx:{}},
+  {id:'corp',tree:'end',name:'National Chai Corporation',desc:'Corporate contracts pay three times as much.',badge:'×3',cost:600000000000,st:4,need:['corporate','intl'],fx:{corp:3}},
+  {id:'globfr',tree:'end',name:'Global Franchise Network',desc:'Every franchise you open adds two bonus franchise points.',badge:'+2',cost:2000000000000,st:5,need:['intl'],fx:{}},
+  {id:'tower',tree:'end',name:'The Chai Empire Tower',desc:'Ultimate landmark: all income ×2. Needs at least one of every stall.',badge:'×2',cost:10000000000000,st:5,need:['corp','globfr'],ownAll:true,fx:{all:2}}
+];
+const RESEARCH=[
+  {id:'darjeeling',name:'Darjeeling First Flush',desc:'All income +5%.',badge:'+5%',cost:10,fx:{all:1.05}},
+  {id:'assam',name:'Assam Gold',desc:'Each tap is worth 50% more.',badge:'×1.5',cost:40,fx:{tap:1.5}},
+  {id:'nilgiri',name:'Nilgiri Blend',desc:'Stall output +10%.',badge:'+10%',cost:150,fx:{stall:1.1}},
+  {id:'kahwa',name:'Kashmiri Kahwa',desc:'Customers pay 20% more.',badge:'+20%',cost:500,fx:{pay:1.2}},
+  {id:'masala',name:'Masala Mix',desc:'Happy Hour pays 25% more on top of double.',badge:'+25%',cost:1500,fx:{happy:1.25}},
+  {id:'matcha',name:'Matcha Chai',desc:'Franchises earn 10% more Franchise Points.',badge:'+10%',cost:5000,fx:{fpgain:1.1}}
+];
+AWARDS.push(LT('lt_rs6','Chai Scholar','Research all six tea varieties.',6,function(s){return Object.keys(s.res||{}).length;}));
+const BRANCHES=[
+  {id:'rail',name:'Railway Station Branch',desc:'Twelve percent more income. Railway customers come here twice as often.',need:'rail',cost:2000000000},
+  {id:'mall',name:'Shopping Mall Branch',desc:'Twelve percent more income. Mall shoppers come here twice as often.',need:'mall',cost:10000000000},
+  {id:'airport',name:'Airport Branch',desc:'Twelve percent more income. Airport travellers come here twice as often.',need:'airport',cost:50000000000},
+  {id:'overseas',name:'Overseas Branch',desc:'Twelve percent more income from abroad.',need:'intl',cost:300000000000}
+];
+const FAC_BASE=500000,FAC_G=1.3;
+const FACUP=[
+  {id:'fspeed',name:'Speed Crates',desc:'Each factory makes half as much again.',badge:'×1.5',cost:4000000,out:1.5},
+  {id:'fauto',name:'Automation Line',desc:'Each factory makes twice as much.',badge:'×2',cost:400000000,out:2,need:'fspeed'},
+  {id:'fcold',name:'Cold Chain',desc:'Stock holds twice as much, and fresh stock adds 40% instead of 25%.',badge:'×2',cost:2000000000,need:'fauto'}
+];
+function hasT(s,id){return !!(s.tech&&s.tech[id]);}
+function fxMult(s,key){
+  let m=1;
+  TECH.forEach(function(t){if(t.fx[key]&&hasT(s,t.id)) m*=t.fx[key];});
+  RESEARCH.forEach(function(r){if(r.fx[key]&&s.res&&s.res[r.id]) m*=r.fx[key];});
+  return m;
+}
+function fxSum(s,key){let v=0;TECH.forEach(function(t){if(t.fx[key]&&hasT(s,t.id)) v+=t.fx[key];});return v;}
+function techName(id){const t=TECH.find(function(x){return x.id===id;});return t?t.name:id;}
+function techAvail(s,t){
+  return stageIndex(s)>=t.st&&t.need.every(function(id){return hasT(s,id);})&&(!t.ownAll||s.owned.every(function(n){return n>0;}));
+}
+function techReq(s,t){
+  const parts=[];
+  if(stageIndex(s)<t.st) parts.push('reach '+STAGES[t.st].name);
+  t.need.forEach(function(id){if(!hasT(s,id)) parts.push(techName(id));});
+  if(t.ownAll&&!s.owned.every(function(n){return n>0;})) parts.push('one of every stall');
+  return parts.length?'Needs: '+parts.join(', '):'Ready to learn';
+}
+function upCost(s,u){return Math.ceil(u.cost*fxMult(s,'recipe')*DIFF.recipe);}
+function menuCost(s,m){return Math.ceil(m.cost*fxMult(s,'recipe')*DIFF.recipe);}
+function brCount(s){let n=0;BRANCHES.forEach(function(b){if(brOpen(s,b.id)) n++;});return n;}
+function brOpen(s,id){return !!(s.br&&s.br[id]);}
+function brMult(s){return 1+0.12*brCount(s);}
+function facOut(s){let m=0.5*s.fac.n;FACUP.forEach(function(u){if(s.fac.up[u.id]&&u.out) m*=u.out;});return m;}
+function facCap(s){return s.fac.n*100*(s.fac.up.fcold?2:1);}
+function facCost(s){return Math.ceil(bulkCost(FAC_BASE,s.fac.n,1,FAC_G));}
+// Fresh stock from factories adds to all live income while there is any stock.
+function facBonus(s){if(!(s.fac.n>0&&s.fac.stock>0)) return 1;return s.fac.up.fcold?1.4:1.25;}
+function stepFactory(s,dt){
+  if(!(s.fac.n>0)){s.fac.stock=0;return;}
+  const net=facOut(s)-totalOwned(s)*0.02;
+  s.fac.stock=Math.max(0,Math.min(facCap(s),s.fac.stock+net*dt));
+}
+function rushDur(s){return hasT(s,'rushmgr')?35000:20000;}
+function rushCool(s){return hasT(s,'rushmgr')?60000:110000;}
+function nightOn(now){const h=new Date(now).getHours();return h>=22||h<6;}
+function eventOn(s,now){return happyOn(now)||rushOn(s,now);}
+function celebOn(s,now){return now<s.celebUntil;}
+function guestGap(s,now){if(celebOn(s,now)) return 5000;return (25+Math.random()*20)*1000/fxMult(s,'arrive')/repArrive(s);}
+function orderGap(s,base){return base*1000/fxMult(s,'orderRate');}
+function fpGainNow(s){const b=franchiseGain(s.runEarned);return b<1?0:Math.floor(b*fxMult(s,'fpgain'))+(hasT(s,'globfr')?2:0);}
+function corpPay(s,now){return Math.floor(cps(s,now,true)*120*fxMult(s,'corp'));}
+
+/* ---------- Difficulty, staff, morale and reputation ---------- */
+// DIFF trims income, raises costs and shortens customer patience. Tests can adjust it.
+const DIFF={income:0.9,cost:1.12,recipe:1.15,pat:0.8};
+// Wages are a share of each stall's output. Pay policy also sets where morale settles.
+const PAY=[
+  {id:'low',name:'Low pay',rate:0.06,target:45,desc:'Wages are 6% of output, but morale sinks toward 45%.'},
+  {id:'fair',name:'Fair pay',rate:0.12,target:75,desc:'Wages are 12% of output. Morale settles at 75%.'},
+  {id:'high',name:'Generous',rate:0.2,target:100,desc:'Wages are 20% of output. Morale climbs to 100%.'}
+];
+const GROUPS=[
+  {id:'counter',name:'Counter crew',idx:[0,1,2],cost:200000,need:10,desc:'Chhotu, Second Kettle, Biscuit Rack'},
+  {id:'prod',name:'Production crew',idx:[3,4,5,6],cost:200000000,need:10,desc:'Kulhad Kiln, Corner Stall, Assam Estate, Chai Café'},
+  {id:'biz',name:'Business crew',idx:[7,8,9],cost:200000000000,need:5,desc:'Export House, Vending Network, Empire Tower'}
+];
+const MGR_STYLES=[
+  {id:'strict',name:'Strict',desc:'+30% output, but morale drifts down.',out:1.3,morale:-10,wage:1},
+  {id:'kind',name:'Friendly',desc:'+15% output and morale drifts up.',out:1.15,morale:10,wage:1},
+  {id:'frugal',name:'Frugal',desc:'+15% output and wages 25% lower.',out:1.15,morale:0,wage:0.75}
+];
+function payOf(s){return PAY[s.pay]||PAY[1];}
+function groupOf(i){for(let k=0;k<GROUPS.length;k++){if(GROUPS[k].idx.indexOf(i)>=0) return GROUPS[k];}return GROUPS[0];}
+function crewSize(s,g){let n=0;g.idx.forEach(function(i){n+=s.owned[i];});return n;}
+function mgrStyle(s,g){const id=s.mgr&&s.mgr[g.id];return id?(MGR_STYLES.find(function(x){return x.id===id;})||null):null;}
+// Morale scales output from 0.7 (rock bottom) to 1.1 (delighted). A manager halves the swing.
+function moraleMult(s,i){
+  let m=0.7+0.4*(s.morale/100);
+  if(mgrStyle(s,groupOf(i))) m=1+(m-1)*0.5;
+  return m;
+}
+function moraleTarget(s){
+  let t=payOf(s).target+roleMorale(s);
+  GROUPS.forEach(function(g){const st=mgrStyle(s,g);if(st) t+=st.morale*0.5;});
+  return Math.max(10,Math.min(100,t));
+}
+function stepMorale(s,dt){s.morale+=(moraleTarget(s)-s.morale)*(1-Math.exp(-dt/60));s.morale=Math.max(0,Math.min(100,s.morale));}
+// Output and wages of one stall of this type. Big crews with no manager lose 15%.
+function bldUnit(s,i){
+  const b=BUILDINGS[i],n=Math.max(1,s.owned[i]),g=groupOf(i),st=mgrStyle(s,g),lvl=(s.train&&s.train[i])||0;
+  let u=b.cps*stallMult(n)*bldMult(s,i)*(1+0.3*lvl)*moraleMult(s,i)*roleOut(s);
+  if(st) u*=st.out;else if(crewSize(s,g)>30) u*=0.85;
+  const wf=Math.min(0.9,payOf(s).rate*(1+0.2*lvl)*(st?st.wage:1)*wageCut(s));
+  return {gross:u,net:u*(1-wf)};
+}
+function staffInfo(s){
+  let gross=0,wages=0;
+  BUILDINGS.forEach(function(b,i){const n=s.owned[i];if(n>0){const u=bldUnit(s,i);gross+=n*u.gross;wages+=n*(u.gross-u.net);}});
+  return {gross:gross,wages:wages};
+}
+function trainCost(s,i){return Math.ceil(BUILDINGS[i].base*5*Math.pow(3,(s.train&&s.train[i])||0)*DIFF.cost*roleTrain(s));}
+function trainReq(s,i){return 5*(((s.train&&s.train[i])||0)+1);}
+function canTrain(s,i){return ((s.train&&s.train[i])||0)<5&&s.owned[i]>=trainReq(s,i);}
+function breakCost(s){return Math.max(500,Math.ceil(cps(s,0,false)*90));}
+// Reputation: 0 to 100, starts at 50. Changes how much customers pay and how often they come.
+function repPay(s){return 0.85+0.3*s.rep/100;}
+function repArrive(s){return 0.6+0.8*s.rep/100;}
+
+/* ---------- Staff roles: individual hires with their own jobs and wages ---------- */
+// Wages are a share of total income. Role effects scale with morale (0.7 at rock bottom, 1.1 when delighted).
+const ROLES=[
+  {id:'brewer',name:'Master Chai Wala',desc:'Pours with a flourish. Each one adds 10% to every tap.',st:1,base:30000,max:10,wage:0.003,now:function(s){return '+'+Math.round((roleTap(s)-1)*100)+'% taps';}},
+  {id:'helper',name:'Kitchen Helper',desc:'Extra hands everywhere. Each one adds 1.5% to all stall output.',st:1,base:50000,max:20,wage:0.008,now:function(s){return '+'+Math.round((roleOut(s)-1)*100)+'% output';}},
+  {id:'cashier',name:'Cashier',desc:'Quick with change. Customers pay 4% more per cashier.',st:1,base:80000,max:10,wage:0.003,now:function(s){return '+'+Math.round((rolePay(s)-1)*100)+'% customer pay';}},
+  {id:'waiter',name:'Waiter',desc:'Keeps people happy while they wait. Patience +6% each.',st:2,base:1000000,max:10,wage:0.003,now:function(s){return '+'+Math.round((rolePat(s)-1)*100)+'% patience';}},
+  {id:'rider',name:'Delivery Rider',desc:'Online orders pay 6% more and last 4% longer per rider.',st:2,base:2000000,max:10,wage:0.003,now:function(s){return '+'+Math.round((roleOrder(s)-1)*100)+'% order pay';}},
+  {id:'cleaner',name:'Cleaner',desc:'A tidy stall is a happy stall. Morale settles 3 points higher each.',st:2,base:3000000,max:5,wage:0.002,now:function(s){return '+'+roleMorale(s)+' morale';}},
+  {id:'accountant',name:'Accountant',desc:'Trims every wage bill by 5% each, up to 40%.',st:3,base:150000000,max:5,wage:0.01,now:function(s){return '−'+Math.round((1-wageCut(s))*100)+'% wages';}},
+  {id:'guard',name:'Security Guard',desc:'Bad staff events are 12% less likely and reputation losses 12% smaller, each.',st:3,base:200000000,max:5,wage:0.005,now:function(s){return Math.round((1-roleGuard(s))*100)+'% less trouble';}},
+  {id:'trainer',name:'Trainer',desc:'Training costs 6% less per trainer, up to 30% off.',st:3,base:300000000,max:5,wage:0.005,now:function(s){return '−'+Math.round((1-roleTrain(s))*100)+'% training cost';}}
+];
+function roleN(s,id){return (s.roles&&s.roles[id])||0;}
+function roleEff(s){return 0.7+0.4*s.morale/100;}
+function roleCost(s,r){return Math.ceil(r.base*Math.pow(1.4,roleN(s,r.id))*DIFF.cost);}
+function wageCut(s){return Math.max(0.6,1-0.05*roleN(s,'accountant'));}
+function roleWages(s){let w=0;ROLES.forEach(function(r){w+=roleN(s,r.id)*r.wage;});return Math.min(0.5,w*wageCut(s));}
+function roleTap(s){return 1+0.1*roleN(s,'brewer')*roleEff(s);}
+function roleOut(s){return 1+0.015*roleN(s,'helper')*roleEff(s);}
+function rolePay(s){return 1+0.04*roleN(s,'cashier')*roleEff(s);}
+function rolePat(s){return 1+0.06*roleN(s,'waiter')*roleEff(s);}
+function roleOrder(s){return 1+0.06*roleN(s,'rider')*roleEff(s);}
+function roleOrderTime(s){return 1+0.04*roleN(s,'rider');}
+function roleMorale(s){return 3*roleN(s,'cleaner');}
+function roleGuard(s){return Math.pow(0.88,roleN(s,'guard'));}
+function roleTrain(s){return Math.max(0.7,1-0.06*roleN(s,'trainer'));}
+
+/* ---------- Owner mode: hidden powers for the person who built the game ---------- */
+const OWNER_POWERS=[
+  {id:'cash1',label:function(){return '+₹'+fmt(1e7);},run:function(){earn(1e7);}},
+  {id:'cash2',label:function(){return '+₹'+fmt(1e10);},run:function(){earn(1e10);}},
+  {id:'cash3',label:function(){return '+₹'+fmt(1e14);},run:function(){earn(1e14);}},
+  {id:'cash4',label:function(){return '+₹'+fmt(1e18);},run:function(){earn(1e18);}},
+  {id:'stage',label:function(){return 'Next stage';},run:function(){const k=stageIndex(S)+1;if(k<STAGES.length) earn(Math.max(0,STAGES[k].at-S.runEarned)+1);}},
+  {id:'hour',label:function(){return 'Skip 1 hour';},run:function(){earn(cps(S,Date.now(),false)*3600);}},
+  {id:'day',label:function(){return 'Skip 1 day';},run:function(){earn(cps(S,Date.now(),false)*86400);}},
+  {id:'stalls',label:function(){return '+10 of every stall';},run:function(){S.owned=S.owned.map(function(n){return n+10;});}},
+  {id:'unlock',label:function(){return 'Unlock all recipes and tech';},run:function(){
+    UPGRADES.forEach(function(u){S.up[u.id]=true;});MENU.forEach(function(m){S.menu[m.id]=true;});
+    TECH.forEach(function(t){S.tech[t.id]=true;});RESEARCH.forEach(function(r){S.res[r.id]=true;});
+    BRANCHES.forEach(function(b){S.br[b.id]=true;});FACUP.forEach(function(u){S.fac.up[u.id]=true;});if(S.fac.n<1) S.fac.n=1;
+  }},
+  {id:'rp',label:function(){return '+100 research points';},run:function(){S.rp+=100;}},
+  {id:'fp',label:function(){return '+10 franchise points';},run:function(){S.fp+=10;}},
+  {id:'staff',label:function(){return 'Max out all staff';},run:function(){
+    ROLES.forEach(function(r){S.roles[r.id]=r.max;});S.train=S.train.map(function(){return 5;});
+    GROUPS.forEach(function(g){S.mgr[g.id]=S.mgr[g.id]||'kind';});
+  }},
+  {id:'mood',label:function(){return 'Full morale and reputation';},run:function(){S.morale=100;S.rep=100;S.sickUntil=0;}},
+  {id:'cool',label:function(){return 'Reset all cooldowns';},run:function(){S.rushReady=0;S.celebReady=0;S.breakReady=0;}}
+];
+
 // </logic>
 
 /* ---------- UI ---------- */
@@ -770,7 +1207,7 @@ function iconSvg(name){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+ICO
 function setIcon(node,name){if(node._ic!==name){node._ic=name;node.classList.add('ic');node.innerHTML=iconSvg(name);}}
 
 const KEY='chai-empire-v1';
-const TABS=['stall','shop','quests','ranks','empire'];
+const TABS=['stall','shop','expand','quests','ranks','empire'];
 const E={
   main:$('#main'),app:$('#app'),cash:$('#cash'),cps:$('#cps'),stage:$('#stage'),stageFill:$('#stage-fill'),stageNote:$('#stage-note'),
   name:$('#stall-name'),tap:$('#tap'),tapVal:$('#tap-val'),cupCount:$('#cup-count'),counter:$('#counter'),coach:$('#coach'),
@@ -896,6 +1333,9 @@ function doTap(x,y){
   S.cup++;
   if(S.cup>=10){S.cup=0;served=true;v*=5;}
   S.taps++;earn(v);
+  if(S.taps%100===0) S.rp+=1;
+  const sc=fxSum(S,'steam');
+  if(sc>0&&Math.random()<sc){const bonus=tapValue(S,now)*5;earn(bonus);floater(x,y,'Bonus batch! +₹'+fmt(bonus),true);}
   track('tap',1);
   if(happyOn(now)) track('happyTap',1);
   if(ticket){ticket.p++;if(ticket.p>=ticket.need) deliverTicket(now);}
@@ -911,29 +1351,32 @@ function doTap(x,y){
 }
 function qtyFor(i){
   const b=BUILDINGS[i];
-  if(mode==='max') return maxBuy(b.base,S.owned[i],S.cash)||1;
+  if(mode==='max') return bMax(S,i,S.cash)||1;
   return mode;
 }
 function buyBuilding(i){
-  const b=BUILDINGS[i],n=qtyFor(i),cost=Math.ceil(bulkCost(b.base,S.owned[i],n));
+  const b=BUILDINGS[i],n=qtyFor(i),cost=bCost(S,i,n);
   if(S.cash<cost) return;
-  S.cash-=cost;S.owned[i]+=n;track('hire',n);sBuy();updateShop();
+  const before=stallMult(S.owned[i]);
+  S.cash-=cost;S.owned[i]+=n;track('hire',n);sBuy();
+  if(stallMult(S.owned[i])>before){toast(b.name+' output boosted ×'+(stallMult(S.owned[i])/before));sAward();}
+  updateShop();
 }
 function buyUpgrade(id){
   const u=UPGRADES.find(function(x){return x.id===id;});
-  if(!u||S.up[id]||S.cash<u.cost) return;
-  S.cash-=u.cost;S.up[id]=true;sBuy();toast('Learned: '+u.name);buildUpgrades();updateShop();
+  if(!u||S.up[id]||S.cash<upCost(S,u)) return;
+  S.cash-=upCost(S,u);S.up[id]=true;sBuy();toast('Learned: '+u.name);buildUpgrades();updateShop();
 }
 function buyMenu(id){
   const m=MENU.find(function(x){return x.id===id;});
-  if(!m||S.menu[id]||S.cash<m.cost) return;
-  S.cash-=m.cost;S.menu[id]=true;track('snack',1);sBuy();toast('On the menu: '+m.name);updateShop();
+  if(!m||S.menu[id]||S.cash<menuCost(S,m)) return;
+  S.cash-=menuCost(S,m);S.menu[id]=true;track('snack',1);sBuy();toast('On the menu: '+m.name);updateShop();
 }
 function startRush(){
   const now=Date.now();
   if(now<S.rushReady) return;
-  S.rushUntil=now+20000;S.rushReady=now+110000;S.rushUsed++;track('rush',1);
-  blip(660,0.15,'square',0.04);toast('Rush Hour! Earnings double for 20 seconds');
+  S.rushUntil=now+rushDur(S);S.rushReady=now+rushCool(S);addMorale(-3);S.rushUsed++;track('rush',1);
+  blip(660,0.15,'square',0.04);toast('Rush Hour! Earnings double for '+rushDur(S)/1000+' seconds');
 }
 function claimDaily(){
   const now=new Date(),today=dayKey(now);
@@ -947,22 +1390,23 @@ function claimDaily(){
 }
 function resetLive(){
   const now=Date.now();
-  guest=null;ticket=null;nextGuest=now+8000;nextTicket=now+15000;
+  guest=null;ticket=null;nextGuest=now+8000;nextTicket=now+15000;evt=null;nextEvt=now+150000;
 }
 function openFranchise(){
-  const gain=franchiseGain(S.runEarned);
+  const gain=fpGainNow(S);
   if(gain<1) return;
   const keep={name:S.name,fp:S.fp+gain,franchises:S.franchises+1,allEarned:S.allEarned,taps:S.taps,aw:S.aw,
     rushUsed:S.rushUsed,daily:S.daily,streak:S.streak,maxStreak:S.maxStreak,sound:S.sound,
-    served:S.served,seen:S.seen,qDone:S.qDone,delivered:S.delivered,pid:S.pid,lbOn:S.lbOn,seenVer:S.seenVer,q:S.q};
+    served:S.served,seen:S.seen,rp:S.rp,res:S.res,vis:S.vis,pay:S.pay,rep:S.rep,qDone:S.qDone,delivered:S.delivered,pid:S.pid,lbOn:S.lbOn,seenVer:S.seenVer,q:S.q,owner:S.owner,boost:S.boost,admin:S.admin};
   S=Object.assign(fresh(),keep);
+  S.cash=startCash(S);
   rebuildAll();save();sAward();
   toast('Franchise opened: +'+gain+' Franchise Points');
 }
 function checkAwards(){
   AWARDS.forEach(function(a){
     if(!S.aw[a.id]&&a.test(S)){
-      S.aw[a.id]=Date.now();toast('Award: '+a.name+' (+2% income)');sAward();
+      S.aw[a.id]=Date.now();toast((a.lt?'Long-term goal: ':'Award: ')+a.name+' (+'+Math.round((a.bonus||0.02)*100)+'% income)');sAward();
       if(activeTab==='empire') renderAwards();
     }
   });
@@ -972,31 +1416,39 @@ function checkAwards(){
 function wantText(g){
   if(g.want==='chai') return 'Wants a glass of chai. '+g.t.line;
   const m=MENU.find(function(x){return x.id===g.want;});
-  return 'Wants '+m.name+'. '+(g.mult>1?'It is on your menu, so he pays ×'+SNACK_PAY+'.':'Not on your menu yet.');
+  return 'Wants '+m.name+'. '+(g.mult>1?'It is on your menu, so he pays ×'+SNACK_PAY+'.':'Not on your menu, so he pays less.');
 }
 function spawnGuest(now){
-  const t=pickCustomer(stageIndex(S),Math.random);
+  const t=pickCustomer(S,Math.random);
   let want='chai';
   if(Math.random()<0.45) want=MENU[Math.floor(Math.random()*MENU.length)].id;
   if(!S.seen[t.id]){S.seen[t.id]=true;toast('New customer: '+t.name+' ('+Object.keys(S.seen).length+' of '+CUSTOMERS.length+' met)');}
-  guest={t:t,want:want,mult:(want!=='chai'&&S.menu[want])?SNACK_PAY:1,until:now+t.pat*1000,pat:t.pat*1000};
+  const imp=Math.random()<0.2,pat=t.pat*1000*fxMult(S,'pat')*DIFF.pat*rolePat(S)*(imp?0.7:1);
+  guest={t:t,want:want,mult:want==='chai'?1:(S.menu[want]?SNACK_PAY:0.6),imp:imp,ret:(S.vis[t.id]||0)>0,until:now+pat,pat:pat};
   blip(700,0.08,'sine',0.04);
 }
-function guestPay(now){return customerPay(guest.t,cps(S,now,true),guest.mult);}
+function guestPay(now){
+  let extra=fxMult(S,'pay');
+  if(guest.ret&&hasT(S,'loyal')) extra*=1.25;
+  if(hasT(S,'festival')&&eventOn(S,now)) extra*=1.5;
+  extra*=repPay(S)*rolePay(S);
+  if(guest.imp&&(guest.until-now)/guest.pat>0.5) extra*=1.5;
+  return customerPay(guest.t,cps(S,now,true),guest.mult,extra);
+}
 function serveGuest(){
   if(!guest) return;
   const now=Date.now(),pay=guestPay(now),t=guest.t;
-  earn(pay);S.served++;track('customer',1);
+  earn(pay);S.served++;track('customer',1);S.vis[t.id]=(S.vis[t.id]||0)+1;S.rp+=1;addRep(1);
   if(t.id==='vip') track('vip',1);
   if(t.x>=3) track('rich',1);
   floater(null,null,'+₹'+fmt(pay)+' from '+t.name,t.x>=3);
   sBuy();
-  guest=null;nextGuest=now+(25+Math.random()*20)*1000;
+  guest=null;nextGuest=now+guestGap(S,now);
   updateGuest(now);
 }
 function updateGuest(now){
   if(!guest&&now>=nextGuest) spawnGuest(now);
-  if(guest&&now>=guest.until){guest=null;nextGuest=now+(25+Math.random()*20)*1000;}
+  if(guest&&now>=guest.until){addRep(guest.imp?-5:-3);addMorale(-1);toast(guest.t.name+' left without being served');guest=null;nextGuest=now+guestGap(S,now);}
   if(!guest){
     E.gu.dataset.state='idle';E.gu.dataset.rich='';
     setIcon(E.guBadge,'customer');
@@ -1009,7 +1461,7 @@ function updateGuest(now){
   E.gu.dataset.state='active';E.gu.dataset.rich=guest.t.x>=3?'1':'';
   setIcon(E.guBadge,guest.t.ic);
   setText(E.guName,guest.t.name+' · pays ×'+guest.t.x);
-  setText(E.guSub,wantText(guest));
+  setText(E.guSub,wantText(guest)+(guest.imp?' Impatient: pays ×1.5 if served fast.':''));
   setText(E.guBtn,'Serve +₹'+fmt(guestPay(now)));E.guBtn.disabled=false;
   E.gu.style.setProperty('--p',Math.max(0,Math.min(100,(guest.until-now)/guest.pat*100)).toFixed(1)+'%');
 }
@@ -1017,22 +1469,22 @@ function updateGuest(now){
 /* online orders */
 function spawnTicket(now){
   const tier=stageIndex(S);
-  ticket={no:orderNo++,need:20+10*tier,p:0,until:now+30000,secs:90,min:50*(1+3*tier)};
+  ticket={no:orderNo++,need:Math.max(5,Math.round((20+10*tier)*fxMult(S,'orderTaps'))),p:0,until:now+30000*fxMult(S,'orderTime')*roleOrderTime(S),secs:90,min:50*(1+3*tier)};
   blip(600,0.06,'square',0.03);
 }
-function ticketPay(now){return Math.floor(Math.max(ticket.min,cps(S,now,true)*ticket.secs));}
+function ticketPay(now){return Math.floor(Math.max(ticket.min,cps(S,now,true)*ticket.secs)*fxMult(S,'orderPay')*roleOrder(S)*(hasT(S,'festival')&&eventOn(S,now)?1.5:1));}
 function deliverTicket(now){
   const pay=ticketPay(now);
-  earn(pay);S.delivered++;track('order',1);
+  earn(pay);S.delivered++;track('order',1);S.rp+=3;addRep(1);
   floater(null,null,'Order delivered! +₹'+fmt(pay),true);
   toast('Online order delivered: +₹'+fmt(pay));sAward();
-  ticket=null;nextTicket=now+(60+Math.random()*40)*1000;
+  ticket=null;nextTicket=now+orderGap(S,60+Math.random()*40);
 }
 function updateTicket(now){
   if(!ticket&&S.allEarned>=500&&now>=nextTicket) spawnTicket(now);
   if(ticket&&now>=ticket.until){
-    toast('Online order cancelled. Pour faster next time.');
-    ticket=null;nextTicket=now+(45+Math.random()*30)*1000;
+    toast('Online order cancelled. Pour faster next time.');addRep(-4);addMorale(-3);
+    ticket=null;nextTicket=now+orderGap(S,45+Math.random()*30);
   }
   setIcon(E.tkBadge,'order');
   if(!ticket){
@@ -1054,10 +1506,10 @@ function updateTicket(now){
 function handleAway(dt){
   const c=cps(S,0,false);
   if(c<=0) return;
-  const gain=c*Math.min(dt,8*3600)*0.5;
-  earn(gain);
+  const rate=offlineRate(S),gain=c*Math.min(dt,8*3600)*rate;
+  earn(gain);stepMorale(S,Math.min(dt,300));
   if(dt>=60){
-    setText($('#away-time'),fmtDur(dt));setText($('#away-gain'),'₹'+fmt(Math.floor(gain)));
+    setText($('#away-time'),fmtDur(dt));setText($('#away-rate'),Math.round(rate*100)+'%');setText($('#away-gain'),'₹'+fmt(Math.floor(gain)));
     E.away.hidden=false;$('#away-ok').focus();
   }
 }
@@ -1069,14 +1521,14 @@ function newPid(){
   catch(e){return (Math.random().toString(36)+Math.random().toString(36)).replace(/[^a-z0-9]/g,'').slice(0,20).padEnd(10,'x');}
 }
 function lbSubmit(){
-  if(!LB_URL||!S.lbOn||!S.pid) return Promise.resolve(false);
+  if(!LB_URL||!S.lbOn||!S.pid||S.boost) return Promise.resolve(false);
   const body=JSON.stringify({name:S.name,score:Math.min(Math.floor(S.allEarned),1e18),franchises:S.franchises,ts:Date.now()});
   lbLast=Date.now();lbLastScore=S.allEarned;lbLastName=S.name;
   return fetch(LB_URL+'/scores/'+S.pid+'.json',{method:'PUT',body:body,keepalive:true})
     .then(function(r){return r.ok;}).catch(function(){return false;});
 }
 function lbAuto(now){
-  if(!LB_URL||!S.lbOn) return;
+  if(!LB_URL||!S.lbOn||S.boost) return;
   if(now-lbLast>120000&&(Math.floor(S.allEarned)>Math.floor(lbLastScore)||S.name!==lbLastName)) lbSubmit();
 }
 function lbLoad(){
@@ -1098,17 +1550,23 @@ function renderRanks(){
   const off=!LB_URL,joined=!!(S.lbOn&&S.pid);
   $('#lb-off').hidden=!off;
   $('#lb-join').hidden=off||joined;
-  $('#lb-live').hidden=off||!joined;
-  if(off||!joined) return;
+  $('#lb-live').hidden=off||(!joined&&!S.admin);
+  if(off||(!joined&&!S.admin)) return;
   const list=$('#lb-list');list.textContent='';
   let seen=false;
   lbRows.forEach(function(r,i){
     const me=r.pid===S.pid;if(me) seen=true;
-    const li=el('li','row'+(me?' me':'')+(i<3?' top':'')),badge=el('div','badge small','#'+(i+1)),mid=el('div');
+    const li=el('li','row'+(me?' me':'')+(i<3?' top':'')+(S.admin&&!me?' adm':'')),badge=el('div','badge small','#'+(i+1)),mid=el('div');
     mid.append(el('span','row-title',r.name+(me?' (you)':'')),el('span','row-sub',r.fr?r.fr+(r.fr>1?' franchises':' franchise'):'No franchise yet'));
-    li.append(badge,mid,el('span','chip','₹'+fmt(r.score)));list.append(li);
+    li.append(badge,mid,el('span','chip','₹'+fmt(r.score)));
+    if(S.admin&&!me){
+      const kill=el('button','btn danger small','Remove');kill.type='button';
+      kill.addEventListener('click',function(){adminRemove(r,kill);});
+      li.append(kill);
+    }
+    list.append(li);
   });
-  if(!seen){
+  if(!seen&&joined){
     const li=el('li','row me'),badge=el('div','badge small','You'),mid=el('div');
     mid.append(el('span','row-title',S.name+' (you)'),el('span','row-sub',lbRows.length?'Keep earning to reach the top 50.':'Your score shows here once it is sent.'));
     li.append(badge,mid,el('span','chip','₹'+fmt(Math.floor(S.allEarned))));list.append(li);
@@ -1116,17 +1574,40 @@ function renderRanks(){
   setText($('#lb-status'),lbBusy?'Loading…':lbErr||(lbAt?'Updated at '+new Date(lbAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'. Your stall name is your leaderboard name.':'Loading…'));
 }
 
+/* ---------- Admin mode: leaderboard moderation ---------- */
+let adminT=0,adminFor='';
+function adminRemove(r,btn){
+  if(!S.admin||!r||!r.pid||r.pid===S.pid) return;
+  if(adminFor!==r.pid){
+    adminFor=r.pid;clearTimeout(adminT);adminT=setTimeout(function(){adminFor='';renderRanks();},4000);
+    setText(btn,'Sure?');return;
+  }
+  clearTimeout(adminT);adminFor='';
+  if(LB_URL) fetch(LB_URL+'/scores/'+r.pid+'.json',{method:'DELETE'}).catch(function(){});
+  lbRows=lbRows.filter(function(x){return x.pid!==r.pid;});
+  renderRanks();toast('Removed '+r.name+' from the ranks');
+}
+function updateAdmin(){
+  const c=$('#admin-card');if(!c) return;
+  c.hidden=!S.admin;renderRanks();
+}
+function adminUnlock(){
+  if(S.admin) return;
+  S.admin=true;save();updateAdmin();lbLoad();toast('Admin mode unlocked');
+}
+
 /* building the lists */
 function buildShop(){
   const list=$('#bld-list');list.textContent='';shopRows=[];
   BUILDINGS.forEach(function(b,i){
-    const li=el('li','row'),badge=el('div','badge'),mid=el('div'),name=el('span','row-title'),desc=el('span','row-sub'),meta=el('span','meta');
-    mid.append(name,desc,meta);
+    const li=el('li','row'),badge=el('div','badge'),mid=el('div'),name=el('span','row-title'),desc=el('span','row-sub'),meta=el('span','meta'),boost=el('span','meta');
+    boost.style.color='var(--brand)';boost.style.fontWeight='600';
+    mid.append(name,desc,meta,boost);
     const btn=el('button','btn buy'),price=el('span'),sub=el('small');
     btn.type='button';btn.append(price,sub);
     btn.addEventListener('click',function(){buyBuilding(i);});
     li.append(badge,mid,btn);list.append(li);
-    shopRows.push({li:li,badge:badge,name:name,desc:desc,meta:meta,btn:btn,price:price,sub:sub});
+    shopRows.push({li:li,badge:badge,name:name,desc:desc,meta:meta,boost:boost,btn:btn,price:price,sub:sub});
   });
 }
 function buildUpgrades(){
@@ -1138,7 +1619,7 @@ function buildUpgrades(){
     const btn=el('button','btn buy'),price=el('span',null,'₹'+fmt(u.cost)),sub=el('small',null,'Learn');
     btn.type='button';btn.append(price,sub);
     btn.addEventListener('click',function(){buyUpgrade(u.id);});
-    li.append(badge,mid,btn);list.append(li);upRows.push({u:u,btn:btn});
+    li.append(badge,mid,btn);list.append(li);upRows.push({u:u,btn:btn,price:price});
   });
   if(!avail.length) list.append(el('li','empty','Every recipe is learned. Open a franchise to start over with a bonus.'));
   setText($('#up-count'),(UPGRADES.length-avail.length)+' of '+UPGRADES.length+' learned');
@@ -1155,28 +1636,275 @@ function buildMenu(){
     menuRows.push({m:m,li:li,badge:badge,btn:btn,price:price,sub:sub,have:null});
   });
 }
+function awardRow(a,lt){
+  const done=!!S.aw[a.id];
+  const li=el('li','row plain'+(done?' done':'')),badge=el('div','badge small'),mid=el('div');
+  if(done) badge.innerHTML=iconSvg('check');
+  else badge.textContent='+'+Math.round((a.bonus||0.02)*100)+'%';
+  mid.append(el('span','row-title',a.name+(done?' (unlocked)':'')),el('span','row-sub',a.desc));
+  if(lt&&!done){
+    const cur=Math.min(a.goal,a.cur(S)),prog=el('div','prog'),bar=el('i');
+    bar.style.width=(cur/a.goal*100).toFixed(1)+'%';prog.append(bar);
+    mid.append(prog,el('span','row-sub',fmt(Math.floor(cur))+' of '+fmt(a.goal)));
+  }
+  li.append(badge,mid);
+  return li;
+}
 function renderAwards(){
-  const list=$('#aw-list');list.textContent='';let n=0;
+  const list=$('#aw-list'),ltl=$('#lt-list');list.textContent='';ltl.textContent='';
+  let n=0,tn=0,nb=0,tb=0;
   AWARDS.forEach(function(a){
-    const done=!!S.aw[a.id];if(done) n++;
-    const li=el('li','row plain'+(done?' done':'')),badge=el('div','badge small'),mid=el('div');
-    if(done) badge.innerHTML=iconSvg('check');
-    else badge.textContent='+2%';
-    mid.append(el('span','row-title',a.name+(done?' (unlocked)':'')),el('span','row-sub',a.desc));
-    li.append(badge,mid);list.append(li);
+    const done=!!S.aw[a.id];
+    if(a.lt){if(done){tn++;tb+=a.bonus;}ltl.append(awardRow(a,true));}
+    else{if(done){n++;nb+=0.02;}list.append(awardRow(a,false));}
   });
-  setText($('#aw-count'),n+' of '+AWARDS.length+' · +'+(n*2)+'% income');
+  const regular=AWARDS.filter(function(a){return !a.lt;}).length,longTerm=AWARDS.length-regular;
+  setText($('#aw-count'),n+' of '+regular+' · +'+Math.round(nb*100)+'% income');
+  setText($('#lt-count'),tn+' of '+longTerm+' · +'+Math.round(tb*100)+'% income');
   const st=$('#stats');st.textContent='';
   [['Total taps',S.taps.toLocaleString('en-IN')],['Customers served',S.served.toLocaleString('en-IN')],
+   ['Customer types met',Object.keys(S.seen).length+' of '+CUSTOMERS.length],
    ['Online orders delivered',S.delivered.toLocaleString('en-IN')],['Quests claimed',S.qDone.toLocaleString('en-IN')],
-   ['Customer types met',Object.keys(S.seen).length+' of '+CUSTOMERS.length],['Earned all time','₹'+fmt(S.allEarned)],['Franchises opened',String(S.franchises)]].forEach(function(p){
+   ['Earned all time','₹'+fmt(S.allEarned)],['Franchises opened',String(S.franchises)]].forEach(function(p){
     st.append(el('dt',null,p[0]),el('dd',null,p[1]));
   });
+}
+function renderMilestones(){
+  const list=$('#fm-list');list.textContent='';
+  FMS.forEach(function(f){
+    const done=S.fp>=f.at;
+    const li=el('li','row plain'+(done?' done':'')),badge=el('div','badge small'),mid=el('div');
+    if(done) badge.innerHTML=iconSvg('check');else badge.textContent=String(f.at);
+    mid.append(el('span','row-title',f.name+(done?' (unlocked)':'')),el('span','row-sub',f.desc));
+    if(!done) mid.append(el('span','meta',S.fp+' of '+f.at+' Franchise Points'));
+    li.append(badge,mid);list.append(li);
+  });
+}
+
+/* team: morale, wages, managers, training, staff events */
+let shopView='menu',evt=null,nextEvt=0,dispCash=0;
+const MGROWS=[],TRROWS=[],ROROWS=[];
+function addMorale(x){S.morale=Math.max(0,Math.min(100,S.morale+x));}
+function addRep(x){if(x<0) x*=roleGuard(S);S.rep=Math.max(0,Math.min(100,S.rep+x));}
+function moodWord(m){return m>=90?'Delighted':m>=70?'Steady':m>=50?'Tired':m>=30?'Unhappy':'Close to quitting';}
+function animCash(){
+  if(S){
+    const t=S.cash;dispCash+=(t-dispCash)*0.25;
+    if(Math.abs(t-dispCash)<=Math.max(1,t*0.0005)) dispCash=t;
+    setText(E.cash,fmt(Math.floor(dispCash)));
+  }
+  requestAnimationFrame(animCash);
+}
+function buildTeam(){
+  const rl=$('#ro-list');rl.textContent='';ROROWS.length=0;
+  ROLES.forEach(function(r){
+    const li=el('li','row'),badge=el('div','badge'),mid=el('div'),meta=el('span','meta'),col=el('div','buyc'),hire=el('button','btn buy'),price=el('span'),sub=el('small'),fire=el('button','btn ghost small','Let go');
+    mid.append(el('span','row-title',r.name),el('span','row-sub',r.desc),meta);
+    hire.type='button';hire.append(price,sub);fire.type='button';
+    hire.addEventListener('click',function(){hireRole(r.id);});
+    fire.addEventListener('click',function(){fireRole(r.id);});
+    col.append(hire,fire);li.append(badge,mid,col);rl.append(li);
+    ROROWS.push({r:r,li:li,badge:badge,meta:meta,hire:hire,price:price,sub:sub,fire:fire});
+  });
+  const ml=$('#mg-list');ml.textContent='';MGROWS.length=0;
+  GROUPS.forEach(function(g){
+    const card=el('li','card'),h=el('h3',null,g.name),sub=el('span','row-sub'),meta=el('span','meta'),acts=el('div','actions');
+    card.append(h,sub,meta,acts);
+    const btns=MGR_STYLES.map(function(st){
+      const b=el('button','btn');b.type='button';
+      b.addEventListener('click',function(){hireManager(g.id,st.id);});
+      acts.append(b);return b;
+    });
+    const fire=el('button','btn ghost','Dismiss');fire.type='button';
+    fire.addEventListener('click',function(){dismissManager(g.id);});
+    acts.append(fire);
+    ml.append(card);MGROWS.push({g:g,sub:sub,meta:meta,btns:btns,fire:fire});
+  });
+  const tl=$('#tr-list');tl.textContent='';TRROWS.length=0;
+  BUILDINGS.forEach(function(b,i){
+    const li=el('li','row'),badge=el('div','badge small'),mid=el('div'),t=el('span','row-title'),d=el('span','row-sub'),req=el('span','meta'),btn=el('button','btn buy'),price=el('span'),sub=el('small');
+    mid.append(t,d,req);btn.type='button';btn.append(price,sub);
+    btn.addEventListener('click',function(){trainStall(i);});
+    li.append(badge,mid,btn);tl.append(li);
+    TRROWS.push({i:i,li:li,badge:badge,t:t,d:d,req:req,btn:btn,price:price,sub:sub});
+  });
+}
+function hireRole(id){
+  const r=ROLES.find(function(x){return x.id===id;});
+  if(!r||stageIndex(S)<r.st||roleN(S,id)>=r.max) return;
+  const c=roleCost(S,r);
+  if(S.cash<c) return;
+  S.cash-=c;S.roles[id]=roleN(S,id)+1;sBuy();toast('Hired a '+r.name);updateTeam();
+}
+function fireRole(id){
+  if(roleN(S,id)<1) return;
+  S.roles[id]--;if(!S.roles[id]) delete S.roles[id];
+  addMorale(-2);toast('Let one go. The crew is uneasy');updateTeam();
+}
+function hireManager(gid,sid){
+  const g=GROUPS.find(function(x){return x.id===gid;}),st=MGR_STYLES.find(function(x){return x.id===sid;});
+  if(!g||!st||S.mgr[gid]===sid) return;
+  const cost=S.mgr[gid]?Math.ceil(g.cost/2):g.cost;
+  if(crewSize(S,g)<g.need||S.cash<cost) return;
+  S.cash-=cost;S.mgr[gid]=sid;sBuy();toast(st.name+' manager hired for the '+g.name);
+  updateTeam();
+}
+function dismissManager(gid){
+  if(!S.mgr[gid]) return;
+  delete S.mgr[gid];addMorale(-3);toast('Manager dismissed');updateTeam();
+}
+function trainStall(i){
+  if(!canTrain(S,i)) return;
+  const c=trainCost(S,i);
+  if(S.cash<c) return;
+  S.cash-=c;S.train[i]=(S.train[i]||0)+1;sBuy();sAward();
+  toast(BUILDINGS[i].name+' training level '+S.train[i]);
+  updateTeam();
+}
+function chaiBreak(){
+  const now=Date.now(),c=breakCost(S);
+  if(now<S.breakReady||S.cash<c||S.morale>=99) return;
+  S.cash-=c;S.breakReady=now+180000;addMorale(20);sBuy();toast('Chai break! Morale up');
+  updateTeam();
+}
+function updateTeam(){
+  const now=Date.now(),info=staffInfo(S),net=cps(S,now,false),pre=net/(1-roleWages(S)),sn=info.gross-info.wages,gross=sn>0?pre*info.gross/sn:0;
+  setText($('#tm-morale'),Math.round(S.morale)+'%');
+  setText($('#tm-mood'),moodWord(S.morale));
+  $('#tm-fill').style.width=S.morale.toFixed(1)+'%';
+  setText($('#tm-gross'),'₹'+fmt(gross)+'/sec');
+  setText($('#tm-wages'),'−₹'+fmt(Math.max(0,gross-net))+'/sec');
+  setText($('#tm-net'),'₹'+fmt(net)+'/sec');
+  document.querySelectorAll('#pay-seg button').forEach(function(b){b.setAttribute('aria-pressed',String(Number(b.dataset.pay)===S.pay));});
+  setText($('#tm-paynote'),payOf(S).desc);
+  const bc=breakCost(S),bb=$('#tm-break');
+  const left=Math.ceil((S.breakReady-now)/1000);
+  bb.disabled=now<S.breakReady||S.cash<bc||S.morale>=99;
+  setText(bb,now<S.breakReady?'Chai break in '+fmtDur(left):S.morale>=99?'Morale is full':'Chai break · ₹'+fmt(bc));
+  let nroles=0;
+  ROROWS.forEach(function(x){
+    const r=x.r,n=roleN(S,r.id),open=stageIndex(S)>=r.st,full=n>=r.max,c=roleCost(S,r);
+    nroles+=n;
+    x.li.classList.toggle('locked',!open);x.li.classList.toggle('done',full);
+    setText(x.badge,String(n));
+    setText(x.meta,!open?'Needs: reach '+STAGES[r.st].name:n+' of '+r.max+' · now '+r.now(S)+' · wages '+(n*r.wage*wageCut(S)*100).toFixed(1)+'% of income');
+    setText(x.price,full?'Full':'₹'+fmt(c));setText(x.sub,full?'Team full':'Hire');
+    x.hire.disabled=!open||full||S.cash<c;
+    x.fire.hidden=n<1;
+  });
+  setText($('#ro-count'),nroles+' hired');
+  let hired=0;
+  MGROWS.forEach(function(r){
+    const g=r.g,st=mgrStyle(S,g),crew=crewSize(S,g),cost=S.mgr[g.id]?Math.ceil(g.cost/2):g.cost;
+    if(st) hired++;
+    setText(r.sub,st?'Manager: '+st.name+'. '+st.desc:(crew>30?'No manager: a crew over 30 works 15% slower.':'No manager yet.'));
+    setText(r.meta,'Crew of '+crew+' · '+g.desc+(crew<g.need&&!st?' · Needs '+g.need+' staff to hire':''));
+    r.btns.forEach(function(b,j){
+      const s2=MGR_STYLES[j];
+      setText(b,s2.name+' · ₹'+fmt(cost));
+      b.disabled=crew<g.need||S.cash<cost||S.mgr[g.id]===s2.id;
+    });
+    r.fire.hidden=!st;
+  });
+  setText($('#mg-count'),hired+' of '+GROUPS.length+' hired');
+  let levels=0;
+  TRROWS.forEach(function(r){
+    const i=r.i,b=BUILDINGS[i],lvl=S.train[i]||0;
+    levels+=lvl;
+    r.li.hidden=!(S.owned[i]>0||lvl>0);
+    r.li.classList.toggle('done',lvl>=5);
+    setText(r.badge,'L'+lvl);
+    setText(r.t,b.name);
+    setText(r.d,lvl>=5?'Fully trained: output +150%, wages +100%.':'Next level: output +30%, wages +20%. Now at output +'+(lvl*30)+'%.');
+    const need=trainReq(S,i);
+    r.req.hidden=lvl>=5||S.owned[i]>=need;setText(r.req,'Needs '+need+' owned');
+    const c=trainCost(S,i);
+    setText(r.price,lvl>=5?'Maxed':'₹'+fmt(c));setText(r.sub,lvl>=5?'Level 5':'Train');
+    r.btn.disabled=!canTrain(S,i)||S.cash<c;
+  });
+  setText($('#tr-count'),levels+' levels');
+}
+function updateStat(){
+  setText($('#st-morale'),Math.round(S.morale)+'%');
+  setText($('#st-rep'),Math.round(S.rep)+'%');
+  $('#st-morale-bar').style.width=S.morale.toFixed(1)+'%';
+  $('#st-rep-bar').style.width=S.rep.toFixed(1)+'%';
+  $('#st-morale-box').classList.toggle('warn',S.morale<35);
+  $('#st-rep-box').classList.toggle('warn',S.rep<30);
+}
+function setShopView(v){
+  shopView=v;
+  $('#shop-menu').hidden=v!=='menu';$('#shop-team').hidden=v!=='team';
+  document.querySelectorAll('#shop-views button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.view===v));});
+  E.main.scrollTop=0;
+  if(v==='team') updateTeam();else updateShop();
+}
+/* staff events: you pick the response; ignored events resolve badly after 90 seconds */
+function pickIdx(test){const is=[];BUILDINGS.forEach(function(b,i){if(test(i)) is.push(i);});return is.length?is[Math.floor(Math.random()*is.length)]:-1;}
+function evCost(sec){return Math.max(300,Math.ceil(cps(S,Date.now(),false)*sec));}
+const EVT=[
+  {id:'raise',w:3,ok:function(){return totalOwned(S)>0;},make:function(){
+    const gs=GROUPS.filter(function(g){return crewSize(S,g)>0;}),g=gs[Math.floor(Math.random()*gs.length)],c=evCost(300);
+    return {title:'Raise request',sub:g.name+' wants a raise. Refusing will hurt morale.',
+      a:{label:'Give raise',cost:c,run:function(){addMorale(12);toast('Raise granted. Morale is up');}},
+      b:{label:'Refuse',cost:0,run:function(){addMorale(-12);toast('The crew is unhappy');}}};}},
+  {id:'sick',bad:true,w:3,ok:function(){return totalOwned(S)>0;},make:function(){
+    const c=evCost(180);
+    return {title:'Flu is going around',sub:'Part of your crew is down with a fever.',
+      a:{label:'Pay for medicine',cost:c,run:function(){addMorale(3);toast('Everyone is back on their feet');}},
+      b:{label:'Ignore it',cost:0,run:function(){S.sickUntil=Date.now()+180000;addMorale(-5);toast('Output is down 20% for 3 minutes');}}};}},
+  {id:'poach',bad:true,w:2,ok:function(){return pickIdx(function(i){return (S.train[i]||0)>0;})>=0;},make:function(){
+    const i=pickIdx(function(k){return (S.train[k]||0)>0;}),c=evCost(600);
+    return {title:'A rival is poaching',sub:'A rival offers your trained '+BUILDINGS[i].name+' staff more money.',
+      a:{label:'Counter-offer',cost:c,run:function(){toast('They stayed');}},
+      b:{label:'Let them go',cost:0,run:function(){S.train[i]=Math.max(0,(S.train[i]||0)-1);addMorale(-4);toast(BUILDINGS[i].name+' lost a training level');}}};}},
+  {id:'quit',bad:true,w:2,ok:function(){return pickIdx(function(i){return S.owned[i]>=10;})>=0;},make:function(){
+    const i=pickIdx(function(k){return S.owned[k]>=10;}),c=evCost(240);
+    return {title:'A worker wants to quit',sub:'Someone from '+BUILDINGS[i].name+' has had enough.',
+      a:{label:'Retention bonus',cost:c,run:function(){toast('They are staying');}},
+      b:{label:'Let go',cost:0,run:function(){const lose=Math.max(1,Math.floor(S.owned[i]*0.03));S.owned[i]=Math.max(0,S.owned[i]-lose);addMorale(-3);toast('Lost '+lose+' '+BUILDINGS[i].name);}}};}},
+  {id:'party',w:2,ok:function(){return totalOwned(S)>0;},make:function(){
+    const c=evCost(200);
+    return {title:'Staff party',sub:'The crew would love a chai and samosa evening.',
+      a:{label:'Host a party',cost:c,run:function(){addMorale(15);toast('Great party. Morale is up');}},
+      b:{label:'Skip it',cost:0,run:function(){addMorale(-3);}}};}},
+  {id:'praise',w:1,ok:function(){return totalOwned(S)>0;},make:function(){
+    return {title:'Customers love your staff',sub:'A review praised your crew by name.',
+      a:{label:'Lovely',cost:0,run:function(){addMorale(8);addRep(5);toast('Morale and reputation up');}},b:null};}}
+];
+function spawnEvent(now,force){
+  const pool=EVT.filter(function(e){return force?e.id===force:e.ok();});
+  if(!pool.length){nextEvt=now+120000;return;}
+  const ew=function(e){return e.w*(e.bad?roleGuard(S):1);};
+  let sum=0;pool.forEach(function(e){sum+=ew(e);});
+  let r=Math.random()*sum,pick=pool[pool.length-1];
+  for(let k=0;k<pool.length;k++){r-=ew(pool[k]);if(r<0){pick=pool[k];break;}}
+  const e=pick.make();e.until=now+90000;e.span=90000;evt=e;
+  toast('Staff news: '+e.title);blip(520,0.08,'square',0.03);
+}
+function resolveEvent(opt,auto){
+  if(!evt||!opt) return;
+  if(opt.cost>0){if(S.cash<opt.cost&&!auto) return;S.cash=Math.max(0,S.cash-opt.cost);}
+  opt.run();
+  evt=null;nextEvt=Date.now()+(240+Math.random()*240)*1000;
+  if(!auto) sBuy();
+  updateEvent(Date.now());
+}
+function updateEvent(now){
+  const c=$('#evt');
+  if(!evt&&now>=nextEvt&&stageIndex(S)>=1&&totalOwned(S)>=10) spawnEvent(now);
+  if(evt&&now>=evt.until) resolveEvent(evt.b||evt.a,true);
+  c.hidden=!evt;
+  if(!evt) return;
+  setText($('#evt-title'),evt.title);setText($('#evt-sub'),evt.sub);
+  const a=$('#evt-a'),b=$('#evt-b');
+  setText(a,evt.a.label+(evt.a.cost?' · ₹'+fmt(evt.a.cost):''));a.disabled=evt.a.cost>S.cash;
+  b.hidden=!evt.b;if(evt.b) setText(b,evt.b.label);
+  c.style.setProperty('--p',Math.max(0,(evt.until-now)/evt.span*100).toFixed(1)+'%');
 }
 
 /* per-tick updates */
 function updateHud(now){
-  setText(E.cash,fmt(Math.floor(S.cash)));
   setText(E.cps,'₹'+fmt(cps(S,now,true)));
   setText(E.name,S.name);
   setText(E.tapVal,'₹'+fmt(tapValue(S,now))+' per tap');
@@ -1197,11 +1925,11 @@ function updateHud(now){
   }
 }
 function updateRush(now){
-  let state='ready',chip='Start',sub='Doubles all earnings for 20 seconds',p=100;
+  let state='ready',chip='Start',sub='Doubles all earnings for '+rushDur(S)/1000+' seconds',p=100;
   if(now<S.rushUntil){
-    const left=(S.rushUntil-now)/1000;state='active';chip=Math.ceil(left)+'s';sub='Earnings are doubled right now';p=left/20*100;
+    const left=(S.rushUntil-now)/1000;state='active';chip=Math.ceil(left)+'s';sub='Earnings are doubled right now';p=left/(rushDur(S)/1000)*100;
   }else if(now<S.rushReady){
-    const left=(S.rushReady-now)/1000;state='cool';chip=fmtDur(left);sub='The kettle needs a rest';p=(1-left/90)*100;
+    const left=(S.rushReady-now)/1000;state='cool';chip=fmtDur(left);sub='The kettle needs a rest';p=(1-left/(rushCool(S)/1000))*100;
   }
   E.rush.dataset.state=state;
   E.rush.setAttribute('aria-disabled',String(state!=='ready'));
@@ -1209,6 +1937,150 @@ function updateRush(now){
   E.rush.style.setProperty('--p',Math.max(0,Math.min(100,p)).toFixed(1)+'%');
   E.app.classList.toggle('is-rush',state==='active');
 }
+/* expansion panel */
+const EX_TREES=[['prod','ex-prod'],['biz','ex-biz'],['spec','ex-spec'],['end','ex-end']];
+const EXROWS=[],FACROWS=[],BRROWS=[],RSROWS=[];
+function mkRow(badge,title,desc){
+  const li=el('li','row'),bd=el('div','badge small',badge),mid=el('div'),req=el('span','meta'),btn=el('button','btn buy'),price=el('span'),sub=el('small');
+  mid.append(el('span','row-title',title),el('span','row-sub',desc),req);
+  btn.type='button';btn.append(price,sub);
+  li.append(bd,mid,btn);
+  return {li:li,req:req,btn:btn,price:price,sub:sub};
+}
+function buildExpand(){
+  EX_TREES.forEach(function(tr){
+    const list=$('#'+tr[1]);list.textContent='';
+    TECH.filter(function(t){return t.tree===tr[0];}).forEach(function(t){
+      const r=mkRow(t.badge,t.name,t.desc);
+      r.t=t;list.append(r.li);EXROWS.push(r);
+      r.btn.addEventListener('click',function(){buyTech(t.id);});
+    });
+  });
+  const fu=$('#fac-ups');fu.textContent='';
+  FACUP.forEach(function(u){
+    const r=mkRow(u.badge,u.name,u.desc);
+    r.u=u;fu.append(r.li);FACROWS.push(r);
+    r.btn.addEventListener('click',function(){buyFacUp(u.id);});
+  });
+  const bl=$('#br-list');bl.textContent='';
+  BRANCHES.forEach(function(b){
+    const r=mkRow('+12%',b.name,b.desc);
+    r.b=b;bl.append(r.li);BRROWS.push(r);
+    r.btn.addEventListener('click',function(){buyBranch(b.id);});
+  });
+  const rl=$('#rs-list');rl.textContent='';
+  RESEARCH.forEach(function(x){
+    const r=mkRow(x.badge,x.name,x.desc);
+    r.x=x;rl.append(r.li);RSROWS.push(r);
+    r.btn.addEventListener('click',function(){buyResearch(x.id);});
+  });
+}
+function buyTech(id){
+  const t=TECH.find(function(x){return x.id===id;});
+  if(!t||hasT(S,t.id)||!techAvail(S,t)||S.cash<t.cost) return;
+  S.cash-=t.cost;S.tech[t.id]=true;sBuy();toast('Learned: '+t.name);
+  if(t.id==='corporate') S.corpNext=Date.now()+300000;
+  updateExpand();updateShop();
+}
+function buyFactory(){
+  const c=facCost(S);
+  if(!hasT(S,'stirring')||S.cash<c) return;
+  S.cash-=c;S.fac.n++;sBuy();toast('Factory built. Ingredients are on their way');
+  updateExpand();
+}
+function buyFacUp(id){
+  const u=FACUP.find(function(x){return x.id===id;});
+  if(!u||S.fac.up[id]||!(S.fac.n>0)||(u.need&&!S.fac.up[u.need])||S.cash<u.cost) return;
+  S.cash-=u.cost;S.fac.up[id]=true;sBuy();toast('Factory upgrade: '+u.name);
+  updateExpand();
+}
+function buyBranch(id){
+  const b=BRANCHES.find(function(x){return x.id===id;});
+  if(!b||brOpen(S,id)||!hasT(S,b.need)||S.cash<b.cost) return;
+  S.cash-=b.cost;S.br[id]=true;sBuy();toast('Branch open: '+b.name+' (+12% income)');
+  updateExpand();
+}
+function buyResearch(id){
+  const x=RESEARCH.find(function(y){return y.id===id;});
+  if(!x||S.res[x.id]||!hasT(S,'research_lab')||S.rp<x.cost) return;
+  S.rp-=x.cost;S.res[x.id]=true;sBuy();toast('Researched: '+x.name);
+  updateExpand();updateShop();
+}
+function updateExpand(){
+  const cnt={prod:[0,0],biz:[0,0],spec:[0,0],end:[0,0]};let learned=0;
+  EXROWS.forEach(function(r){
+    const t=r.t,have=hasT(S,t.id),ok=techAvail(S,t);
+    cnt[t.tree][1]++;
+    if(have){learned++;cnt[t.tree][0]++;}
+    r.li.classList.toggle('done',have);
+    r.li.classList.toggle('locked',!have&&!ok);
+    r.req.hidden=have;setText(r.req,techReq(S,t));
+    r.btn.disabled=have||!ok||S.cash<t.cost;
+    setText(r.price,have?'Owned':'₹'+fmt(t.cost));
+    setText(r.sub,have?'Learned':ok?'Learn':'Locked');
+  });
+  setText($('#ex-count'),learned+' of '+TECH.length+' learned');
+  setText($('#ex-prod-count'),cnt.prod[0]+' of '+cnt.prod[1]);
+  setText($('#ex-biz-count'),cnt.biz[0]+' of '+cnt.biz[1]);
+  setText($('#ex-spec-count'),cnt.spec[0]+' of '+cnt.spec[1]);
+  setText($('#ex-end-count'),cnt.end[0]+' of '+cnt.end[1]);
+  setText($('#ex-rp'),String(Math.floor(S.rp)));
+  // factory
+  const hasSt=hasT(S,'stirring'),fc=facCost(S),bonusPct=Math.round((facBonus(S)-1)*100);
+  setText($('#fac-n'),String(S.fac.n));
+  setText($('#fac-out'),fmt(facOut(S))+' a second');
+  setText($('#fac-stock'),fmt(Math.floor(S.fac.stock))+' of '+fmt(facCap(S)));
+  setText($('#fac-note'),!hasSt?'Learn Automated Stirring to build factories.':S.fac.n?'Factories make ingredients on their own, and your stalls use them up. While stock lasts, all income is '+(bonusPct?'+'+bonusPct+'%':'normal')+'.':'Build a factory and it starts making ingredients for your stalls.');
+  const fb=$('#fac-buy');fb.disabled=!hasSt||S.cash<fc;setText(fb,'Build factory · ₹'+fmt(fc));
+  FACROWS.forEach(function(r){
+    const u=r.u,have=!!S.fac.up[u.id],ok=!have&&S.fac.n>0&&(!u.need||S.fac.up[u.need]);
+    r.li.classList.toggle('done',have);r.li.classList.toggle('locked',!have&&!ok);
+    let req='';
+    if(!have){ if(!S.fac.n) req='Build a factory first'; else if(u.need&&!S.fac.up[u.need]) req='Needs: '+FACUP.find(function(x){return x.id===u.need;}).name; }
+    r.req.hidden=have||!req;setText(r.req,req);
+    r.btn.disabled=!ok||S.cash<u.cost;
+    setText(r.price,have?'Owned':'₹'+fmt(u.cost));setText(r.sub,have?'Learned':'Learn');
+  });
+  // branches
+  BRROWS.forEach(function(r){
+    const b=r.b,have=brOpen(S,b.id),ok=hasT(S,b.need);
+    r.li.classList.toggle('done',have);r.li.classList.toggle('locked',!have&&!ok);
+    r.req.hidden=have;setText(r.req,ok?'Ready to open':'Needs: '+techName(b.need));
+    r.btn.disabled=have||!ok||S.cash<b.cost;
+    setText(r.price,have?'Open':'₹'+fmt(b.cost));setText(r.sub,have?'Running':'Open branch');
+  });
+  const nb=brCount(S);
+  setText($('#br-count'),nb+' open · +'+Math.round(nb*12)+'% income');
+  // research
+  const lab=hasT(S,'research_lab');
+  $('#rs-locked').hidden=lab;
+  setText($('#rs-count'),Object.keys(S.res).length+' of '+RESEARCH.length);
+  RSROWS.forEach(function(r){
+    const x=r.x,have=!!S.res[x.id],ok=lab&&!have&&S.rp>=x.cost;
+    r.li.classList.toggle('done',have);r.li.classList.toggle('locked',!lab&&!have);
+    r.req.hidden=true;
+    r.btn.disabled=!ok;
+    setText(r.price,have?'Done':x.cost+' RP');setText(r.sub,have?'Researched':'Research');
+  });
+}
+function updateCampaign(now){
+  const b=$('#celeb');
+  b.hidden=!hasT(S,'celeb');
+  if(b.hidden) return;
+  let state='ready',chip='Start',sub='Customers queue up for a minute',p=100;
+  if(now<S.celebUntil){const left=(S.celebUntil-now)/1000;state='active';chip=Math.ceil(left)+'s';sub='Busy stall: customers arrive every few seconds';p=left/60*100;}
+  else if(now<S.celebReady){const left=(S.celebReady-now)/1000;state='cool';chip=fmtDur(left);sub='The campaign team is resting';p=(1-left/240)*100;}
+  b.dataset.state=state;b.setAttribute('aria-disabled',String(state!=='ready'));
+  setText($('#celeb-chip'),chip);setText($('#celeb-sub'),sub);
+  b.style.setProperty('--p',Math.max(0,Math.min(100,p)).toFixed(1)+'%');
+}
+function startCampaign(){
+  const now=Date.now();
+  if(!hasT(S,'celeb')||now<S.celebReady) return;
+  S.celebUntil=now+60000;S.celebReady=now+240000;nextGuest=now;addMorale(-5);
+  toast('Celebrity Campaign! Customers are queuing for a minute');sAward();
+}
+
 function updateHappy(now){
   const h=happyInfo(now);
   E.hh.dataset.state=h.on?'on':'off';
@@ -1238,61 +2110,67 @@ function updateDaily(now){
   }
 }
 function updateShop(){
-  const g=fpMult(S)*awMult(S)*upAll(S)*menuMult(S),mi=maxOwnedIdx(S);
+  const g=fpMult(S)*fmMult(S)*awMult(S)*upAll(S)*menuMult(S)*fxMult(S,'all')*brMult(S),mi=maxOwnedIdx(S);
   BUILDINGS.forEach(function(b,i){
     const r=shopRows[i];
     if(i>mi+2){r.li.hidden=true;return;}
     r.li.hidden=false;
-    const teaser=(i===mi+2),n=qtyFor(i),cost=Math.ceil(bulkCost(b.base,S.owned[i],n));
+    const teaser=(i===mi+2),n=qtyFor(i),cost=bCost(S,i,n);
     r.li.classList.toggle('teaser',teaser);
     setText(r.badge,teaser?'?':String(S.owned[i]));
     setText(r.name,teaser?'Locked':b.name);
     setText(r.desc,teaser?'Keep earning to find out.':b.desc);
-    setText(r.meta,teaser?'':'₹'+fmt(b.cps*g)+'/sec each'+(S.owned[i]?' · ₹'+fmt(S.owned[i]*b.cps*g)+'/sec total':''));
+    const sm=stallMult(S.owned[i]),ns=nextStep(S.owned[i]);
+    const pm=bldUnit(S,i).net*g*DIFF.income;setText(r.meta,teaser?'':'₹'+fmt(pm)+'/sec each'+(S.owned[i]?' · ₹'+fmt(S.owned[i]*pm)+'/sec total':''));
     r.meta.hidden=teaser;
+    setText(r.boost,teaser||!ns?'':'Next boost: ×'+ns[1]+' output at '+ns[0]+' owned');
+    r.boost.hidden=teaser||!ns;
     setText(r.price,'₹'+fmt(cost));
     setText(r.sub,'Buy ×'+n);
     r.btn.disabled=teaser||S.cash<cost;
   });
-  upRows.forEach(function(r){r.btn.disabled=S.cash<r.u.cost;});
+  upRows.forEach(function(r){const c=upCost(S,r.u);setText(r.price,'₹'+fmt(c));r.btn.disabled=S.cash<c;});
   menuRows.forEach(function(r){
     const have=!!S.menu[r.m.id];
     r.li.classList.toggle('done',have);
     if(r.have!==have){r.have=have;if(have) r.badge.innerHTML=iconSvg('check');else r.badge.textContent='×'+SNACK_PAY;}
-    setText(r.price,have?'On menu':'₹'+fmt(r.m.cost));
+    setText(r.price,have?'On menu':'₹'+fmt(menuCost(S,r.m)));
     r.sub.hidden=have;
-    r.btn.disabled=have||S.cash<r.m.cost;
+    r.btn.disabled=have||S.cash<menuCost(S,r.m);
   });
   setText($('#menu-count'),menuCount(S)+' of '+MENU.length+' on the menu');
 }
 function updateFranchise(){
-  const gain=franchiseGain(S.runEarned),next=5e6*Math.pow(gain+1,2),prev=5e6*Math.pow(gain,2);
+  const gain=fpGainNow(S),base=franchiseGain(S.runEarned),next=FR_BASE*Math.pow(base+1,2),prev=FR_BASE*Math.pow(base,2);
   setText($('#f-gain'),String(gain));
   setText($('#f-fp'),String(S.fp));
-  setText($('#f-bonus'),'+'+(S.fp*5)+'%');
+  setText($('#f-bonus'),'+'+Math.round((0.05+fxSum(S,'fpRate'))*S.fp*100)+'%');
   setText($('#f-count'),String(S.franchises));
   $('#f-fill').style.width=Math.max(0,Math.min(100,(S.runEarned-prev)/(next-prev)*100)).toFixed(1)+'%';
-  setText($('#f-note'),gain<1?'₹'+fmt(Math.floor(S.runEarned))+' of ₹'+fmt(5e6)+' earned this run':'₹'+fmt(Math.ceil(next-S.runEarned))+' more for the next point');
+  setText($('#f-note'),gain<1?'₹'+fmt(Math.floor(S.runEarned))+' of ₹'+fmt(FR_BASE)+' earned this run':'₹'+fmt(Math.ceil(next-S.runEarned))+' more for the next point');
   E.fbtn.disabled=gain<1;
   if(!franT) setText(E.fbtn,gain<1?'Not ready yet':'Open franchise for +'+gain+' points');
 }
 function updateDots(){
   const mi=maxOwnedIdx(S);let can=false;
   for(let i=0;i<=Math.min(mi+1,BUILDINGS.length-1);i++){
-    if(S.cash>=Math.ceil(bulkCost(BUILDINGS[i].base,S.owned[i],1))){can=true;break;}
+    if(S.cash>=bCost(S,i,1)){can=true;break;}
   }
-  if(!can) can=UPGRADES.filter(function(u){return !S.up[u.id];}).slice(0,3).some(function(u){return S.cash>=u.cost;});
-  if(!can) can=MENU.some(function(m){return !S.menu[m.id]&&S.cash>=m.cost;});
+  if(!can) can=UPGRADES.filter(function(u){return !S.up[u.id];}).slice(0,3).some(function(u){return S.cash>=upCost(S,u);});
+  if(!can) can=MENU.some(function(m){return !S.menu[m.id]&&S.cash>=menuCost(S,m);});
   $('#tabbtn-shop').classList.toggle('has',can&&activeTab!=='shop');
   $('#tabbtn-empire').classList.toggle('has',franchiseGain(S.runEarned)>=1&&activeTab!=='empire');
-  $('#tabbtn-stall').classList.toggle('has',(happyOn(Date.now())||!!guest||!!ticket)&&activeTab!=='stall');
+  $('#tabbtn-stall').classList.toggle('has',(happyOn(Date.now())||!!guest||!!ticket||!!evt)&&activeTab!=='stall');
+  const exCan=TECH.some(function(t){return !hasT(S,t.id)&&techAvail(S,t)&&S.cash>=t.cost;});
+  $('#tabbtn-expand').classList.toggle('has',exCan&&activeTab!=='expand');
   const claimable=S.q.list.concat(S.q.wlist).some(function(q){return !q.claimed&&q.p>=q.target;});
   $('#tabbtn-quests').classList.toggle('has',claimable&&activeTab!=='quests');
 }
 function render(now){
-  updateHud(now);updateRush(now);updateHappy(now);updateGuest(now);updateTicket(now);updateDaily(now);
-  if(activeTab==='shop') updateShop();
-  if(activeTab==='empire') updateFranchise();
+  updateHud(now);updateRush(now);updateCampaign(now);updateEvent(now);updateStat();updateHappy(now);updateGuest(now);updateTicket(now);updateDaily(now);
+  if(activeTab==='shop'){if(shopView==='team') updateTeam();else updateShop();}
+  if(activeTab==='expand') updateExpand();
+  if(activeTab==='empire'){updateFranchise();if(tickN%20===0) renderAwards();}
   if(activeTab==='quests') updateQuests(now);
   if(tickN%5===0) updateDots();
 }
@@ -1301,7 +2179,15 @@ function tick(){
   let dt=(now-S.last)/1000;
   S.last=now;if(!(dt>0)) dt=0;
   if(dt>10){handleAway(dt);dt=0;}
-  if(dt>0){const c=cps(S,now,true);if(c>0) earn(c*dt);}
+  if(dt>0){
+    const c=cps(S,now,true);if(c>0) earn(c*dt);
+    stepFactory(S,dt);stepMorale(S,dt);
+    if(hasT(S,'estate')) S.rp+=dt/120;
+    if(hasT(S,'corporate')){
+      if(!S.corpNext) S.corpNext=now+300000;
+      if(now>=S.corpNext){const p=corpPay(S,now);earn(p);S.corpNext=now+300000;toast('Corporate bulk order: +₹'+fmt(p));sAward();}
+    }
+  }
   checkAwards();
   tickN++;
   if(tickN%10===0) ensureQuests(now);
@@ -1313,6 +2199,28 @@ function tick(){
 /* what's new */
 function newsItems(){return CHANGELOG[0].items.slice();}
 const CHANGELOG=[
+  {v:'1.4',date:'10 Nov 2026',items:[
+    'Staff overhaul. Open Kitchen, then Team: your crew now draws wages, and their morale changes how much they make.',
+    'Pay policy: Low, Fair or Generous. It sets your wage bill and where morale settles. A Chai Break lifts morale for a fee.',
+    'Nine staff roles you can hire one by one: Master Chai Wala, Kitchen Helper, Cashier, Waiter, Delivery Rider, Cleaner, Accountant, Security Guard and Trainer. Each has its own job, unlock stage and wages.',
+    'Training levels for every stall type. Each level adds 30% output but 20% more wages, and needs more staff first.',
+    'Managers for the Counter, Production and Business crews. Pick Strict, Friendly or Frugal. Big crews without a manager work 15% slower.',
+    'Staff events: raise requests, flu, rivals poaching trained staff, workers quitting and staff parties. You choose how to respond, and ignored events go badly.',
+    'Harder game: income is about 10% lower, stalls cost 12% more and recipes 15% more.',
+    'Tougher customers: less patience, one in five is impatient, and a snack that is not on your menu pays only 60%.',
+    'Reputation: serving customers builds it, while walkouts and cancelled orders cost it. It changes how often customers come and what they pay.',
+    'Smoother interface: panels slide in, the cash counter glides, buttons press down, and sheets fade.'
+  ]},
+  {v:'1.3',date:'9 Nov 2026',items:[
+    'Expand tab with 30 upgrades in four trees: Production, Business, Special mechanics and Endgame. Each one needs a stage, and sometimes another upgrade first.',
+    'Factories make ingredients on their own. Your stalls use them up, and fresh stock boosts all income. Factories have three upgrades.',
+    'Branches at the Railway Station, Shopping Mall, Airport and overseas. Each open branch adds 12% income, and its location brings extra customers.',
+    'Tea Research: earn research points by serving customers, delivering online orders and running the Luxury Tea Estate. Six teas give permanent bonuses that survive franchises.',
+    'New customers: railway commuters and coolies, mall shoppers, airport travellers and VIPs. Loyalty Cards reward regulars.',
+    'Celebrity Campaign button, Night Shift bonus and Rush Hour Manager.',
+    'Economy rebalance: pricier late stalls and recipes, stall output boosts at 10, 25, 50 and 100 owned, franchise milestones and 16 long-term goals.',
+    'Money units now go past Shankh: Maha Shankh, Ank and Jaladhi.'
+  ]},
   {v:'1.2',date:'9 Nov 2026',items:[
     '20 customer types instead of 6, from Street Kids and Rickshaw Pullers to Doctors, Influencers and a Film Star.',
     'Every customer pays differently. Poor customers pay less, rich ones pay a lot more, and the Policeman wants chai on the house.',
@@ -1359,15 +2267,46 @@ function showTab(name){
   });
   E.main.scrollTop=0;
   if(name==='empire') renderAwards();
+  if(name==='expand') updateExpand();
   if(name==='ranks'){
     renderRanks();
     if(LB_URL&&S.lbOn&&Date.now()-lbAt>15000) lbSubmit().then(lbLoad);
   }
   render(Date.now());updateDots();
 }
+
+function ownerUnlock(){
+  if(S.owner) return;
+  S.owner=true;save();updateOwner();toast('Owner mode unlocked');
+}
+function ownerUse(id){
+  const p=OWNER_POWERS.find(function(x){return x.id===id;});
+  if(!p||!S.owner) return;
+  if(!S.boost){
+    S.boost=true;
+    if(LB_URL&&S.pid&&S.lbOn) fetch(LB_URL+'/scores/'+S.pid+'.json',{method:'DELETE'}).catch(function(){});
+    S.lbOn=false;lbRows=lbRows.filter(function(r){return r.pid!==S.pid;});
+  }
+  p.run();rebuildAll();save();updateOwner();sBuy();toast('Owner power: '+p.label());
+}
+function updateOwner(){
+  const card=$('#owner-card');if(!card) return;
+  card.hidden=!S.owner;
+  if(!S.owner) return;
+  setText($('#owner-note'),S.boost?'Powers used. This save is kept off the leaderboard for good.':'Using any power takes this save off the leaderboard. Exiting is only possible before you use one.');
+  $('#owner-exit').hidden=S.boost;
+}
+function buildOwner(){
+  const g=$('#owner-grid');g.textContent='';
+  OWNER_POWERS.forEach(function(p){
+    const b=el('button','btn ghost small',p.label());b.type='button';
+    b.addEventListener('click',function(){ownerUse(p.id);});g.append(b);
+  });
+}
 function rebuildAll(){
+  buildOwner();updateOwner();updateAdmin();
   resetLive();
-  buildUpgrades();buildMenu();ensureQuests(Date.now(),true);renderAwards();
+  buildUpgrades();buildMenu();ensureQuests(Date.now(),true);renderAwards();renderMilestones();
   E.nameInput.value=S.name;
   E.snd.setAttribute('aria-checked',String(S.sound));
   E.coach.hidden=(S.taps>0||S.allEarned>0);
@@ -1386,6 +2325,13 @@ E.tap.addEventListener('click',function(e){if(e.detail===0) doTap(null,null);});
 E.rush.addEventListener('click',function(){if(Date.now()>=S.rushReady) startRush();});
 E.dailyBtn.addEventListener('click',claimDaily);
 E.guBtn.addEventListener('click',serveGuest);
+$('#celeb').addEventListener('click',startCampaign);
+$('#fac-buy').addEventListener('click',buyFactory);
+document.querySelectorAll('#shop-views button').forEach(function(b){b.addEventListener('click',function(){setShopView(b.dataset.view);});});
+document.querySelectorAll('#pay-seg button').forEach(function(b){b.addEventListener('click',function(){S.pay=Number(b.dataset.pay);updateTeam();});});
+$('#tm-break').addEventListener('click',chaiBreak);
+$('#evt-a').addEventListener('click',function(){if(evt) resolveEvent(evt.a);});
+$('#evt-b').addEventListener('click',function(){if(evt&&evt.b) resolveEvent(evt.b);});
 document.querySelectorAll('.tab').forEach(function(b){
   b.addEventListener('click',function(){showTab(b.dataset.tab);});
   b.addEventListener('keydown',function(e){
@@ -1454,6 +2400,19 @@ $('#lb-leave').addEventListener('click',function(){
   S.lbOn=false;lbRows=lbRows.filter(function(r){return r.pid!==S.pid;});
   save();renderRanks();toast('You left the leaderboard');
 });
+
+let verTaps=0,verT=0;
+$('#ver').addEventListener('click',function(){
+  verTaps++;clearTimeout(verT);verT=setTimeout(function(){verTaps=0;},2500);
+  if(verTaps>=7){verTaps=0;ownerUnlock();}
+});
+$('#owner-exit').addEventListener('click',function(){if(S.boost) return;S.owner=false;save();updateOwner();toast('Owner mode off');});
+let setTaps=0,setT=0;
+$('#settings-h').addEventListener('click',function(){
+  setTaps++;clearTimeout(setT);setT=setTimeout(function(){setTaps=0;},2500);
+  if(setTaps>=7){setTaps=0;adminUnlock();}
+});
+$('#admin-exit').addEventListener('click',function(){S.admin=false;adminFor='';save();updateAdmin();toast('Admin mode off');});
 $('#away-ok').addEventListener('click',function(){E.away.hidden=true;});
 $('#news-ok').addEventListener('click',closeNews);
 $('#log-btn').addEventListener('click',function(){renderLog($('#log-pop'));$('#logpop').hidden=false;$('#logpop-ok').focus({preventScroll:true});$('#logpop .sheet').scrollTop=0;});
@@ -1476,10 +2435,11 @@ window.addEventListener('pagehide',function(){if(S) save();});
 /* boot */
 function init(data){
   S=(data&&data.v===1)?sanitize(data):(loadSave()||fresh());
-  buildShop();rebuildAll();showTab('stall');
+  buildShop();buildExpand();buildTeam();rebuildAll();showTab('stall');
   if(S.seenVer!==VERSION){
     if(S.taps>0) showNews();else S.seenVer=VERSION;
   }
+  dispCash=S.cash;requestAnimationFrame(animCash);
   setInterval(tick,100);
 }
 try{
