@@ -176,6 +176,10 @@ main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 12px;ov
 input[type="text"]{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
 input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
 .row.adm{grid-template-columns:auto 1fr auto auto}
+.field select,.field input[type=text]{font:inherit;color:var(--ink);background:var(--raised);border:1px solid var(--line);border-radius:12px;min-height:46px;padding:8px 12px;width:100%}
+.sub-h{font:800 16px var(--font-display);margin-top:6px}
+.giftlist{margin:10px 0;padding-left:20px;display:grid;gap:4px;font-weight:600}
+#admin-card{display:grid;gap:10px}
 .owner-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .owner-grid .btn{min-height:44px}
 #ver,#settings-h{user-select:none;-webkit-user-select:none}
@@ -570,6 +574,15 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
       <div class="card" id="admin-card" hidden>
         <h2>Admin</h2>
         <p class="note">Open the Ranks tab to remove players from the leaderboard. Tap Remove, then tap again to confirm. Admin does not change your own score.</p>
+        <h3 class="sub-h">Send a gift</h3>
+        <p class="note">Players get it when their game next checks, but only if they have joined the leaderboard.</p>
+        <div class="field"><label for="gf-to">To</label><select id="gf-to"><option value="all">Everyone who joined the leaderboard</option></select></div>
+        <div class="field"><label for="gf-mins">Cash</label><select id="gf-mins"><option value="0">None</option><option value="30">30 minutes of their income</option><option value="120">2 hours of their income</option><option value="1440">1 day of their income</option><option value="10080">1 week of their income</option></select></div>
+        <div class="field"><label for="gf-rp">Research points</label><select id="gf-rp"><option value="0">None</option><option value="10">10</option><option value="50">50</option><option value="200">200</option></select></div>
+        <div class="field"><label for="gf-fp">Franchise points</label><select id="gf-fp"><option value="0">None</option><option value="1">1</option><option value="5">5</option><option value="10">10</option></select></div>
+        <div class="field"><label for="gf-msg">Message</label><input type="text" id="gf-msg" maxlength="80" autocomplete="off" placeholder="Happy Diwali!"></div>
+        <button class="btn" id="gf-send" type="button">Send gift</button>
+        <p class="note" id="gf-status"></p>
         <button class="btn ghost" id="admin-exit" type="button">Exit admin mode</button>
       </div>
       <div class="card" id="owner-card" hidden>
@@ -610,6 +623,16 @@ input[type="text"]:focus-visible{outline:3px solid var(--brand);outline-offset:1
     <h2 id="away-title">Welcome back</h2>
     <p class="note">You were away for <b id="away-time"></b>. Your crew kept the kettles on and earned <b id="away-gain"></b> at <b id="away-rate"></b> of normal speed.</p>
     <button class="btn" id="away-ok" type="button">Back to the stall</button>
+  </div>
+</div>
+
+<div class="overlay" id="gift" role="dialog" aria-modal="true" aria-labelledby="gift-title" hidden>
+  <div class="sheet">
+    <h2 id="gift-title">A gift for you</h2>
+    <p class="note" id="gift-msg"></p>
+    <ul class="giftlist" id="gift-list"></ul>
+    <button class="btn" id="gift-ok" type="button">Claim</button>
+    <button class="btn ghost" id="gift-later" type="button">Later</button>
   </div>
 </div>
 
@@ -829,7 +852,7 @@ function fresh(){
   return {v:1,name:DEFAULT_NAME,cash:0,runEarned:0,allEarned:0,taps:0,cup:0,
     owned:BUILDINGS.map(function(){return 0;}),up:{},menu:{},seen:{},fp:0,franchises:0,aw:{},rushUsed:0,rushUntil:0,rushReady:0,
     daily:'',streak:0,maxStreak:0,sound:true,last:Date.now(),
-    served:0,qDone:0,delivered:0,pid:'',lbOn:false,seenVer:'',q:{day:'',list:[],week:'',wlist:[]},tech:{},res:{},rp:0,fac:{n:0,up:{},stock:0},br:{},vis:{},corpNext:0,celebUntil:0,celebReady:0,morale:75,pay:1,train:BUILDINGS.map(function(){return 0;}),mgr:{},rep:50,breakReady:0,sickUntil:0,roles:{},owner:false,boost:false,admin:false};
+    served:0,qDone:0,delivered:0,pid:'',lbOn:false,seenVer:'',q:{day:'',list:[],week:'',wlist:[]},tech:{},res:{},rp:0,fac:{n:0,up:{},stock:0},br:{},vis:{},corpNext:0,celebUntil:0,celebReady:0,morale:75,pay:1,train:BUILDINGS.map(function(){return 0;}),mgr:{},rep:50,breakReady:0,sickUntil:0,roles:{},owner:false,boost:false,admin:false,gifts:{}};
 }
 function cleanQuests(list){
   if(!Array.isArray(list)) return [];
@@ -876,6 +899,7 @@ function sanitize(o){
   if(typeof o.lbOn==='boolean') f.lbOn=o.lbOn;
   if(typeof o.owner==='boolean') f.owner=o.owner;
   if(typeof o.admin==='boolean') f.admin=o.admin;
+  if(o.gifts&&typeof o.gifts==='object') Object.keys(o.gifts).slice(-60).forEach(function(k){if(/^[a-z0-9]{4,24}$/.test(k)) f.gifts[k]=1;});
   if(typeof o.boost==='boolean') f.boost=o.boost;
   if(typeof o.seenVer==='string') f.seenVer=o.seenVer.slice(0,12);
   if(o.q&&typeof o.q==='object'){
@@ -1168,6 +1192,25 @@ const OWNER_POWERS=[
   {id:'cool',label:function(){return 'Reset all cooldowns';},run:function(){S.rushReady=0;S.celebReady=0;S.breakReady=0;}}
 ];
 
+/* ---------- Gifts: sent by the admin, claimed by players ---------- */
+const GIFT_MAX_AGE=14*86400000;
+function giftClean(g,id,now){
+  if(!g||typeof g!=='object'||!/^[a-z0-9]{4,24}$/.test(String(id))) return null;
+  const n=function(v,hi){v=Math.floor(Number(v));return isFinite(v)&&v>0?Math.min(hi,v):0;};
+  const o={id:String(id),mins:n(g.mins,10080),rp:n(g.rp,500),fp:n(g.fp,50),ts:Number(g.ts)||0,
+    msg:String(g.msg==null?'':g.msg).replace(/[\u0000-\u001f\u007f<>]/g,'').replace(/\s+/g,' ').trim().slice(0,80)};
+  if(!o.mins&&!o.rp&&!o.fp) return null;
+  if(now&&o.ts&&now-o.ts>GIFT_MAX_AGE) return null;
+  return o;
+}
+function giftCash(s,g,now){return g.mins?Math.floor(Math.max(1000,cps(s,now,false)*g.mins*60)):0;}
+function giftApply(s,g,now){
+  const c=giftCash(s,g,now);
+  s.cash+=c;s.rp+=g.rp;s.fp+=g.fp;s.gifts[g.id]=1;
+  const k=Object.keys(s.gifts);if(k.length>60) k.slice(0,k.length-60).forEach(function(x){delete s.gifts[x];});
+  return c;
+}
+
 // </logic>
 
 /* ---------- UI ---------- */
@@ -1397,7 +1440,7 @@ function openFranchise(){
   if(gain<1) return;
   const keep={name:S.name,fp:S.fp+gain,franchises:S.franchises+1,allEarned:S.allEarned,taps:S.taps,aw:S.aw,
     rushUsed:S.rushUsed,daily:S.daily,streak:S.streak,maxStreak:S.maxStreak,sound:S.sound,
-    served:S.served,seen:S.seen,rp:S.rp,res:S.res,vis:S.vis,pay:S.pay,rep:S.rep,qDone:S.qDone,delivered:S.delivered,pid:S.pid,lbOn:S.lbOn,seenVer:S.seenVer,q:S.q,owner:S.owner,boost:S.boost,admin:S.admin};
+    served:S.served,seen:S.seen,rp:S.rp,res:S.res,vis:S.vis,pay:S.pay,rep:S.rep,qDone:S.qDone,delivered:S.delivered,pid:S.pid,lbOn:S.lbOn,seenVer:S.seenVer,q:S.q,owner:S.owner,boost:S.boost,admin:S.admin,gifts:S.gifts};
   S=Object.assign(fresh(),keep);
   S.cash=startCash(S);
   rebuildAll();save();sAward();
@@ -1547,6 +1590,7 @@ function lbLoad(){
     .then(function(){lbBusy=false;renderRanks();});
 }
 function renderRanks(){
+  fillGiftTo();
   const off=!LB_URL,joined=!!(S.lbOn&&S.pid);
   $('#lb-off').hidden=!off;
   $('#lb-join').hidden=off||joined;
@@ -1594,6 +1638,69 @@ function updateAdmin(){
 function adminUnlock(){
   if(S.admin) return;
   S.admin=true;save();updateAdmin();lbLoad();toast('Admin mode unlocked');
+}
+
+
+/* ---------- Gifts: delivery ---------- */
+let giftQ=[],giftAt=0,giftBusy=false,giftCur=null;
+function giftGet(path){return fetch(LB_URL+'/gifts/'+path+'.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+function giftCheck(){
+  if(!LB_URL||!S.lbOn||!S.pid||giftBusy) return;
+  giftBusy=true;giftAt=Date.now();
+  Promise.all([giftGet(S.pid),giftGet('all')]).then(function(res){
+    const now=Date.now(),out=[];
+    [['p',res[0]],['all',res[1]]].forEach(function(p){
+      const d=p[1];if(!d||typeof d!=='object') return;
+      Object.keys(d).forEach(function(id){
+        const g=giftClean(d[id],id,now);
+        if(g&&!S.gifts[g.id]&&!giftQ.some(function(q){return q.id===g.id;})&&!(giftCur&&giftCur.id===g.id)){g.scope=p[0];out.push(g);}
+      });
+    });
+    out.sort(function(a,b){return a.ts-b.ts;});
+    giftQ=giftQ.concat(out);giftBusy=false;showGift();
+  }).catch(function(){giftBusy=false;});
+}
+function showGift(){
+  if(giftCur||!giftQ.length||!E.away.hidden||!E.news.hidden||!$('#gift').hidden) return;
+  giftCur=giftQ.shift();
+  const g=giftCur,parts=[];
+  if(g.mins) parts.push('About ₹'+fmt(giftCash(S,g,Date.now()))+' in cash');
+  if(g.rp) parts.push(g.rp+' research points');
+  if(g.fp) parts.push(g.fp+' franchise point'+(g.fp>1?'s':''));
+  setText($('#gift-msg'),g.msg||'The chai wala sent you something.');
+  const ul=$('#gift-list');ul.textContent='';parts.forEach(function(t){ul.append(el('li',null,t));});
+  $('#gift').hidden=false;$('#gift-ok').focus({preventScroll:true});
+}
+function claimGift(){
+  const g=giftCur;if(!g) return;
+  const c=giftApply(S,g,Date.now());
+  if(g.scope==='p'&&LB_URL&&S.pid) fetch(LB_URL+'/gifts/'+S.pid+'/'+g.id+'.json',{method:'DELETE'}).catch(function(){});
+  giftCur=null;$('#gift').hidden=true;save();sBuy();
+  toast('Gift claimed'+(c?': +₹'+fmt(c):''));
+  render(Date.now());updateTeam();updateExpand();
+  if(giftQ.length) setTimeout(showGift,350);
+}
+function laterGift(){if(giftCur){giftQ.unshift(giftCur);giftCur=null;}$('#gift').hidden=true;}
+function fillGiftTo(){
+  const sel=$('#gf-to');if(!sel||!S.admin) return;
+  const keep=sel.value||'all';sel.textContent='';
+  const a=el('option',null,'Everyone who joined the leaderboard');a.value='all';sel.append(a);
+  lbRows.forEach(function(r){if(r.pid===S.pid) return;const o=el('option',null,r.name);o.value=r.pid;sel.append(o);});
+  sel.value=keep;if(sel.value!==keep) sel.value='all';
+}
+function sendGift(){
+  const st=$('#gf-status'),btn=$('#gf-send');
+  const mins=Number($('#gf-mins').value)||0,rp=Number($('#gf-rp').value)||0,fp=Number($('#gf-fp').value)||0;
+  if(!LB_URL){setText(st,'Gifts need the leaderboard server.');return;}
+  if(!mins&&!rp&&!fp){setText(st,'Pick something to give first.');return;}
+  const to=$('#gf-to').value||'all',who=$('#gf-to').selectedOptions[0]?$('#gf-to').selectedOptions[0].textContent:'everyone';
+  const id='g'+Date.now().toString(36)+Math.random().toString(36).replace(/[^a-z0-9]/g,'').slice(0,4);
+  const body=JSON.stringify({mins:mins,rp:rp,fp:fp,msg:String($('#gf-msg').value||'').slice(0,80),ts:Date.now()});
+  btn.disabled=true;setText(st,'Sending…');
+  fetch(LB_URL+'/gifts/'+to+'/'+id+'.json',{method:'PUT',body:body})
+    .then(function(r){if(!r.ok) throw new Error('bad');setText(st,'Sent to '+who+'. They get it next time their game checks, within a minute or two.');$('#gf-msg').value='';})
+    .catch(function(){setText(st,'Could not send. Check your connection.');})
+    .then(function(){btn.disabled=false;});
 }
 
 /* building the lists */
@@ -2193,6 +2300,7 @@ function tick(){
   if(tickN%10===0) ensureQuests(now);
   render(now);
   if(tickN%100===0) lbAuto(now);
+  if(LB_URL&&S.lbOn&&S.pid&&now-giftAt>60000) giftCheck();
   if(tickN%50===0) save();
 }
 
@@ -2413,6 +2521,9 @@ $('#settings-h').addEventListener('click',function(){
   if(setTaps>=7){setTaps=0;adminUnlock();}
 });
 $('#admin-exit').addEventListener('click',function(){S.admin=false;adminFor='';save();updateAdmin();toast('Admin mode off');});
+$('#gift-ok').addEventListener('click',claimGift);
+$('#gift-later').addEventListener('click',laterGift);
+$('#gf-send').addEventListener('click',sendGift);
 $('#away-ok').addEventListener('click',function(){E.away.hidden=true;});
 $('#news-ok').addEventListener('click',closeNews);
 $('#log-btn').addEventListener('click',function(){renderLog($('#log-pop'));$('#logpop').hidden=false;$('#logpop-ok').focus({preventScroll:true});$('#logpop .sheet').scrollTop=0;});
